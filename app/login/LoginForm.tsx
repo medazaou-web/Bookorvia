@@ -51,7 +51,7 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex flex-col items-center justify-center p-4 overflow-hidden transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex flex-col items-center justify-center p-4 overflow-hidden transition-colors duration-200">
       {/* Top controls */}
       <div className="absolute top-4 right-4 flex items-center gap-3">
         <LanguageSwitcher />
@@ -73,10 +73,10 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
         </div>
 
         {/* Main Card */}
-        <div className="rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/60 dark:border-white/10 p-8 shadow-2xl">
+        <div className="rounded-3xl bg-white/90 dark:bg-slate-900 backdrop-blur-md border border-white/60 dark:border-slate-700/50 p-8 shadow-2xl">
           <form onSubmit={handleLogin} className="space-y-6">
             {error && (
-              <div className="rounded-2xl bg-gradient-to-r from-red-50 dark:from-red-950/30 to-red-100/50 dark:to-red-900/30 border border-red-200 dark:border-red-800/50 p-4 text-sm text-red-700 dark:text-red-300 font-medium">
+              <div className="rounded-2xl bg-gradient-to-r from-red-50 dark:from-red-950/50 to-red-100/50 dark:to-red-900/50 border border-red-200 dark:border-red-700 p-4 text-sm text-red-700 dark:text-red-300 font-medium">
                 <div className="flex items-start gap-3">
                   <AlertIcon className="h-5 w-5 flex-shrink-0 mt-0.5" />
                   <div>{error}</div>
@@ -85,7 +85,7 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
             )}
 
             {info && (
-              <div className="rounded-2xl bg-gradient-to-r from-emerald-50 dark:from-emerald-950/30 to-emerald-100/50 dark:to-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 p-4 text-sm text-emerald-700 dark:text-emerald-300 font-medium">
+              <div className="rounded-2xl bg-gradient-to-r from-emerald-50 dark:from-emerald-950/50 to-emerald-100/50 dark:to-emerald-900/50 border border-emerald-200 dark:border-emerald-700 p-4 text-sm text-emerald-700 dark:text-emerald-300 font-medium">
                 <div className="flex items-start gap-3">
                   <CheckIcon className="h-5 w-5 flex-shrink-0 mt-0.5" />
                   <div>{info}</div>
@@ -101,7 +101,7 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 type="email" 
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all" 
+                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all" 
                 placeholder="you@example.com" 
               />
             </div>
@@ -119,7 +119,7 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 type="password" 
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all" 
+                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all" 
                 placeholder="••••••••" 
               />
             </div>
@@ -128,7 +128,7 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full mt-8 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:shadow-2xl hover:-translate-y-1 active:scale-95 disabled:opacity-60 transition-all duration-200"
+              className="w-full mt-8 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:from-indigo-700 hover:to-blue-700 dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 disabled:opacity-60 transition-all duration-200"
             >
               {loading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
@@ -147,7 +147,7 @@ export default function LoginForm({ nextPath = "/dashboard" }: { nextPath?: stri
           {/* Sign Up Link */}
           <a 
             href="/register" 
-            className="block w-full px-4 py-3 rounded-xl border-2 border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold text-center hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors"
+            className="block w-full px-4 py-3 rounded-xl border-2 border-indigo-200 dark:border-indigo-700 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold text-center hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors"
           >
             {t('auth.createAccount')}
           </a>

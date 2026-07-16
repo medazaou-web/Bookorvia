@@ -99,7 +99,12 @@
     "sessionVerificationFailed": "Unable to verify your session. Please try again.",
     "pleaseEnterNewPassword": "Please enter a new password.",
     "passwordMustMatch": "Passwords must match.",
-    "passwordUpdatedSuccess": "Password updated successfully!"
+    "passwordUpdatedSuccess": "Password updated successfully!",
+    "startBuildingLoyalty": "Start Building Loyalty",
+    "freeTrialDescription": "Create a free account to get started",
+    "creatingAccount": "Creating account...",
+    "startFreeTrial": "Start Free Trial",
+    "agreeToTermsRegister": "By creating an account, you agree to our Terms of Service, Privacy Policy and Cookies policy."
   },
   "generalMessages": {
     "notAuthenticated": "Please log in to continue."
@@ -139,6 +144,12 @@
     "somethingWentWrong": "Something went wrong. Please try again later.",
     "resetLinkSent": "Password reset link sent to your email",
     "unableToUpdatePassword": "Unable to update your password. Please try again."
+  },
+  "public": {
+    "cookies": "Cookies",
+    "refund": "Refund Policy",
+    "contact": "Contact",
+    "help": "Help"
   },
   "booking": {
     "bookNow": "Book Now",
