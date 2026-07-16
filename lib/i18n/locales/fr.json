@@ -100,7 +100,19 @@
     "sessionVerificationFailed": "Impossible de vérifier votre session. Veuillez réessayer.",
     "pleaseEnterNewPassword": "Veuillez entrer un nouveau mot de passe.",
     "passwordMustMatch": "Les mots de passe doivent correspondre.",
-    "passwordUpdatedSuccess": "Mot de passe mis à jour avec succès!"
+    "passwordUpdatedSuccess": "Mot de passe mis à jour avec succès!",
+    "startBuildingLoyalty": "Commencez à Construire la Fidélité",
+    "freeTrialDescription": "Créez un compte gratuit pour commencer",
+    "creatingAccount": "Création du compte en cours...",
+    "startFreeTrial": "Commencer l'Essai Gratuit",
+    "agreeToTermsRegister": "En créant un compte, vous acceptez nos Conditions d'Utilisation, notre Politique de Confidentialité et notre politique de Cookies.",
+    "forgotPasswordTitle": "Réinitialisez Votre Mot de Passe",
+    "passwordReset": "Réinitialisation du Mot de Passe",
+    "forgotPasswordDescription": "Entrez votre email pour recevoir un lien de réinitialisation de mot de passe",
+    "sendResetLink": "Envoyer le Lien de Réinitialisation",
+    "sending": "Envoi en cours...",
+    "rememberPassword": "Vous vous souvenez de votre mot de passe?",
+    "createOne": "Créez un"
   },
   "generalMessages": {
     "notAuthenticated": "Veuillez vous connecter pour continuer."

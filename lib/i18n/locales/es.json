@@ -99,7 +99,19 @@
     "sessionVerificationFailed": "No se pudo verificar tu sesión. Por favor intenta de nuevo.",
     "pleaseEnterNewPassword": "Por favor ingresa una nueva contraseña.",
     "passwordMustMatch": "Las contraseñas deben coincidir.",
-    "passwordUpdatedSuccess": "¡Contraseña actualizada exitosamente!"
+    "passwordUpdatedSuccess": "¡Contraseña actualizada exitosamente!",
+    "startBuildingLoyalty": "Comienza a Construir Lealtad",
+    "freeTrialDescription": "Crea una cuenta gratuita para comenzar",
+    "creatingAccount": "Creando cuenta...",
+    "startFreeTrial": "Comenzar Prueba Gratuita",
+    "agreeToTermsRegister": "Al crear una cuenta, aceptas nuestros Términos de Servicio, Política de Privacidad y política de Cookies.",
+    "forgotPasswordTitle": "Restablece tu Contraseña",
+    "passwordReset": "Restablecimiento de Contraseña",
+    "forgotPasswordDescription": "Introduce tu correo para recibir un enlace de restablecimiento de contraseña",
+    "sendResetLink": "Enviar Enlace de Restablecimiento",
+    "sending": "Enviando...",
+    "rememberPassword": "¿Recuerdas tu contraseña?",
+    "createOne": "Crea una"
   },
   "generalMessages": {
     "notAuthenticated": "Por favor inicia sesión para continuar."
