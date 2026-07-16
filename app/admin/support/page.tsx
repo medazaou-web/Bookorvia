@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { FollowUpMessageIcon } from "@/components/icons";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from '../../../lib/context/LanguageContext';
+import { useTranslations } from '../../../lib/i18n';
 
 interface SupportTicket {
   id: string;
@@ -25,6 +28,9 @@ interface SupportMessage {
 
 export default function AdminSupportPage() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = useTranslations(language);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
@@ -216,30 +222,30 @@ export default function AdminSupportPage() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "urgent":
-        return "bg-red-100 text-red-900";
+        return "bg-red-100 dark:bg-red-500/15 text-red-900 dark:text-red-200 border border-red-300 dark:border-red-400/30";
       case "high":
-        return "bg-amber-100 text-amber-900";
+        return "bg-amber-100 dark:bg-amber-500/15 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-400/30";
       case "normal":
-        return "bg-blue-100 text-blue-900";
+        return "bg-blue-100 dark:bg-blue-500/15 text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-400/30";
       case "low":
-        return "bg-slate-100 text-slate-900";
+        return "bg-slate-100 dark:bg-slate-500/15 text-slate-900 dark:text-slate-200 border border-slate-300 dark:border-slate-400/30";
       default:
-        return "bg-slate-100 text-slate-900";
+        return "bg-slate-100 dark:bg-slate-500/15 text-slate-900 dark:text-slate-200 border border-slate-300 dark:border-slate-400/30";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "open":
-        return "bg-blue-100 text-blue-900";
+        return "bg-blue-100 dark:bg-blue-500/15 text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-400/30";
       case "in_progress":
-        return "bg-amber-100 text-amber-900";
+        return "bg-amber-100 dark:bg-amber-500/15 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-400/30";
       case "resolved":
-        return "bg-emerald-100 text-emerald-900";
+        return "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-400/30";
       case "closed":
-        return "bg-slate-100 text-slate-900";
+        return "bg-slate-100 dark:bg-slate-500/15 text-slate-900 dark:text-slate-200 border border-slate-300 dark:border-slate-400/30";
       default:
-        return "bg-slate-100 text-slate-900";
+        return "bg-slate-100 dark:bg-slate-500/15 text-slate-900 dark:text-slate-200 border border-slate-300 dark:border-slate-400/30";
     }
   };
 
@@ -248,7 +254,7 @@ export default function AdminSupportPage() {
       <div className="text-center py-12">
         <div className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400">
           <div className="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 border-t-indigo-600 animate-spin"></div>
-          Loading...
+          {t('adminSupport.loading')}
         </div>
       </div>
     );
@@ -256,36 +262,36 @@ export default function AdminSupportPage() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">Support Tickets</h1>
-      <p className="text-lg text-slate-600 dark:text-slate-400 mb-8">Chat-based support ticket management</p>
+      <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">{t('adminSupport.supportTickets')}</h1>
+      <p className="text-lg text-slate-600 dark:text-slate-400 mb-8">{t('adminSupport.chatBasedTicketManagement')}</p>
 
       <div className="grid md:grid-cols-3 gap-6 h-[calc(100vh-300px)] overflow-hidden">
         {/* Tickets Sidebar */}
         <div className="md:col-span-1 flex flex-col bg-white/60 dark:bg-slate-900/40 backdrop-blur rounded-2xl border border-white/60 dark:border-white/10 overflow-hidden">
           <div className="p-4 border-b border-white/40 dark:border-white/10">
-            <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3">Filters</h3>
+            <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3">{t('adminSupport.filters')}</h3>
             <div className="space-y-2">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
               >
-                <option value="all">All Status</option>
-                <option value="open">Open</option>
-                <option value="in_progress">In Progress</option>
-                <option value="resolved">Resolved</option>
-                <option value="closed">Closed</option>
+                <option value="all">{t('adminSupport.allStatus')}</option>
+                <option value="open">{t('adminSupport.open')}</option>
+                <option value="in_progress">{t('adminSupport.inProgress')}</option>
+                <option value="resolved">{t('adminSupport.resolved')}</option>
+                <option value="closed">{t('adminSupport.closed')}</option>
               </select>
               <select
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
               >
-                <option value="all">All Priority</option>
-                <option value="urgent">Urgent</option>
-                <option value="high">High</option>
-                <option value="normal">Normal</option>
-                <option value="low">Low</option>
+                <option value="all">{t('adminSupport.allPriority')}</option>
+                <option value="urgent">{t('adminSupport.urgent')}</option>
+                <option value="high">{t('adminSupport.high')}</option>
+                <option value="normal">{t('adminSupport.normal')}</option>
+                <option value="low">{t('adminSupport.low')}</option>
               </select>
             </div>
           </div>
@@ -294,7 +300,7 @@ export default function AdminSupportPage() {
             {filteredTickets.length === 0 ? (
               <div className="p-4 text-center text-slate-600 dark:text-slate-400 text-sm">
                 <div className="text-3xl mb-2">📭</div>
-                No tickets
+                {t('adminSupport.noTickets')}
               </div>
             ) : (
               <div className="space-y-2 p-3">
@@ -304,13 +310,13 @@ export default function AdminSupportPage() {
                     onClick={() => setSelectedTicket(ticket)}
                     className={`w-full text-left p-3 rounded-lg transition-all ${
                       selectedTicket?.id === ticket.id
-                        ? "bg-indigo-100 border border-indigo-300"
-                        : "bg-white/50 hover:bg-white/80 border border-white/40"
+                        ? "bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-300 dark:border-indigo-400/50"
+                        : "bg-white/50 dark:bg-slate-800/30 hover:bg-white/80 dark:hover:bg-slate-800/50 border border-white/40 dark:border-white/10"
                     }`}
                   >
                     <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{ticket.subject}</h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                      {ticketUsers[ticket.user_id]?.full_name || "Unknown"}
+                      {ticketUsers[ticket.user_id]?.full_name || t('adminSupport.unknown')}
                     </p>
                     <div className="flex gap-1 mt-2 flex-wrap">
                       <span className={`text-xs font-bold px-2 py-0.5 rounded ${getStatusColor(ticket.status)}`}>
@@ -336,7 +342,7 @@ export default function AdminSupportPage() {
                   <div className="flex-1">
                     <h2 className="font-bold text-lg text-slate-900 dark:text-slate-100">{selectedTicket.subject}</h2>
                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                      {ticketUsers[selectedTicket.user_id]?.full_name || "Unknown User"}
+                      {ticketUsers[selectedTicket.user_id]?.full_name || t('adminSupport.unknownUser')}
                     </p>
                   </div>
                   <select
@@ -345,10 +351,10 @@ export default function AdminSupportPage() {
                     disabled={updatingTicket}
                     className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-600 disabled:opacity-50 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
                   >
-                    <option value="open">Open</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="closed">Closed</option>
+                    <option value="open">{t('adminSupport.open')}</option>
+                    <option value="in_progress">{t('adminSupport.inProgress')}</option>
+                    <option value="resolved">{t('adminSupport.resolved')}</option>
+                    <option value="closed">{t('adminSupport.closed')}</option>
                   </select>
                 </div>
                 <div className="flex gap-2">
@@ -369,13 +375,13 @@ export default function AdminSupportPage() {
                   <div className="text-center text-slate-600 dark:text-slate-400 text-sm py-8">
                     <div className="inline-flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full border-2 border-slate-300 dark:border-slate-600 border-t-indigo-600 animate-spin"></div>
-                      Loading...
+                      {t('adminSupportMessages.loading')}
                     </div>
                   </div>
                 ) : messages.length === 0 ? (
                   <div className="text-center text-slate-600 dark:text-slate-400 text-sm py-8">
-                    <div className="text-3xl mb-2">💬</div>
-                    No messages
+                    <FollowUpMessageIcon className="h-12 w-12 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
+                    {t('adminSupportMessages.noMessages')}
                   </div>
                 ) : (
                   messages.map((msg) => (
@@ -411,7 +417,7 @@ export default function AdminSupportPage() {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Type your reply..."
+                      placeholder={t('adminSupportMessages.typeYourReply')}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => {
@@ -428,7 +434,7 @@ export default function AdminSupportPage() {
                       disabled={submittingMessage || !newMessage.trim()}
                       className="px-6 py-3 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all"
                     >
-                      Send
+                      {t('adminSupportMessages.send')}
                     </button>
                   </div>
                 </div>
@@ -436,7 +442,7 @@ export default function AdminSupportPage() {
 
               {selectedTicket.status === "closed" && (
                 <div className="p-4 border-t border-white/40 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-center text-sm text-slate-700 dark:text-slate-300 font-medium">
-                  ✓ Closed ticket - replies disabled
+                  {t('adminSupportMessages.closedTicketRepliesDisabled')}
                 </div>
               )}
             </>
@@ -444,7 +450,7 @@ export default function AdminSupportPage() {
             <div className="flex items-center justify-center h-full text-center text-slate-600 dark:text-slate-400">
               <div>
                 <div className="text-4xl mb-2">📬</div>
-                <p className="text-lg font-medium">No ticket selected</p>
+                <p className="text-lg font-medium">{t('adminSupportMessages.noTicketSelected')}</p>
               </div>
             </div>
           )}

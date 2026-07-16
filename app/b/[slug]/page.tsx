@@ -1,8 +1,9 @@
 import { createServerSupabase } from "../../../lib/supabase/serverClient";
 import { cookies } from "next/headers";
-import BookingForm from "./BookingForm";
+import BookingSection from "./BookingSection";
 import ReviewBooster from "./ReviewBooster";
 import LoyaltyLookup from "./LoyaltyLookup";
+import { MapPinIcon } from "@/components/icons";
 
 type Props = { params: any };
 
@@ -122,15 +123,24 @@ export default async function BusinessPage({ params }: Props) {
     const brandColor = biz.brand_color || "#4f46e5";
     const accentColor = biz.accent_color || "#06b6d4";
 
-    // Load active services
-    const { data: servicesData } = await supabase
-      .from("services")
-      .select("id, name, description, price, currency, duration_minutes, is_active")
-      .eq("business_id", biz.id)
-      .eq("is_active", true)
-      .order("created_at", { ascending: false });
+    // Load active services IN PARALLEL
+    const [servicesResult, reviewsResult] = await Promise.all([
+      supabase
+        .from("services")
+        .select("id, name, description, price, currency, duration_minutes, is_active, background_image_url")
+        .eq("business_id", biz.id)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("reviews")
+        .select("id, client_name, rating, comment, created_at")
+        .eq("business_id", biz.id)
+        .order("created_at", { ascending: false })
+        .limit(10)
+    ]);
 
-    const services = servicesData ?? [];
+    const services = servicesResult.data ?? [];
+    const reviews = reviewsResult.data ?? [];
     const logo = biz.logo_url;
     const coverImage = biz.cover_image_url;
     const initials = biz.name ? biz.name.split(" ").map((s: string) => s[0]).slice(0,2).join("") : "B";
@@ -209,7 +219,7 @@ export default async function BusinessPage({ params }: Props) {
                 )}
                 {biz.address && (
                   <p className={`mt-4 text-sm sm:text-base opacity-75 flex items-center gap-2`}>
-                    📍 {biz.address}
+                    <MapPinIcon className="h-5 w-5 flex-shrink-0" /> {biz.address}
                   </p>
                 )}
               </div>
@@ -264,42 +274,62 @@ export default async function BusinessPage({ params }: Props) {
                 {services.map((s: any) => (
                   <div 
                     key={s.id} 
-                    className={`rounded-2xl ${theme.card} backdrop-blur border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 sm:p-8 group`}
+                    className={`relative rounded-2xl overflow-hidden border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group min-h-96`}
                   >
-                    <div className="mb-4">
-                      <h3 className={`text-xl font-bold group-hover:${theme.accent} transition-colors`}>{s.name}</h3>
-                      {s.description && (
-                        <p className={`opacity-75 text-sm mt-2`}>{s.description}</p>
-                      )}
-                    </div>
+                    {/* Background Image */}
+                    {s.background_image_url ? (
+                      <>
+                        <div className="absolute inset-0">
+                          <img
+                            src={s.background_image_url}
+                            alt={s.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {/* Strong gradient overlay for text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"></div>
+                      </>
+                    ) : (
+                      <div className={`absolute inset-0 ${theme.card}`}></div>
+                    )}
 
-                    {/* Price & Duration */}
-                    <div className="my-6 pt-6 border-t border-white/10">
-                      <div className="grid grid-cols-2 gap-4">
-                        {s.price && (
-                          <div>
-                            <p className={`text-xs font-semibold uppercase opacity-60`}>Price</p>
-                            <p className={`text-2xl font-bold mt-1 ${theme.accent}`}>{s.price}</p>
-                            <p className={`text-xs opacity-60 mt-1`}>{s.currency || 'MAD'}</p>
-                          </div>
-                        )}
-                        {s.duration_minutes && (
-                          <div>
-                            <p className={`text-xs font-semibold uppercase opacity-60`}>Duration</p>
-                            <p className={`text-2xl font-bold mt-1`}>{s.duration_minutes}</p>
-                            <p className={`text-xs opacity-60 mt-1`}>min</p>
-                          </div>
+                    {/* Content */}
+                    <div className="relative p-6 sm:p-8 h-full flex flex-col justify-between">
+                      <div className="mb-4">
+                        <h3 className={`text-xl font-bold transition-colors text-white`} style={{textShadow: "0 2px 8px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3)"}}>{s.name}</h3>
+                        {s.description && (
+                          <p className={`text-white/95 text-sm mt-2`} style={{textShadow: "0 1px 4px rgba(0,0,0,0.5)"}}>{s.description}</p>
                         )}
                       </div>
-                    </div>
 
-                    <a 
-                      href="#book" 
-                      className={`block w-full text-center rounded-lg py-3 text-base font-bold shadow-md hover:shadow-lg transition-all active:scale-95 text-white`}
-                      style={{ backgroundColor: brandColor }}
-                    >
-                      Book This Service
-                    </a>
+                      {/* Price & Duration */}
+                      <div className="my-6 pt-6 border-t border-white/30">
+                        <div className="grid grid-cols-2 gap-4">
+                          {s.price && (
+                            <div>
+                              <p className={`text-xs font-semibold uppercase text-white/80`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>Price</p>
+                              <p className={`text-2xl font-bold mt-1 text-white`} style={{textShadow: "0 2px 6px rgba(0,0,0,0.5)"}}>{s.price}</p>
+                              <p className={`text-xs text-white/80 mt-1`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>{s.currency || 'MAD'}</p>
+                            </div>
+                          )}
+                          {s.duration_minutes && (
+                            <div>
+                              <p className={`text-xs font-semibold uppercase text-white/80`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>Duration</p>
+                              <p className={`text-2xl font-bold mt-1 text-white`} style={{textShadow: "0 2px 6px rgba(0,0,0,0.5)"}}>{s.duration_minutes}</p>
+                              <p className={`text-xs text-white/80 mt-1`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>min</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <a 
+                        href="#book" 
+                        className={`block w-full text-center rounded-lg py-3 text-base font-bold shadow-md hover:shadow-lg transition-all active:scale-95 text-white`}
+                        style={{ backgroundColor: brandColor }}
+                      >
+                        Book This Service
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -308,13 +338,13 @@ export default async function BusinessPage({ params }: Props) {
 
           {/* Booking Form Section */}
           <section id="book" className="mb-8 sm:mb-12 scroll-mt-24">
-            <div className="mb-6 sm:mb-8">
-              <h2 className={`text-3xl sm:text-4xl font-bold`}>Request a Booking</h2>
-              <p className={`opacity-70 mt-2`}>Select your service and choose from available times</p>
-            </div>
-            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`}>
-              <BookingForm businessId={biz.id} services={services} businessSlug={biz.slug} themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]} />
-            </div>
+            <BookingSection 
+              businessId={biz.id} 
+              services={services} 
+              businessSlug={biz.slug} 
+              themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]}
+              language={biz.language || 'en'}
+            />
           </section>
 
           {/* Reviews Section */}
@@ -324,7 +354,7 @@ export default async function BusinessPage({ params }: Props) {
               <p className={`opacity-70 mt-2`}>Help others discover this business</p>
             </div>
             <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`}>
-              <ReviewBooster businessId={biz.id} googleReviewUrl={biz.google_review_url} themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]} />
+              <ReviewBooster businessId={biz.id} googleReviewUrl={biz.google_review_url} preloadedReviews={reviews} themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]} />
             </div>
           </section>
 

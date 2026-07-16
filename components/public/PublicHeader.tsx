@@ -1,13 +1,20 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function PublicHeader() {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/40 dark:border-white/10 backdrop-blur-xl bg-white/60 dark:bg-slate-950/40 supports-[backdrop-filter]:bg-white/30 dark:supports-[backdrop-filter]:bg-slate-950/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold text-lg">C</div>
-          <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Bookorvia</span>
+        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Image 
+            src="/bookorvia-logo.png" 
+            alt="Bookorvia" 
+            width={40} 
+            height={40} 
+            className="h-10 w-10 rounded-lg"
+          />
+          <span className="text-xl font-bold text-slate-900 dark:text-white">Bookorvia</span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
           <a href="/#features" className="text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 font-medium transition-colors">Features</a>

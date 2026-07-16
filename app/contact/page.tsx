@@ -1,7 +1,13 @@
+"use client";
 import PublicHeader from "../../components/public/PublicHeader";
 import PublicFooter from "../../components/public/PublicFooter";
+import { SupportIcon, PhoneIcon, FollowUpMessageIcon, ChevronDownIcon } from "@/components/icons";
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
 
 export default function ContactPage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col">
       <PublicHeader />
@@ -9,14 +15,14 @@ export default function ContactPage() {
       <main className="flex-1">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="rounded-3xl bg-white/80 backdrop-blur border border-white/60 shadow-xl p-8 sm:p-12">
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4">Contact Us</h1>
-            <p className="text-slate-600 mb-8">We're here to help. Reach out with any questions or concerns.</p>
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t('public.contactUs')}</h1>
+            <p className="text-slate-600 mb-8">{t('public.weAreHereToHelp')}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               {/* Support for Logged-In Users */}
             <div className="rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 p-6">
               <h2 className="text-2xl font-bold text-indigo-900 mb-3 flex items-center gap-2">
-                <span className="text-2xl">🆘</span> Support & Help
+                <SupportIcon className="h-6 w-6 text-indigo-900" /> Support & Help
               </h2>
               <p className="text-slate-700 mb-4">
                 If you're a Bookorvia user, use our dedicated support system for the fastest response.
@@ -35,7 +41,7 @@ export default function ContactPage() {
             {/* General Contact */}
             <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 p-6">
               <h2 className="text-2xl font-bold text-emerald-900 mb-3 flex items-center gap-2">
-                <span className="text-2xl">📧</span> General Inquiry
+                <PhoneIcon className="h-6 w-6 text-emerald-900" /> General Inquiry
               </h2>
               <p className="text-slate-700 mb-4">
                 For general questions, press inquiries, or partnership opportunities.
@@ -58,19 +64,19 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Ways to Reach Us</h2>
               <div className="space-y-4">
                 <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
-                  <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2">📱 Support Tickets (Recommended for Users)</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2"><SupportIcon className="h-5 w-5" /> Support Tickets (Recommended for Users)</h3>
                   <p className="text-slate-700">
                     If you have an active Bookorvia account, submit a support ticket through the Support & Help section. Include as much detail as possible about your issue. Our support team prioritizes tickets from logged-in users for faster resolution.
                   </p>
                 </div>
                 <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
-                  <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2">📧 Email</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2"><PhoneIcon className="h-5 w-5" /> Email</h3>
                   <p className="text-slate-700">
                     Email us at <a href="mailto:support@bookorvia.pro" className="text-indigo-600 hover:text-indigo-800 font-semibold">support@bookorvia.pro</a> for general inquiries, billing questions, or issues outside the support system.
                   </p>
                 </div>
                 <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
-                  <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2">💬 Response Times</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2"><FollowUpMessageIcon className="h-5 w-5" /> Response Times</h3>
                   <ul className="list-disc list-inside text-slate-700 space-y-1">
                     <li><strong>Urgent (High Priority):</strong> 2-4 hours</li>
                     <li><strong>Normal (Medium Priority):</strong> 4-24 hours</li>

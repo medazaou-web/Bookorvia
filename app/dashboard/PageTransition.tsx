@@ -9,7 +9,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className={`transition-opacity duration-200 ease-out ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`animate-in ${mounted ? 'opacity-100' : 'opacity-0'}`}>
       {children}
     </div>
   );

@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import supabase from "../../lib/supabase/browserClient";
+import { useLanguage } from "@/lib/context/LanguageContext";
+import { useTranslations } from "@/lib/i18n";
 
 interface NewBookingModalProps {
   businessId: string;
@@ -17,6 +19,8 @@ export default function NewBookingModal({
   onSuccess,
   services = [],
 }: NewBookingModalProps) {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -53,7 +57,7 @@ export default function NewBookingModal({
         !formData.client_phone.trim() ||
         !formData.requested_date
       ) {
-        throw new Error("Please fill in all required fields");
+        throw new Error(t('booking.newBookingErrorMissingFields'));
       }
 
       const { error } = await supabase.from("booking_requests").insert({
@@ -72,7 +76,7 @@ export default function NewBookingModal({
 
       setMessage({
         type: "success",
-        text: "Booking created successfully!",
+        text: t('booking.newBookingSuccessMessage'),
       });
 
       // Reset form
@@ -94,7 +98,7 @@ export default function NewBookingModal({
       console.error("Failed to create booking:", e);
       setMessage({
         type: "error",
-        text: e.message || "Failed to create booking",
+        text: e.message || t('booking.newBookingErrorFailed'),
       });
     } finally {
       setLoading(false);
@@ -104,11 +108,11 @@ export default function NewBookingModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in">
         {/* Header */}
         <div className="sticky top-0 border-b border-slate-200/60 bg-white/95 backdrop-blur px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-bold text-slate-900">New Booking Request</h2>
+          <h2 className="text-2xl font-bold text-slate-900">{t('booking.newBookingModalTitle')}</h2>
           <button
             onClick={onClose}
             className="text-slate-500 hover:text-slate-700 text-2xl leading-none"
@@ -134,47 +138,47 @@ export default function NewBookingModal({
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Client Name */}
             <div>
-              <label className="block text-sm font-bold text-slate-900 mb-2">
-                Client Name *
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+                {t('booking.newBookingClientNameLabel')}
               </label>
               <input
                 type="text"
                 name="client_name"
                 value={formData.client_name}
                 onChange={handleInputChange}
-                placeholder="John Doe"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                placeholder={t('booking.newBookingClientNamePlaceholder')}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
 
             {/* Client Phone */}
             <div>
-              <label className="block text-sm font-bold text-slate-900 mb-2">
-                Phone Number *
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+                {t('booking.newBookingPhoneLabel')}
               </label>
               <input
                 type="tel"
                 name="client_phone"
                 value={formData.client_phone}
                 onChange={handleInputChange}
-                placeholder="+1 234 567 8900"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                placeholder={t('booking.newBookingPhonePlaceholder')}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
 
             {/* Service */}
             <div>
-              <label className="block text-sm font-bold text-slate-900 mb-2">
-                Service
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+                {t('booking.newBookingServiceLabel')}
               </label>
               {services.length > 0 ? (
                 <select
                   name="service"
                   value={formData.service}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
-                  <option value="">Select a service...</option>
+                  <option value="">{t('booking.newBookingServicePlaceholder')}</option>
                   {services.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.name}
@@ -187,8 +191,8 @@ export default function NewBookingModal({
                   name="service"
                   value={formData.service}
                   onChange={handleInputChange}
-                  placeholder="e.g., Haircut, Massage"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  placeholder={t('booking.newBookingServiceInputPlaceholder')}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 />
               )}
             </div>
@@ -196,44 +200,44 @@ export default function NewBookingModal({
             {/* Date and Time */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-slate-900 mb-2">
-                  Requested Date *
+                <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+                  {t('booking.newBookingDateLabel')}
                 </label>
                 <input
                   type="date"
                   name="requested_date"
                   value={formData.requested_date}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-900 mb-2">
-                  Requested Time
+                <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+                  {t('booking.newBookingTimeLabel')}
                 </label>
                 <input
                   type="time"
                   name="requested_time"
                   value={formData.requested_time}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 />
               </div>
             </div>
 
             {/* Message */}
             <div>
-              <label className="block text-sm font-bold text-slate-900 mb-2">
-                Additional Message
+              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+                {t('booking.newBookingMessageLabel')}
               </label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleInputChange}
-                placeholder="Any notes or special requests..."
+                placeholder={t('booking.newBookingMessagePlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
               />
             </div>
 
@@ -244,7 +248,7 @@ export default function NewBookingModal({
                 onClick={onClose}
                 className="flex-1 px-6 py-3 rounded-xl border border-slate-200/60 text-slate-900 font-semibold hover:bg-slate-50 transition-colors"
               >
-                Cancel
+                {t('booking.newBookingCancelButton')}
               </button>
 
               <button
@@ -255,10 +259,10 @@ export default function NewBookingModal({
                 {loading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Creating...
+                    {t('booking.newBookingCreating')}
                   </>
                 ) : (
-                  <>✓ Create Booking</>
+                  <>{t('booking.newBookingCreateButton')}</>
                 )}
               </button>
             </div>

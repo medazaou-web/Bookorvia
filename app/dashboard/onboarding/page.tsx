@@ -1,7 +1,10 @@
-"use client";
+﻿"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
+import { AlertIcon, MessageIcon } from "@/components/icons";
 
 interface Service {
   name: string;
@@ -11,6 +14,8 @@ interface Service {
 }
 
 export default function OnboardingPage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const router = useRouter();
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +31,8 @@ export default function OnboardingPage() {
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [address, setAddress] = useState("");
+  const [currency, setCurrency] = useState("USD");
+  const [bookingCountries, setBookingCountries] = useState<string[]>(["US"]);
   const [savingBusiness, setSavingBusiness] = useState(false);
 
   // Step 2: Services
@@ -75,7 +82,12 @@ export default function OnboardingPage() {
   async function saveBusiness(e: React.FormEvent) {
     e.preventDefault();
     if (!businessName.trim() || !slug.trim()) {
-      setError("Business name and slug are required");
+      setError(t('onboardingMessages.businessNameAndSlugRequired'));
+      return;
+    }
+    
+    if (bookingCountries.length === 0) {
+      setError(t('onboardingMessages.selectBookingCountry'));
       return;
     }
 
@@ -91,6 +103,8 @@ export default function OnboardingPage() {
         phone: phone,
         whatsapp: whatsapp,
         address: address,
+        currency: currency,
+        booking_countries: bookingCountries,
       };
 
       const { data: newBiz, error: insErr } = await supabase.from("businesses").insert(payload).select().single();
@@ -98,7 +112,7 @@ export default function OnboardingPage() {
 
       setBusinessId((newBiz as any)?.id);
       setBusinessData(newBiz);
-      setSuccess("Business profile created! Now add your services.");
+      setSuccess(t('onboardingMessages.businessProfileCreated'));
       setStep(2);
     } catch (e: any) {
       setError(e?.message || String(e));
@@ -112,7 +126,7 @@ export default function OnboardingPage() {
     e.preventDefault();
     const validServices = services.filter((s) => s.name.trim() && s.price !== "");
     if (validServices.length === 0) {
-      setError("Add at least one service");
+      setError(t('onboardingMessages.addAtLeastOneService'));
       return;
     }
 
@@ -131,7 +145,7 @@ export default function OnboardingPage() {
       const { error: insErr } = await supabase.from("services").insert(payloads);
       if (insErr) throw insErr;
 
-      setSuccess("Services added! Check the preview.");
+      setSuccess(t('onboardingMessages.servicesAdded'));
       setStep(3);
     } catch (e: any) {
       setError(e?.message || String(e));
@@ -149,7 +163,8 @@ export default function OnboardingPage() {
 
   function generateQRCode() {
     if (businessData?.slug) {
-      const url = `${window.location.origin}/b/${businessData.slug}`;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+      const url = `${appUrl}/b/${businessData.slug}`;
       setPublicPageUrl(url);
       // Using QR server API for QR code generation
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
@@ -165,7 +180,7 @@ export default function OnboardingPage() {
   function copyLink() {
     if (publicPageUrl) {
       navigator.clipboard.writeText(publicPageUrl);
-      setSuccess("Link copied to clipboard!");
+      setSuccess(t('onboardingMessages.linkCopied'));
       setTimeout(() => setSuccess(null), 2000);
     }
   }
@@ -234,7 +249,7 @@ export default function OnboardingPage() {
         {/* Error Alert */}
         {error && (
           <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 font-medium flex items-center gap-3">
-            <span className="text-xl">⚠️</span>
+            <AlertIcon className="h-5 w-5 flex-shrink-0" />
             {error}
           </div>
         )}
@@ -254,7 +269,7 @@ export default function OnboardingPage() {
 
             <form onSubmit={saveBusiness} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Business Name *</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Business Name *</label>
                 <input
                   type="text"
                   value={businessName}
@@ -263,30 +278,30 @@ export default function OnboardingPage() {
                     setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"));
                   }}
                   placeholder="e.g., Casa Barber"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">URL Slug *</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">URL Slug *</label>
                 <input
                   type="text"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="e.g., casa-barber"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   required
                 />
-                <p className="text-xs text-slate-600 mt-1">Your public page: {window?.location?.origin}/b/{slug}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Your public page: {window?.location?.origin}/b/{slug}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Category</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Category</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 >
                   <option value="salon">Salon</option>
                   <option value="barber">Barber</option>
@@ -298,47 +313,94 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Description</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Tell your customers about your business..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Phone</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Phone</label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="e.g., +212 5XX XXX XXX"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">WhatsApp Number</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">WhatsApp Number</label>
                 <input
                   type="tel"
                   value={whatsapp}
                   onChange={(e) => setWhatsapp(e.target.value)}
                   placeholder="e.g., +212 5XX XXX XXX"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Address</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Address</label>
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g., 123 Main Street, City"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Currency *</label>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                >
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="MAD">MAD - Moroccan Dirham</option>
+                  <option value="BRL">BRL - Brazilian Real</option>
+                  <option value="MXN">MXN - Mexican Peso</option>
+                  <option value="ARS">ARS - Argentine Peso</option>
+                  <option value="AED">AED - UAE Dirham</option>
+                  <option value="SAR">SAR - Saudi Riyal</option>
+                  <option value="INR">INR - Indian Rupee</option>
+                  <option value="AUD">AUD - Australian Dollar</option>
+                  <option value="CAD">CAD - Canadian Dollar</option>
+                </select>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Currency displayed to your customers for service prices</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Booking Countries *</label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {["US", "CA", "GB", "ES", "FR", "DE", "IT", "MA", "AE", "SA", "BR", "MX", "AR", "IN", "AU", "JP"].map((country) => (
+                    <label key={country} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={bookingCountries.includes(country)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setBookingCountries([...bookingCountries, country]);
+                          } else {
+                            setBookingCountries(bookingCountries.filter((c) => c !== country));
+                          }
+                        }}
+                        className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                      />
+                      <span className="text-sm text-slate-700 dark:text-slate-300">{country}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">Select countries where your customers can book from. Phone validation will be country-specific.</p>
               </div>
 
               <button
@@ -376,7 +438,7 @@ export default function OnboardingPage() {
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 mb-1">Service Name *</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-1">Service Name *</label>
                       <input
                         type="text"
                         value={service.name}
@@ -386,12 +448,12 @@ export default function OnboardingPage() {
                           setServices(newServices);
                         }}
                         placeholder="e.g., Haircut"
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 mb-1">Price *</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-1">Price *</label>
                       <input
                         type="number"
                         value={service.price}
@@ -401,12 +463,12 @@ export default function OnboardingPage() {
                           setServices(newServices);
                         }}
                         placeholder="0.00"
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 mb-1">Currency</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-1">Currency</label>
                       <select
                         value={service.currency}
                         onChange={(e) => {
@@ -414,7 +476,7 @@ export default function OnboardingPage() {
                           newServices[idx].currency = e.target.value;
                           setServices(newServices);
                         }}
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
                       >
                         <option value="MAD">MAD (Moroccan Dirham)</option>
                         <option value="USD">USD</option>
@@ -423,7 +485,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 mb-1">Duration (minutes)</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-1">Duration (minutes)</label>
                       <input
                         type="number"
                         value={service.duration_minutes}
@@ -433,7 +495,7 @@ export default function OnboardingPage() {
                           setServices(newServices);
                         }}
                         placeholder="30"
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white/50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
                       />
                     </div>
                   </div>
@@ -479,7 +541,7 @@ export default function OnboardingPage() {
 
               {businessData.whatsapp && (
                 <button className="px-6 py-2 rounded-lg bg-emerald-600 text-white font-bold hover:shadow-lg active:scale-95 transition-all inline-block mb-6">
-                  💬 WhatsApp
+                  <MessageIcon className="h-4 w-4" /> WhatsApp
                 </button>
               )}
 

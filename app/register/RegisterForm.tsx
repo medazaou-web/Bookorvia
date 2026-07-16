@@ -1,11 +1,19 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import supabase from "../../lib/supabase/browserClient";
+import { AlertIcon, CheckIcon } from "@/components/icons";
+import { useLanguage } from "@/lib/context/LanguageContext";
+import { useTranslations } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/app/components/LanguageSwitcher";
+import { ThemeToggle } from "@/app/components/ThemeToggle";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -19,11 +27,11 @@ export default function RegisterForm() {
     setInfo(null);
 
     if (!email || !password) {
-      setError("Please provide email and password.");
+      setError(t('authMessages.pleaseProvideEmailPassword'));
       return;
     }
     if (password !== confirm) {
-      setError("Passwords do not match.");
+      setError(t('authMessages.passwordsDoNotMatch'));
       return;
     }
 
@@ -41,7 +49,7 @@ export default function RegisterForm() {
           }
           router.push("/dashboard");
         } else {
-          setInfo("Check your email to confirm the account. After confirmation you can log in.");
+          setInfo(t('authMessages.checkEmailToConfirm'));
         }
       }
     } catch (e: any) {
@@ -52,13 +60,25 @@ export default function RegisterForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex items-center justify-center p-4 overflow-hidden transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex flex-col items-center justify-center p-4 overflow-hidden transition-colors duration-200">
+      {/* Top controls */}
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white font-bold text-2xl mb-4">C</div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Start Building Loyalty</h1>
-          <p className="text-slate-600 dark:text-slate-400">14-day free trial. No credit card required.</p>
+          <Image 
+            src="/bookorvia-logo.png" 
+            alt="Bookorvia" 
+            width={56} 
+            height={56} 
+            className="mx-auto h-14 w-14 rounded-2xl mb-4"
+          />
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{t('auth.startBuildingLoyalty')}</h1>
+          <p className="text-slate-600 dark:text-slate-400">{t('auth.freeTrialDescription')}</p>
         </div>
 
         {/* Main Card */}
@@ -67,7 +87,7 @@ export default function RegisterForm() {
             {error && (
               <div className="rounded-2xl bg-gradient-to-r from-red-50 dark:from-red-950/30 to-red-100/50 dark:to-red-900/30 border border-red-200 dark:border-red-800/50 p-4 text-sm text-red-700 dark:text-red-300 font-medium">
                 <div className="flex items-start gap-3">
-                  <span className="text-lg">⚠️</span>
+                  <AlertIcon className="h-5 w-5 flex-shrink-0 mt-0.5" />
                   <div>{error}</div>
                 </div>
               </div>
@@ -75,7 +95,7 @@ export default function RegisterForm() {
             {info && (
               <div className="rounded-2xl bg-gradient-to-r from-emerald-50 dark:from-emerald-950/30 to-emerald-100/50 dark:to-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 p-4 text-sm text-emerald-700 dark:text-emerald-300 font-medium">
                 <div className="flex items-start gap-3">
-                  <span className="text-lg">✓</span>
+                  <CheckIcon className="h-5 w-5 flex-shrink-0 mt-0.5" />
                   <div>{info}</div>
                 </div>
               </div>
@@ -83,7 +103,7 @@ export default function RegisterForm() {
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Email Address</label>
+              <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('auth.emailAddress')}</label>
               <input 
                 required 
                 value={email} 
@@ -96,7 +116,7 @@ export default function RegisterForm() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Password</label>
+              <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('common.password')}</label>
               <input 
                 required 
                 value={password} 
@@ -109,7 +129,7 @@ export default function RegisterForm() {
 
             {/* Confirm Password Field */}
             <div>
-              <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">Confirm Password</label>
+              <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('common.confirmPassword')}</label>
               <input 
                 required 
                 value={confirm} 
@@ -126,7 +146,7 @@ export default function RegisterForm() {
               disabled={loading}
               className="w-full mt-8 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:shadow-2xl hover:-translate-y-1 active:scale-95 disabled:opacity-60 transition-all duration-200"
             >
-              {loading ? "Creating account..." : "Start Free Trial"}
+              {loading ? t('auth.creatingAccount') : t('auth.startFreeTrial')}
             </button>
           </form>
 
@@ -136,7 +156,7 @@ export default function RegisterForm() {
               <div className="w-full border-t border-slate-200 dark:border-slate-700"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white dark:bg-slate-900 px-2 text-slate-600 dark:text-slate-400">Already have an account?</span>
+              <span className="bg-white dark:bg-slate-900 px-2 text-slate-600 dark:text-slate-400">{t('auth.alreadyHaveAccount')}</span>
             </div>
           </div>
 
@@ -145,20 +165,20 @@ export default function RegisterForm() {
             href="/login" 
             className="block w-full px-4 py-3 rounded-xl border-2 border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold text-center hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors"
           >
-            Sign In
+            {t('auth.signIn')}
           </a>
         </div>
 
         {/* Footer */}
         <div className="mt-6 space-y-3">
           <div className="text-center text-xs text-slate-600 dark:text-slate-400">
-            <p>By creating an account, you agree to our <Link href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Terms of Service</Link> and <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Privacy Policy</Link></p>
+            <p>{t('auth.agreeToTermsRegister')}</p>
           </div>
           <div className="flex gap-4 text-xs text-slate-600 dark:text-slate-400 justify-center flex-wrap">
-            <Link href="/cookies" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">Cookies</Link>
-            <Link href="/refund-policy" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">Refund</Link>
-            <Link href="/contact" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">Contact</Link>
-            <Link href="/help" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">Help</Link>
+            <Link href="/cookies" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">{t('public.cookies')}</Link>
+            <Link href="/refund-policy" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">{t('public.refund')}</Link>
+            <Link href="/contact" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">{t('public.contact')}</Link>
+            <Link href="/help" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">{t('public.help')}</Link>
           </div>
         </div>
       </div>

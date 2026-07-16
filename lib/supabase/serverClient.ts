@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies as nextCookies } from "next/headers";
 
 // Export a function that creates a server Supabase client. Accept an optional
@@ -18,3 +19,6 @@ export function createServerSupabase(cookieStore?: any) {
   const supabase = createServerClient(url, key, { cookies: cookiesToUse as any });
   return supabase;
 }
+
+// SECURITY: Duplicate removed. Use createAdminClient from '@/lib/supabase/admin' instead.
+// This prevents accidental imports of the wrong implementation.

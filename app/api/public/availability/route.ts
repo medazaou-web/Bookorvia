@@ -228,13 +228,26 @@ export async function GET(request: NextRequest) {
       .lte('starts_at', dayEnd.toISOString())
       .in('status', ['busy', 'tentative']);
 
-    const blockingEvents = (events || []).filter(e => e.status === 'busy' || e.status === 'tentative');
+    // Also get booking requests that are not refused or completed
+    const { data: bookings = [], error: bookingError } = await supabase
+      .from('booking_requests')
+      .select('starts_at, ends_at, status')
+      .eq('business_id', business.id)
+      .gte('ends_at', dayStart.toISOString())
+      .lte('starts_at', dayEnd.toISOString())
+      .in('status', ['pending', 'accepted']);
+
+    const blockingEvents = [
+      ...(events || []).filter(e => e.status === 'busy' || e.status === 'tentative'),
+      ...(bookings || []).filter(b => b.starts_at && b.ends_at), // Include all non-refused/completed bookings
+    ];
+    
     debugInfo.blockingEventsFound = blockingEvents.length;
     if (blockingEvents.length > 0) {
       debugInfo.blockingEvents = blockingEvents.map(e => ({
         starts_at: e.starts_at,
         ends_at: e.ends_at,
-        status: e.status,
+        status: (e as any).status || 'booking',
       }));
     }
 

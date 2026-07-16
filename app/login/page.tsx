@@ -7,7 +7,7 @@ export default async function Page(props: { searchParams?: Promise<Record<string
   const searchParams = await props.searchParams;
   const next = searchParams?.next || "/dashboard";
   
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerSupabase(cookieStore);
 
   try {

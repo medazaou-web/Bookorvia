@@ -1,9 +1,14 @@
-"use client";
+﻿"use client";
 import { useEffect, useRef, useState } from "react";
 import supabase from "../../lib/supabase/browserClient";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/context/LanguageContext";
+import { useTranslations } from "@/lib/i18n";
+import { SettingsIcon, LogoutIcon, AdminIcon, SupportIcon } from "@/components/icons";
 
 export default function ProfileDropdown() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [open, setOpen] = useState(false);
@@ -129,8 +134,8 @@ export default function ProfileDropdown() {
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
               onClick={() => setOpen(false)}
             >
-              <span>⚙️</span>
-              <span>Profile Settings</span>
+              <SettingsIcon className="h-5 w-5" />
+              <span>{t('common.profileMenuSettings')}</span>
             </a>
 
             <a
@@ -138,8 +143,8 @@ export default function ProfileDropdown() {
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-amber-950/30 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200"
               onClick={() => setOpen(false)}
             >
-              <span>🆘</span>
-              <span>Support & Help</span>
+              <SupportIcon className="h-5 w-5" />
+              <span>{t('common.profileMenuSupport')}</span>
             </a>
 
             {(profile?.role === "admin" || profile?.role === "support" || profile?.role === "support_manager") && (
@@ -148,8 +153,8 @@ export default function ProfileDropdown() {
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
                 onClick={() => setOpen(false)}
               >
-                <span>🛡️</span>
-                <span>Admin Area</span>
+                <AdminIcon className="h-5 w-5" />
+                <span>{t('common.profileMenuAdmin')}</span>
               </a>
             )}
 
@@ -162,8 +167,8 @@ export default function ProfileDropdown() {
               }}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
             >
-              <span>🚪</span>
-              <span>Logout</span>
+              <LogoutIcon className="h-5 w-5" />
+              <span>{t('common.logout')}</span>
             </button>
           </div>
         </div>

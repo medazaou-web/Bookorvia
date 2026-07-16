@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from "../../../lib/context/LanguageContext";
+import { useTranslations } from "../../../lib/i18n";
 
 type ThemeStyles = {
   sectionCard: string;
@@ -22,9 +24,13 @@ type Props = {
   businessId: number | string;
   googleReviewUrl?: string | null;
   themeStyles?: ThemeStyles;
+  preloadedReviews?: any[];
 };
 
-export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles }: Props) {
+export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles, preloadedReviews }: Props) {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
+  
   const defaultTheme: ThemeStyles = {
     sectionCard: "bg-white/60 border-slate-200",
     innerCard: "bg-white border-slate-200",
@@ -84,7 +90,7 @@ export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles
 
   async function handleGoogleClick() {
     if (!googleReviewUrl) {
-      setError("No Google review URL available for this business.");
+      setError(t('booking.noGoogleReviewUrl'));
       return;
     }
     // open link first
@@ -121,7 +127,7 @@ export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles
       };
       const { error: insertErr } = await supabase.from("reviews").insert(payload);
       if (insertErr) throw insertErr;
-      setSuccessMessage("Thank you, your feedback has been sent privately.");
+      setSuccessMessage(t('booking.feedbackSentPrivately'));
       setName("");
       setPhone("");
       setComment("");
@@ -157,28 +163,28 @@ export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles
         })}
       </div>
 
-      {loading && <div className={`mt-3 text-sm ${theme.mutedText}`}>Processing…</div>}
+      {loading && <div className={`mt-3 text-sm ${theme.mutedText}`}>{t('booking.processingFeedback')}</div>}
 
       {rating && rating >= 4 && (
         <div className="mt-3">
-          <div className={`text-sm text-emerald-800`}>Thanks! Would you like to leave a public review on Google?</div>
+          <div className={`text-sm text-emerald-800`}>{t('booking.considerPublicReview')}</div>
           <div className="mt-2 flex gap-2">
-            <button onClick={handleGoogleClick} className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold shadow hover:shadow-lg active:scale-[0.98] focus:ring-2 ring-1 transition-all duration-200 ease-out bg-emerald-600 text-white hover:bg-emerald-700 ring-emerald-200`}>Leave Google Review</button>
-            <button onClick={() => { setRating(null); setReviewId(null); }} className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold hover:active:scale-[0.98] transition-all duration-200 ease-out ${theme.buttonSecondary}`}>Maybe later</button>
+            <button onClick={handleGoogleClick} className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold shadow hover:shadow-lg active:scale-[0.98] focus:ring-2 ring-1 transition-all duration-200 ease-out bg-emerald-600 text-white hover:bg-emerald-700 ring-emerald-200`}>{t('booking.leaveGoogleReview')}</button>
+            <button onClick={() => { setRating(null); setReviewId(null); }} className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold hover:active:scale-[0.98] transition-all duration-200 ease-out ${theme.buttonSecondary}`}>{t('booking.maybeLater')}</button>
           </div>
         </div>
       )}
 
       {rating && rating <= 3 && (
         <div className={`mt-4 rounded-lg border p-3 ${theme.innerCard}`}>
-          <div className={`text-sm ${theme.mutedText}`}>We're sorry to hear that. Please share private feedback so we can improve.</div>
+          <div className={`text-sm ${theme.mutedText}`}>{t('booking.sorryToHear')}</div>
           <form onSubmit={handlePrivateSubmit} className="mt-3 flex flex-col gap-2">
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className={`rounded-lg border p-2 text-sm ${theme.input} focus:border-transparent focus:ring-2 transition-all duration-200 ease-out`} required />
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone" className={`rounded-lg border p-2 text-sm ${theme.input} focus:border-transparent focus:ring-2 transition-all duration-200 ease-out`} required />
-            <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Comment" className={`rounded-lg border p-2 text-sm ${theme.input} focus:border-transparent focus:ring-2 transition-all duration-200 ease-out`} rows={4} required />
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('booking.yourName')} className={`rounded-lg border p-2 text-sm ${theme.input} focus:border-transparent focus:ring-2 transition-all duration-200 ease-out`} required />
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('booking.phoneNumber')} className={`rounded-lg border p-2 text-sm ${theme.input} focus:border-transparent focus:ring-2 transition-all duration-200 ease-out`} required />
+            <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder={t('booking.comment')} className={`rounded-lg border p-2 text-sm ${theme.input} focus:border-transparent focus:ring-2 transition-all duration-200 ease-out`} rows={4} required />
             <div className="flex gap-2">
-              <button type="submit" disabled={privateLoading} className={`rounded-lg px-3 py-2 text-sm font-semibold shadow-md active:scale-[0.98] disabled:opacity-60 transition-all duration-200 ease-out ${theme.buttonPrimary}`}>Send feedback</button>
-              <button type="button" onClick={() => { setRating(null); setName(""); setPhone(""); setComment(""); }} className={`rounded-lg border px-3 py-2 text-sm active:scale-[0.98] transition-all duration-200 ease-out ${theme.buttonSecondary}`}>Cancel</button>
+              <button type="submit" disabled={privateLoading} className={`rounded-lg px-3 py-2 text-sm font-semibold shadow-md active:scale-[0.98] disabled:opacity-60 transition-all duration-200 ease-out ${theme.buttonPrimary}`}>{t('booking.sendFeedback')}</button>
+              <button type="button" onClick={() => { setRating(null); setName(""); setPhone(""); setComment(""); }} className={`rounded-lg border px-3 py-2 text-sm active:scale-[0.98] transition-all duration-200 ease-out ${theme.buttonSecondary}`}>{t('common.cancel')}</button>
             </div>
           </form>
         </div>

@@ -2,8 +2,12 @@
 import { useEffect, useState, useRef } from "react";
 import supabase from "../../../lib/supabase/browserClient";
 import { useRouter } from "next/navigation";
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
 
 export default function ProfilePage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -55,7 +59,7 @@ export default function ProfilePage() {
       }
     } catch (e: any) {
       console.error("Failed to load profile:", e);
-      setMessage({ type: "error", text: "Failed to load profile" });
+      setMessage({ type: "error", text: t('errors.failedToLoadProfile') });
     } finally {
       setLoading(false);
     }
@@ -67,13 +71,13 @@ export default function ProfilePage() {
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      setMessage({ type: "error", text: "File size must be less than 5MB" });
+      setMessage({ type: "error", text: t('errors.fileTooLarge') });
       return;
     }
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      setMessage({ type: "error", text: "File must be an image" });
+      setMessage({ type: "error", text: t('errors.mustBeImage') });
       return;
     }
 
@@ -146,7 +150,7 @@ export default function ProfilePage() {
 
       setAvatarUrl(newAvatarUrl);
       setAvatarFile(null);
-      setMessage({ type: "success", text: "Profile updated successfully!" });
+      setMessage({ type: "success", text: t('dashboardUI.profile.profileUpdated') });
 
       // Reload profile
       setTimeout(() => {
@@ -168,7 +172,7 @@ export default function ProfilePage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="inline-block w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-          <p className="text-slate-600">Loading profile...</p>
+          <p className="text-slate-600">{t('dashboardUI.profile.loadingProfile')}</p>
         </div>
       </div>
     );
@@ -177,8 +181,8 @@ export default function ProfilePage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Profile Settings</h1>
-        <p className="text-slate-600">Manage your account information and profile picture</p>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('dashboardUI.profile.profileSettings')}</h1>
+        <p className="text-slate-600">{t('dashboardUI.profile.manageAccountInfo')}</p>
       </div>
 
       {/* Messages */}
@@ -200,7 +204,7 @@ export default function ProfilePage() {
           {/* Avatar Section */}
           <div>
             <label className="block text-sm font-bold text-slate-900 mb-4">
-              Profile Picture
+              {t('dashboardUI.profile.profilePicture')}
             </label>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
@@ -240,11 +244,11 @@ export default function ProfilePage() {
                   onClick={() => fileInputRef.current?.click()}
                   className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 active:scale-[0.98] transition-all duration-200"
                 >
-                  Upload Photo
+                  {t('dashboardUI.profile.uploadPhoto')}
                 </button>
 
                 <p className="text-xs text-slate-600 mt-2">
-                  JPG, PNG or GIF (max. 5MB)
+                  {t('dashboardUI.profile.pictureRequirements')}
                 </p>
 
                 {avatarFile && (
@@ -261,31 +265,31 @@ export default function ProfilePage() {
 
           {/* Full Name */}
           <div>
-            <label className="block text-sm font-bold text-slate-900 mb-2">
-              Full Name
+            <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+              {t('common.name')}
             </label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-white/50 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+              placeholder={t('dashboardUI.profile.enterFullName')}
+              className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
             />
           </div>
 
           {/* Email (Read-only) */}
           <div>
-            <label className="block text-sm font-bold text-slate-900 mb-2">
-              Email Address
+            <label className="block text-sm font-bold text-slate-900 dark:text-white mb-2">
+              {t('common.email')}
             </label>
             <input
               type="email"
               value={email}
               disabled
-              className="w-full px-4 py-3 rounded-xl border border-slate-200/60 bg-slate-50 text-slate-600 cursor-not-allowed"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200/60 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 cursor-not-allowed"
             />
-            <p className="text-xs text-slate-600 mt-2">
-              Contact support to change your email
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+              {t('dashboardUI.profile.emailChangeHint')}
             </p>
           </div>
 
@@ -299,10 +303,10 @@ export default function ProfilePage() {
               {saving ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Saving...
+                  {t('common.saving')}
                 </>
               ) : (
-                <>✓ Save Changes</>
+                <>✓ {t('dashboardUI.profile.saveChanges')}</>
               )}
             </button>
           </div>

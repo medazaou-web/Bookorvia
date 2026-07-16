@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import supabase from "../../../lib/supabase/browserClient";
+import { useTranslations } from "@/lib/i18n";
 
 type Service = {
   id: string;
@@ -10,6 +12,7 @@ type Service = {
   currency?: string | null;
   duration_minutes?: number | null;
   is_active?: boolean;
+  background_image_url?: string | null;
 };
 
 type AvailableSlot = {
@@ -34,7 +37,11 @@ type ThemeStyles = {
   progressBar: string;
 };
 
-export default function BookingForm({ businessId, services, businessSlug, themeStyles }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles }) {
+export default function BookingForm({ businessId, services, businessSlug, themeStyles, language = 'en' }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles; language?: string }) {
+  const searchParams = useSearchParams();
+  const preSelectedServiceId = searchParams.get("service");
+  const t = useTranslations(language as any);
+
   const defaultTheme: ThemeStyles = {
     sectionCard: "bg-white/60 border-slate-200",
     innerCard: "bg-white border-slate-200",
@@ -54,8 +61,10 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
   const theme = themeStyles || defaultTheme;
   const [client_name, setClientName] = useState("");
   const [client_phone, setClientPhone] = useState("");
-  const [selectedServiceId, setSelectedServiceId] = useState("");
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [client_email, setClientEmail] = useState("");
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>(() => {
+    return preSelectedServiceId ? [preSelectedServiceId] : [];
+  });
   const [requested_date, setRequestedDate] = useState("");
   const [requestedTime, setRequestedTime] = useState("");
   const [message, setMessage] = useState("");
@@ -66,33 +75,29 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Get selected services
+  const selectedServices = selectedServiceIds
+    .map(id => services?.find(s => s.id === id))
+    .filter((s): s is Service => !!s);
+
   // Load available slots when service and date change
   useEffect(() => {
-    if (selectedServiceId && requested_date && businessSlug) {
-      loadAvailableSlots();
+    if (selectedServiceIds.length > 0 && requested_date && businessSlug) {
+      // Use the first selected service for time slot availability
+      const firstServiceId = selectedServiceIds[0];
+      loadAvailableSlots(firstServiceId);
     } else {
       setAvailableSlots([]);
     }
-  }, [selectedServiceId, requested_date, businessSlug]);
+  }, [selectedServiceIds, requested_date, businessSlug]);
 
-  // Update selected service when service ID changes
-  useEffect(() => {
-    if (selectedServiceId && services) {
-      const svc = services.find((s) => s.id === selectedServiceId);
-      setSelectedService(svc || null);
-      console.log("Selected service ID:", selectedServiceId);
-    } else {
-      setSelectedService(null);
-    }
-  }, [selectedServiceId, services]);
-
-  async function loadAvailableSlots() {
+  async function loadAvailableSlots(serviceId: string) {
     setLoadingSlots(true);
     setAvailableSlots([]);
     setRequestedTime("");
 
     try {
-      const url = `/api/public/availability?slug=${businessSlug}&serviceId=${selectedServiceId}&date=${requested_date}`;
+      const url = `/api/public/availability?slug=${businessSlug}&serviceId=${serviceId}&date=${requested_date}`;
       console.log("Fetching availability from:", url);
       
       const response = await fetch(url);
@@ -100,12 +105,10 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       console.log("Availability response:", data);
 
-      // API returns 'slots' key
       if (data.slots && Array.isArray(data.slots)) {
         console.log("Found slots:", data.slots.length);
         setAvailableSlots(data.slots);
       } else if (data.availableSlots && Array.isArray(data.availableSlots)) {
-        // Fallback for older API response format
         console.log("Found availableSlots (legacy):", data.availableSlots.length);
         setAvailableSlots(data.availableSlots);
       } else {
@@ -119,6 +122,16 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
     }
   }
 
+  function toggleService(serviceId: string) {
+    setSelectedServiceIds(prev => {
+      if (prev.includes(serviceId)) {
+        return prev.filter(id => id !== serviceId);
+      } else {
+        return [...prev, serviceId];
+      }
+    });
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -126,31 +139,48 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
     setLoading(true);
 
     try {
-      if (!selectedService) {
-        throw new Error("Please select a service");
+      if (selectedServices.length === 0) {
+        throw new Error("Please select at least one service");
       }
 
       if (!requestedTime) {
         throw new Error("Please select a time slot");
       }
 
-      // Find the selected slot to get starts_at and ends_at
+      // Find the selected slot to get starts_at
       const selectedSlot = availableSlots.find((slot) => slot.label === requestedTime);
       if (!selectedSlot) {
         throw new Error("Invalid time slot selected");
       }
 
+      // Calculate combined duration and end time
+      const totalDurationMinutes = selectedServices.reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
+      const startDate = new Date(selectedSlot.starts_at);
+      const endDate = new Date(startDate.getTime() + totalDurationMinutes * 60000);
+      
+      // Create service list and names
+      const serviceNames = selectedServices.map(s => s.name).join(", ");
+      const servicesJson = JSON.stringify(selectedServices.map(s => ({
+        id: s.id,
+        name: s.name,
+        duration_minutes: s.duration_minutes,
+        price: s.price,
+      })));
+
+      // Create ONE booking with all services
       const payload = {
         business_id: businessId,
-        service_id: selectedService.id,
+        service_id: selectedServices[0].id, // Primary service (for filtering)
         client_name,
         client_phone,
-        service: selectedService.name,
+        client_email,
+        service: serviceNames, // All services comma-separated
+        services_json: servicesJson, // JSON for parsing
         requested_date,
         requested_time: requestedTime,
-        duration_minutes: selectedService.duration_minutes || 0,
+        duration_minutes: totalDurationMinutes, // Combined duration
         starts_at: selectedSlot.starts_at,
-        ends_at: selectedSlot.ends_at,
+        ends_at: endDate.toISOString(), // Updated end time based on combined duration
         message,
         status: "pending",
       };
@@ -165,16 +195,114 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
         throw insertErr;
       }
 
-      setSuccess("Your request has been sent! The business will confirm shortly.");
-      // clear form
-      setClientName("");
-      setClientPhone("");
-      setSelectedServiceId("");
-      setSelectedService(null);
-      setRequestedDate("");
-      setRequestedTime("");
-      setMessage("");
-      setAvailableSlots([]);
+      // Get business owner email using server-side endpoint (bypasses RLS)
+      console.log("📧 Fetching business owner email for:", businessId);
+      let businessOwnerEmail: string | null = null;
+      try {
+        const emailRes = await fetch(`/api/get-business-owner-email?businessId=${businessId}`);
+        const emailData = await emailRes.json();
+        businessOwnerEmail = emailData?.email || null;
+        console.log("📧 Business owner email:", businessOwnerEmail ? "✓ Found" : "✗ Not found");
+      } catch (emailErr) {
+        console.error("❌ Failed to fetch business owner email:", emailErr);
+      }
+
+      // Get business data for email
+      const { data: businessData } = await supabase
+        .from('businesses')
+        .select('name')
+        .eq('id', businessId)
+        .single();
+
+      // Create in-app notification for business owner
+      console.log("📬 Creating notification for business:", businessId);
+      const notificationRes = await fetch("/api/notifications/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessId,
+          type: "booking",
+          title: "New Booking Received! 📅",
+          message: `${client_name} booked ${serviceNames} for ${requested_date} at ${requestedTime}`,
+          data: {
+            bookingId: data?.id,
+            clientName: client_name,
+            services: serviceNames,
+            date: requested_date,
+            time: requestedTime,
+          },
+        }),
+      });
+      const notificationData = await notificationRes.json();
+      console.log("📬 Notification creation response:", { status: notificationRes.status, data: notificationData });
+
+      // Send email notification to business owner
+      if (businessOwnerEmail) {
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(to right, #4f46e5, #2563eb); color: white; padding: 24px; border-radius: 12px 12px 0 0;">
+              <h1 style="margin: 0; font-size: 24px;">📅 New Booking Received!</h1>
+            </div>
+            <div style="background: #f8f9fa; padding: 24px; border-radius: 0 0 12px 12px;">
+              <p style="margin: 0 0 16px 0; font-size: 16px;">
+                You have received a new booking request:
+              </p>
+              
+              <div style="background: white; padding: 16px; border-left: 4px solid #4f46e5; margin: 16px 0; border-radius: 4px;">
+                <p style="margin: 8px 0;"><strong>Client Name:</strong> ${client_name}</p>
+                <p style="margin: 8px 0;"><strong>Phone:</strong> ${client_phone}</p>
+                <p style="margin: 8px 0;"><strong>Email:</strong> ${client_email}</p>
+                <p style="margin: 8px 0;"><strong>Service(s):</strong> ${serviceNames}</p>
+                <p style="margin: 8px 0;"><strong>Date:</strong> ${requested_date}</p>
+                <p style="margin: 8px 0;"><strong>Time:</strong> ${requestedTime}</p>
+                <p style="margin: 8px 0;"><strong>Duration:</strong> ${totalDurationMinutes < 60 ? `${totalDurationMinutes} min` : `${Math.floor(totalDurationMinutes / 60)}h ${totalDurationMinutes % 60}m`}</p>
+                ${message ? `<p style="margin: 8px 0;"><strong>Message:</strong> ${message}</p>` : ''}
+              </div>
+
+              <p style="margin: 16px 0; text-align: center;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/bookings" style="display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                  View in Dashboard
+                </a>
+              </p>
+
+              <p style="margin: 16px 0 0 0; font-size: 12px; color: #666; text-align: center;">
+                You can manage this booking from your dashboard.
+              </p>
+            </div>
+          </div>
+        `;
+
+        await fetch("/api/send-notification-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            businessOwnerEmail,
+            businessName: businessData?.name,
+            type: "booking",
+            subject: `New Booking: ${client_name} - ${requested_date} at ${requestedTime}`,
+            html: emailHtml,
+          }),
+        }).catch(err => console.error("Failed to send email notification:", err));
+      }
+
+
+      setSuccess(`✅ Your booking has been confirmed! Opening booking status in a new tab...`);
+      
+      // Open booking status page in new tab
+      window.open(`/booking-status/${data?.id}`, '_blank');
+      
+      // Clear form after a short delay so success message is visible
+      setTimeout(() => {
+        setClientName("");
+        setClientPhone("");
+        setClientEmail("");
+        setSelectedServiceIds([]);
+        setRequestedDate("");
+        setRequestedTime("");
+        setMessage("");
+        setAvailableSlots([]);
+        setSuccess(null);
+      }, 2000);
     } catch (err: any) {
       setError(err?.message || String(err));
     } finally {
@@ -189,7 +317,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Name */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>Your Name</label>
+        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.yourName')}</label>
         <input
           value={client_name}
           onChange={(e) => setClientName(e.target.value)}
@@ -201,7 +329,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Phone */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>Phone / WhatsApp</label>
+        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.phoneWhatsapp')}</label>
         <input
           value={client_phone}
           onChange={(e) => setClientPhone(e.target.value)}
@@ -211,60 +339,121 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
         />
       </div>
 
-      {/* Service Selection */}
+      {/* Email */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>Service</label>
+        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.emailUpdates')}</label>
+        <input
+          value={client_email}
+          onChange={(e) => setClientEmail(e.target.value)}
+          type="email"
+          className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+          placeholder="you@example.com"
+          required
+        />
+      </div>
+
+      {/* Service Selection - Multi-select Grid */}
+      <div>
+        <label className={`block text-sm font-medium ${theme.label} mb-3`}>{t('booking.selectServices')}</label>
         {services && services.length > 0 ? (
-          <select
-            value={selectedServiceId}
-            onChange={(e) => setSelectedServiceId(e.target.value)}
-            className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all appearance-none`}
-            required
-          >
-            <option value="">Select a service...</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-                {s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}
-                {s.price ? ` — ${s.price} ${s.currency || 'MAD'}` : ''}
-              </option>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {services.map((service) => (
+              <button
+                key={service.id}
+                type="button"
+                onClick={() => toggleService(service.id)}
+                className={`relative rounded-lg border-2 transition-all text-left overflow-hidden ${
+                  selectedServiceIds.includes(service.id)
+                    ? `border-indigo-600 dark:border-indigo-400 shadow-lg`
+                    : `border-slate-300 dark:border-slate-600 hover:shadow-md`
+                }`}
+              >
+                {/* Background Image */}
+                {service.background_image_url && (
+                  <div className="absolute inset-0">
+                    <img
+                      src={service.background_image_url}
+                      alt={service.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Strong gradient overlay for text readability */}
+                    <div className={`absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80 ${
+                      selectedServiceIds.includes(service.id) ? 'via-indigo-600/50 to-indigo-900/80' : ''
+                    }`}></div>
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className={`relative p-4 ${service.background_image_url ? 'min-h-32' : ''}`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+                      selectedServiceIds.includes(service.id)
+                        ? 'bg-indigo-600 dark:bg-indigo-500 border-indigo-600 dark:border-indigo-500'
+                        : 'border-slate-400 dark:border-slate-500'
+                    } ${service.background_image_url ? 'bg-white/20 backdrop-blur border-white/40' : ''}`}>
+                      {selectedServiceIds.includes(service.id) && (
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className={`font-semibold ${
+                        service.background_image_url 
+                          ? 'text-white'
+                          : selectedServiceIds.includes(service.id) ? 'text-white' : theme.label
+                      }`}
+                      style={service.background_image_url ? {textShadow: "0 2px 6px rgba(0,0,0,0.5)"} : {}}>
+                        {service.name}
+                      </div>
+                      <div className={`text-sm ${
+                        service.background_image_url 
+                          ? 'text-white/90'
+                          : selectedServiceIds.includes(service.id) ? 'text-white/80' : theme.mutedText
+                      }`}
+                      style={service.background_image_url ? {textShadow: "0 1px 4px rgba(0,0,0,0.5)"} : {}}>
+                        {service.duration_minutes && `${service.duration_minutes} min`}
+                        {service.duration_minutes && service.price && ' • '}
+                        {service.price && `${service.price} ${service.currency || 'MAD'}`}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
             ))}
-          </select>
+          </div>
         ) : (
-          <input
-            value={selectedService?.name || ''}
-            disabled
-            className={`w-full px-4 py-2 rounded-lg border ${theme.input} opacity-50`}
-            placeholder="No services available"
-          />
+          <div className={`p-4 rounded-lg text-center ${theme.emptyState}`}>
+            {t('booking.noServicesAvailable')}
+          </div>
         )}
-        {selectedService && !selectedService.duration_minutes && (
-          <p className={`mt-2 text-sm ${theme.mutedText} ${theme.emptyState} px-3 py-2 rounded-lg`}>
-            This service doesn't have a duration set, so automatic availability isn't available. Please contact the business.
+        {selectedServices.length > 0 && selectedServices.some(s => !s.duration_minutes) && (
+          <p className={`mt-3 text-sm ${theme.mutedText} ${theme.emptyState} px-3 py-2 rounded-lg`}>
+            {t('booking.someServicesNoDuration')}
           </p>
         )}
       </div>
 
       {/* Date Selection */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>Preferred Date</label>
+        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.preferredDate')}</label>
         <input
           value={requested_date}
           onChange={(e) => setRequestedDate(e.target.value)}
           type="date"
           className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
           min={new Date().toISOString().split('T')[0]}
-          required={!!selectedService?.duration_minutes}
-          disabled={!selectedService?.duration_minutes}
+          required={selectedServices.some(s => s.duration_minutes)}
+          disabled={selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes)}
         />
       </div>
 
       {/* Time Slots */}
-      {selectedService?.duration_minutes && requested_date && (
+      {selectedServices.some(s => s.duration_minutes) && requested_date && (
         <div>
-          <label className={`block text-sm font-medium ${theme.label} mb-3`}>Available Times</label>
+          <label className={`block text-sm font-medium ${theme.label} mb-3`}>{t('booking.availableTimes')}</label>
           {loadingSlots ? (
-            <div className={`text-center py-6 ${theme.mutedText}`}>Loading available times...</div>
+            <div className={`text-center py-6 ${theme.mutedText}`}>{t('booking.loadingTimes')}</div>
           ) : availableSlots.length > 0 ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
               {availableSlots.map((slot) => (
@@ -284,7 +473,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
             </div>
           ) : (
             <div className={`text-center py-6 ${theme.emptyState} rounded-lg`}>
-              No available times on this date. Try another day.
+              {t('booking.noAvailableTimes')}
             </div>
           )}
         </div>
@@ -292,13 +481,13 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Message */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>Message (optional)</label>
+        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.messageOptional')}</label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
           rows={3}
-          placeholder="Any special requests or details..."
+          placeholder={t('booking.specialRequests')}
         />
       </div>
 
@@ -306,10 +495,10 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={loading || !selectedService?.duration_minutes || !requestedTime}
+          disabled={loading || selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes) || !requestedTime}
           className={`px-6 py-3 rounded-lg ${theme.buttonPrimary} shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
         >
-          {loading ? 'Booking...' : 'Book Now'}
+          {loading ? t('booking.booking') : t('booking.bookNow')}
         </button>
       </div>
     </form>

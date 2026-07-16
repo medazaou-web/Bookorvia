@@ -1,7 +1,12 @@
+"use client";
 import PublicHeader from "../../components/public/PublicHeader";
 import PublicFooter from "../../components/public/PublicFooter";
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
 
 export default function CookiesPage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col">
       <PublicHeader />
@@ -9,8 +14,8 @@ export default function CookiesPage() {
       <main className="flex-1">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="rounded-3xl bg-white/80 backdrop-blur border border-white/60 shadow-xl p-8 sm:p-12">
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4">Cookie Policy</h1>
-            <p className="text-slate-600 mb-8">Last updated: June 2026</p>
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t('public.cookiePolicy')}</h1>
+            <p className="text-slate-600 mb-8">{t('dashboard.lastUpdatedJune2026')}</p>
 
             <div className="prose prose-slate max-w-none space-y-8">
               <section>

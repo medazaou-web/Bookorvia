@@ -2,6 +2,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
+import { MessageIcon } from "@/components/icons";
 
 interface SupportTicket {
   id: string;
@@ -24,6 +27,8 @@ interface SupportMessage {
 }
 
 export default function SupportPage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
@@ -136,7 +141,7 @@ export default function SupportPage() {
 
   async function handleCreateTicket() {
     if (!newTicketData.subject.trim() || !newTicketData.message.trim()) {
-      setError("Subject and message are required");
+      setError(t('support.subjectRequired'));
       return;
     }
 
@@ -188,7 +193,7 @@ export default function SupportPage() {
     if (!newMessage.trim() || !selectedTicket) return;
 
     if (selectedTicket.status === "closed") {
-      setError("This ticket is closed. You cannot reply to closed tickets.");
+      setError(t('support.ticketClosedError'));
       return;
     }
 
@@ -272,52 +277,52 @@ export default function SupportPage() {
     <div className="grid md:grid-cols-3 gap-6 h-[calc(100vh-200px)] max-h-[calc(100vh-200px)] overflow-hidden">
 
       {/* Tickets List Sidebar */}
-      <div className="md:col-span-1 flex flex-col bg-white/60 backdrop-blur rounded-2xl border border-white/60 overflow-hidden">
-        <div className="p-4 border-b border-white/40">
+      <div className="md:col-span-1 flex flex-col bg-white/60 dark:bg-slate-900/40 backdrop-blur rounded-2xl border border-white/60 dark:border-white/10 overflow-hidden">
+        <div className="p-4 border-b border-white/40 dark:border-white/10">
           <button
             onClick={() => setShowNewTicketForm(!showNewTicketForm)}
             className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold hover:shadow-lg transition-all active:scale-95"
           >
-            + New Ticket
+            {t('support.newTicket')}
           </button>
         </div>
 
         {/* New Ticket Form */}
         {showNewTicketForm && (
-          <div className="p-4 border-b border-white/40 bg-indigo-50/50 space-y-3">
+          <div className="p-4 border-b border-white/40 dark:border-white/10 bg-indigo-50/50 dark:bg-indigo-950/20 space-y-3">
             <input
               type="text"
-              placeholder="Subject"
+              placeholder={t('support.subjectPlaceholder')}
               value={newTicketData.subject}
               onChange={(e) => setNewTicketData({ ...newTicketData, subject: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             <select
               value={newTicketData.category}
               onChange={(e) => setNewTicketData({ ...newTicketData, category: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="general">General</option>
-              <option value="billing">Billing</option>
-              <option value="technical">Technical</option>
-              <option value="account">Account</option>
-              <option value="feature_request">Feature Request</option>
+              <option value="general">{t('support.categoryGeneral')}</option>
+              <option value="billing">{t('support.categoryBilling')}</option>
+              <option value="technical">{t('support.categoryTechnical')}</option>
+              <option value="account">{t('support.categoryAccount')}</option>
+              <option value="feature_request">{t('support.categoryFeatureRequest')}</option>
             </select>
             <select
               value={newTicketData.priority}
               onChange={(e) => setNewTicketData({ ...newTicketData, priority: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="low">Low Priority</option>
-              <option value="normal">Normal</option>
-              <option value="high">High</option>
-              <option value="urgent">Urgent</option>
+              <option value="low">{t('support.priorityLow')}</option>
+              <option value="normal">{t('support.priorityNormal')}</option>
+              <option value="high">{t('support.priorityHigh')}</option>
+              <option value="urgent">{t('support.priorityUrgent')}</option>
             </select>
             <textarea
-              placeholder="Describe your issue..."
+              placeholder={t('support.messagePlaceholder')}
               value={newTicketData.message}
               onChange={(e) => setNewTicketData({ ...newTicketData, message: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none h-20"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none h-20"
             />
             <div className="flex gap-2">
               <button
@@ -325,20 +330,20 @@ export default function SupportPage() {
                 disabled={creatingTicket}
                 className="flex-1 px-3 py-2 rounded-lg bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 disabled:opacity-50 transition-all"
               >
-                {creatingTicket ? "Creating..." : "Create"}
+                {creatingTicket ? t('support.creating') : t('support.createButton')}
               </button>
               <button
                 onClick={() => setShowNewTicketForm(false)}
                 className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-all"
               >
-                Cancel
+                {t('support.cancelButton')}
               </button>
             </div>
           </div>
         )}
 
         {/* Status Filter */}
-        <div className="p-3 border-b border-white/40 flex gap-1 overflow-x-auto">
+        <div className="p-3 border-b border-white/40 dark:border-white/10 flex gap-1 overflow-x-auto">
           {["all", "open", "in_progress", "resolved", "closed"].map((status) => (
             <button
               key={status}
@@ -346,10 +351,10 @@ export default function SupportPage() {
               className={`px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                 statusFilter === status
                   ? "bg-indigo-600 text-white"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
-              {status === "all" ? "All" : status === "in_progress" ? "In Progress" : status.charAt(0).toUpperCase() + status.slice(1)}
+              {status === "all" ? t('support.filterAll') : status === "in_progress" ? t('support.filterInProgress') : status === "open" ? t('support.filterOpen') : status === "resolved" ? t('support.filterResolved') : t('support.filterClosed')}
             </button>
           ))}
         </div>
@@ -360,13 +365,13 @@ export default function SupportPage() {
             <div className="p-4 text-center text-slate-600 text-sm">
               <div className="inline-flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full border-2 border-slate-300 border-t-indigo-600 animate-spin"></div>
-                Loading...
+                {t('support.loading')}
               </div>
             </div>
           ) : filteredTickets.length === 0 ? (
             <div className="p-4 text-center text-slate-600 text-sm">
               <div className="text-3xl mb-2">📭</div>
-              No tickets yet
+              {t('support.noTickets')}
             </div>
           ) : (
             <div className="flex flex-col h-full">
@@ -377,20 +382,20 @@ export default function SupportPage() {
                     onClick={() => setSelectedTicket(ticket)}
                     className={`w-full text-left p-3 rounded-lg transition-all ${
                       selectedTicket?.id === ticket.id
-                        ? "bg-indigo-100 border border-indigo-300"
-                        : "bg-white/50 hover:bg-white/80 border border-white/40"
+                        ? "bg-indigo-100 dark:bg-indigo-950/40 border border-indigo-300 dark:border-indigo-600"
+                        : "bg-white/50 dark:bg-slate-800/30 hover:bg-white/80 dark:hover:bg-slate-800/50 border border-white/40 dark:border-white/10"
                     }`}
                   >
-                    <h4 className="font-bold text-sm text-slate-900 truncate">{ticket.subject}</h4>
-                    <p className="text-xs text-slate-600 mt-1">
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{ticket.subject}</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                       {new Date(ticket.last_message_at || ticket.created_at).toLocaleDateString()}
                     </p>
                     <div className="flex gap-1 mt-2 flex-wrap">
                       <span className={`text-xs font-bold px-2 py-0.5 rounded ${getStatusColor(ticket.status)}`}>
-                        {ticket.status === "in_progress" ? "In Progress" : ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
+                        {ticket.status === "in_progress" ? t('support.filterInProgress') : ticket.status === "open" ? t('support.filterOpen') : ticket.status === "resolved" ? t('support.filterResolved') : ticket.status === "closed" ? t('support.filterClosed') : ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
                       </span>
                       <span className={`text-xs font-bold px-2 py-0.5 rounded ${getPriorityColor(ticket.priority)}`}>
-                        {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
+                        {ticket.priority === "low" ? t('support.priorityLow') : ticket.priority === "normal" ? t('support.priorityNormal') : ticket.priority === "high" ? t('support.priorityHigh') : ticket.priority === "urgent" ? t('support.priorityUrgent') : ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
                       </span>
                     </div>
                   </button>
@@ -399,14 +404,14 @@ export default function SupportPage() {
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="border-t border-white/40 p-3 bg-white/30">
+                <div className="border-t border-white/40 dark:border-white/10 p-3 bg-white/30 dark:bg-slate-800/20">
                   <div className="flex items-center justify-center gap-1 flex-wrap">
                     <button
                       onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                       disabled={currentPage === 1}
-                      className="px-2 py-1 rounded text-xs border border-slate-300 bg-white text-slate-700 font-semibold hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      className="px-2 py-1 rounded text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
-                      ← Prev
+                      {t('support.prevButton')}
                     </button>
                     
                     <div className="flex gap-0.5">
@@ -417,7 +422,7 @@ export default function SupportPage() {
                           className={`w-6 h-6 rounded text-xs font-semibold transition-all ${
                             currentPage === page
                               ? 'bg-indigo-600 text-white'
-                              : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+                              : 'border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                           }`}
                         >
                           {page}
@@ -428,9 +433,9 @@ export default function SupportPage() {
                     <button
                       onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
-                      className="px-2 py-1 rounded text-xs border border-slate-300 bg-white text-slate-700 font-semibold hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      className="px-2 py-1 rounded text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
-                      Next →
+                      {t('support.nextButton')}
                     </button>
                   </div>
                 </div>
@@ -441,38 +446,38 @@ export default function SupportPage() {
       </div>
 
       {/* Chat Area */}
-      <div className="md:col-span-2 flex flex-col bg-white/60 backdrop-blur rounded-2xl border border-white/60 overflow-hidden">
+      <div className="md:col-span-2 flex flex-col bg-white/60 dark:bg-slate-900/40 backdrop-blur rounded-2xl border border-white/60 dark:border-white/10 overflow-hidden">
         {selectedTicket ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 border-b border-white/40 bg-white/50">
-              <h2 className="font-bold text-lg text-slate-900">{selectedTicket.subject}</h2>
+            <div className="p-4 border-b border-white/40 dark:border-white/10 bg-white/50 dark:bg-slate-800/30">
+              <h2 className="font-bold text-lg text-slate-900 dark:text-slate-100">{selectedTicket.subject}</h2>
               <div className="flex gap-2 mt-2 flex-wrap">
                 <span className={`text-xs font-bold px-2 py-0.5 rounded ${getStatusColor(selectedTicket.status)}`}>
-                  {selectedTicket.status === "in_progress" ? "In Progress" : selectedTicket.status.charAt(0).toUpperCase() + selectedTicket.status.slice(1)}
+                  {selectedTicket.status === "in_progress" ? t('support.filterInProgress') : selectedTicket.status === "open" ? t('support.filterOpen') : selectedTicket.status === "resolved" ? t('support.filterResolved') : selectedTicket.status === "closed" ? t('support.filterClosed') : selectedTicket.status.charAt(0).toUpperCase() + selectedTicket.status.slice(1)}
                 </span>
                 <span className={`text-xs font-bold px-2 py-0.5 rounded ${getPriorityColor(selectedTicket.priority)}`}>
-                  {selectedTicket.priority.charAt(0).toUpperCase() + selectedTicket.priority.slice(1)}
+                  {selectedTicket.priority === "low" ? t('support.priorityLow') : selectedTicket.priority === "normal" ? t('support.priorityNormal') : selectedTicket.priority === "high" ? t('support.priorityHigh') : selectedTicket.priority === "urgent" ? t('support.priorityUrgent') : selectedTicket.priority.charAt(0).toUpperCase() + selectedTicket.priority.slice(1)}
                 </span>
-                <span className="text-xs text-slate-600">
-                  {selectedTicket.category.charAt(0).toUpperCase() + selectedTicket.category.slice(1)}
+                <span className="text-xs text-slate-600 dark:text-slate-400">
+                  {selectedTicket.category === "general" ? t('support.categoryGeneral') : selectedTicket.category === "billing" ? t('support.categoryBilling') : selectedTicket.category === "technical" ? t('support.categoryTechnical') : selectedTicket.category === "account" ? t('support.categoryAccount') : selectedTicket.category === "feature_request" ? t('support.categoryFeatureRequest') : selectedTicket.category.charAt(0).toUpperCase() + selectedTicket.category.slice(1)}
                 </span>
               </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white/30 to-white/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-white/30 dark:from-slate-800/10 to-white/50 dark:to-slate-800/20">
               {messageLoading && messages.length === 0 ? (
                 <div className="text-center text-slate-600 text-sm py-8">
                   <div className="inline-flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border-2 border-slate-300 border-t-indigo-600 animate-spin"></div>
-                    Loading messages...
+                    {t('support.loadingMessages')}
                   </div>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="text-center text-slate-600 text-sm py-8">
-                  <div className="text-3xl mb-2">💬</div>
-                  No messages yet
+                  <MessageIcon className="h-8 w-8 mx-auto mb-2 opacity-40" />
+                  {t('support.noMessages')}
                 </div>
               ) : (
                 messages.map((msg) => (
@@ -489,7 +494,7 @@ export default function SupportPage() {
                     >
                       {msg.sender_role !== "user" && (
                         <p className="text-xs font-bold mb-1 opacity-70">
-                          {msg.sender_role.charAt(0).toUpperCase() + msg.sender_role.slice(1)}
+                          {msg.sender_role === "agent" ? t('support.agent') : msg.sender_role === "user" ? t('support.user') : msg.sender_role.charAt(0).toUpperCase() + msg.sender_role.slice(1)}
                         </p>
                       )}
                       <p className="text-sm break-words">{msg.message}</p>
@@ -508,31 +513,31 @@ export default function SupportPage() {
 
             {/* Closed Message */}
             {selectedTicket.status === "closed" && (
-              <div className="p-4 bg-slate-100 border-t border-white/40">
-                <p className="text-sm text-slate-700 text-center">
-                  ✓ This ticket is closed. You cannot reply to closed tickets.
+              <div className="p-4 bg-slate-100 dark:bg-slate-800/50 border-t border-white/40 dark:border-white/10">
+                <p className="text-sm text-slate-700 dark:text-slate-300 text-center">
+                  {t('support.ticketClosed')}
                 </p>
                 <button
                   onClick={() => setShowNewTicketForm(true)}
                   className="mt-3 w-full px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 transition-all"
                 >
-                  Create a new ticket
+                  {t('support.createNewTicket')}
                 </button>
               </div>
             )}
 
             {/* Message Input */}
             {selectedTicket.status !== "closed" && (
-              <div className="p-4 border-t border-white/40 bg-white/50">
+              <div className="p-4 border-t border-white/40 dark:border-white/10 bg-white/50 dark:bg-slate-800/30">
                 {error && (
-                  <div className="mb-3 p-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                  <div className="mb-3 p-2 rounded-lg bg-red-50 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 text-red-700 dark:text-red-300 text-sm">
                     {error}
                   </div>
                 )}
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Type your reply..."
+                    placeholder={t('support.replyPlaceholder')}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={(e) => {
@@ -542,25 +547,25 @@ export default function SupportPage() {
                       }
                     }}
                     disabled={submittingMessage}
-                    className="flex-1 px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-500 disabled:placeholder:text-slate-400"
+                    className="flex-1 px-4 py-3 rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-500 dark:disabled:text-slate-400 disabled:placeholder:text-slate-400 dark:disabled:placeholder:text-slate-500"
                   />
                   <button
                     onClick={handleSendMessage}
                     disabled={submittingMessage || !newMessage.trim()}
                     className="px-6 py-3 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all"
                   >
-                    {submittingMessage ? "..." : "Send"}
+                    {submittingMessage ? "..." : t('support.sendButton')}
                   </button>
                 </div>
               </div>
             )}
           </>
         ) : (
-          <div className="flex items-center justify-center h-full text-center text-slate-600">
+          <div className="flex items-center justify-center h-full text-center text-slate-600 dark:text-slate-400">
             <div>
               <div className="text-4xl mb-2">📬</div>
-              <p className="text-lg font-medium">No ticket selected</p>
-              <p className="text-sm mt-1">Create or select a ticket to start chatting</p>
+              <p className="text-lg font-medium dark:text-slate-100">{t('support.noTicketSelected')}</p>
+              <p className="text-sm mt-1 dark:text-slate-400">{t('support.selectTicketToChat')}</p>
             </div>
           </div>
         )}

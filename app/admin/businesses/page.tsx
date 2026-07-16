@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from '../../../lib/context/LanguageContext';
+import { useTranslations } from '../../../lib/i18n';
 import AdminGuard from "../AdminGuard";
 
 interface Business {
@@ -16,6 +18,9 @@ interface Business {
 }
 
 export default function AdminBusinessesPage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
+  
   const [loading, setLoading] = useState(true);
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,30 +71,30 @@ export default function AdminBusinessesPage() {
 
   const getCategoryColor = (category?: string) => {
     const colors: Record<string, string> = {
-      salon: "bg-pink-100 text-pink-700",
-      barber: "bg-blue-100 text-blue-700",
-      spa: "bg-purple-100 text-purple-700",
-      clinic: "bg-green-100 text-green-700",
-      fitness: "bg-orange-100 text-orange-700",
+      salon: "bg-pink-100 dark:bg-pink-500/15 text-pink-700 dark:text-pink-200 border border-pink-300 dark:border-pink-400/30",
+      barber: "bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-200 border border-blue-300 dark:border-blue-400/30",
+      spa: "bg-purple-100 dark:bg-purple-500/15 text-purple-700 dark:text-purple-200 border border-purple-300 dark:border-purple-400/30",
+      clinic: "bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-200 border border-green-300 dark:border-green-400/30",
+      fitness: "bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-200 border border-orange-300 dark:border-orange-400/30",
     };
-    return colors[category ?? ""] || "bg-slate-100 text-slate-700";
+    return colors[category ?? ""] || "bg-slate-100 dark:bg-slate-500/15 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-400/30";
   };
 
   return (
     <AdminGuard>
       <div>
         <div className="mb-8">
-          <Link href="/admin" className="text-indigo-600 hover:text-blue-600 dark:text-indigo-400 dark:hover:text-blue-300 font-bold text-sm mb-4 inline-block">
-            ← Back to Admin
+          <Link href="/admin" className="text-indigo-600 dark:text-indigo-400 hover:text-blue-600 dark:hover:text-blue-300 font-bold text-sm mb-4 inline-block transition-colors">
+            {t('admin.backToAdmin')}
           </Link>
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">Businesses</h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400">Total businesses: {businesses.length}</p>
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">{t('admin.businesses')}</h1>
+          <p className="text-lg text-slate-600 dark:text-slate-300">{t('admin.totalBusinesses')} {businesses.length}</p>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-indigo-600 animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-600 dark:text-slate-400">Loading businesses...</p>
+            <p className="text-slate-600 dark:text-slate-400">{t('admin.loadingBusinesses')}</p>
           </div>
         ) : (
           <>
@@ -99,7 +104,7 @@ export default function AdminBusinessesPage() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by name, slug, or owner email..."
+                placeholder={t('admin.searchByNameSlugEmail')}
                 className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               />
             </div>
@@ -109,13 +114,13 @@ export default function AdminBusinessesPage() {
               <table className="w-full">
                 <thead>
                   <tr className="text-left text-xs font-bold text-slate-700 dark:text-slate-300 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                    <th className="px-6 py-4">Business Name</th>
-                    <th className="px-6 py-4">Slug / URL</th>
-                    <th className="px-6 py-4">Category</th>
-                    <th className="px-6 py-4">Owner</th>
-                    <th className="px-6 py-4">Phone</th>
-                    <th className="px-6 py-4">Created</th>
-                    <th className="px-6 py-4">Action</th>
+                    <th className="px-6 py-4">{t('admin.businessName')}</th>
+                    <th className="px-6 py-4">{t('admin.slugUrl')}</th>
+                    <th className="px-6 py-4">{t('admin.category')}</th>
+                    <th className="px-6 py-4">{t('admin.owner')}</th>
+                    <th className="px-6 py-4">{t('admin.phone')}</th>
+                    <th className="px-6 py-4">{t('admin.created')}</th>
+                    <th className="px-6 py-4">{t('admin.action')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -139,7 +144,7 @@ export default function AdminBusinessesPage() {
                           target="_blank"
                           className="px-3 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-all"
                         >
-                          View
+                          {t('admin.view')}
                         </Link>
                       </td>
                     </tr>
@@ -149,7 +154,7 @@ export default function AdminBusinessesPage() {
 
               {filteredBusinesses.length === 0 && (
                 <div className="rounded-2xl bg-white/80 dark:bg-slate-900/50 backdrop-blur border border-white/60 dark:border-white/10 shadow-lg p-12 text-center mt-4">
-                  <p className="text-slate-600 dark:text-slate-400">{searchTerm ? "No businesses match your search" : "No businesses found"}</p>
+                  <p className="text-slate-600 dark:text-slate-400">{searchTerm ? t('admin.noSearchResults') : t('admin.noBusinesses')}</p>
                 </div>
               )}
             </div>

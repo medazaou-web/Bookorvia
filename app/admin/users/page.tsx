@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AlertIcon } from "@/components/icons";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
 import AdminGuard from "../AdminGuard";
 
 interface UserProfile {
@@ -14,9 +17,12 @@ interface UserProfile {
 }
 
 export default function AdminUsersPage() {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [currentRole, setCurrentRole] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadUsers();
@@ -64,30 +70,31 @@ export default function AdminUsersPage() {
   }
 
   async function updateUserRole(userId: string, newRole: string) {
+    setError(null);
     if (!currentRole || currentRole !== "admin") {
-      alert("Only admins can change roles");
+      setError(t('adminUsers.onlyAdminsCanChangeRoles'));
       return;
     }
 
     try {
-      const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
+      const { error: err } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
 
-      if (error) throw error;
+      if (err) throw err;
 
       await loadUsers();
     } catch (e: any) {
-      alert("Error updating role: " + e.message);
+      setError(t('adminUsers.errorUpdatingRole') + " " + e.message);
     }
   }
 
   const getRoleColor = (role?: string) => {
     switch (role) {
       case "admin":
-        return "bg-red-100 text-red-700 border-red-300";
+        return "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-200 border border-red-300 dark:border-red-400/30";
       case "support":
-        return "bg-amber-100 text-amber-700 border-amber-300";
+        return "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-200 border border-amber-300 dark:border-amber-400/30";
       default:
-        return "bg-slate-100 text-slate-700 border-slate-300";
+        return "bg-slate-100 dark:bg-slate-500/15 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-400/30";
     }
   };
 
@@ -95,72 +102,67 @@ export default function AdminUsersPage() {
     <AdminGuard>
       <div>
         <div className="mb-8">
-          <Link href="/admin" className="text-indigo-600 hover:text-blue-600 dark:text-indigo-400 dark:hover:text-blue-300 font-bold text-sm mb-4 inline-block">
-            ← Back to Admin
+          <Link href="/admin" className="text-indigo-600 dark:text-indigo-400 hover:text-blue-600 dark:hover:text-blue-300 font-bold text-sm mb-4 inline-block transition-colors">
+            {t('adminUsers.backToAdmin')}
           </Link>
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">Users</h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400">Total users: {users.length}</p>
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">{t('adminUsers.users')}</h1>
+          <p className="text-lg text-slate-600 dark:text-slate-300">{t('adminUsers.totalUsers')} {users.length}</p>
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-indigo-600 animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-600 dark:text-slate-400">Loading users...</p>
+            <p className="text-slate-600 dark:text-slate-400">{t('adminUsers.loadingUsers')}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-xs font-bold text-slate-700 dark:text-slate-300 border-b-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                  <th className="px-6 py-4">Email</th>
-                  <th className="px-6 py-4">Name</th>
-                  <th className="px-6 py-4">Role</th>
-                  <th className="px-6 py-4">Created</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-indigo-50 dark:hover:bg-slate-800/50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {user.avatar_url && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={user.avatar_url} alt={user.full_name} className="w-8 h-8 rounded-full" />
-                        )}
-                        <span className="font-mono text-sm text-slate-900 dark:text-slate-100">{user.email}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-medium">{user.full_name || "—"}</td>
-                    <td className="px-6 py-4">
-                      {currentRole === "admin" ? (
-                        <select
-                          value={user.role || "user"}
-                          onChange={(e) => updateUserRole(user.id, e.target.value)}
-                          className={`px-3 py-1 rounded-lg text-xs font-bold border cursor-pointer ${getRoleColor(user.role)}`}
-                        >
-                          <option value="user">User</option>
-                          <option value="support">Support</option>
-                          <option value="admin">Admin</option>
-                        </select>
-                      ) : (
-                        <span className={`px-3 py-1 rounded-lg text-xs font-bold border inline-block ${getRoleColor(user.role)}`}>
-                          {(user.role || "user").charAt(0).toUpperCase() + (user.role || "user").slice(1)}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                      {user.created_at ? new Date(user.created_at).toLocaleDateString() : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {users.length === 0 && (
-              <div className="rounded-2xl bg-white/80 dark:bg-slate-900/50 backdrop-blur border border-white/60 dark:border-white/10 shadow-lg p-12 text-center mt-4">
-                <p className="text-slate-600 dark:text-slate-400">No users found</p>
+          <div className="rounded-2xl bg-white/80 dark:bg-slate-900/50 backdrop-blur border border-white/60 dark:border-white/10 shadow-lg overflow-hidden">
+            {error && (
+              <div className="bg-red-50 dark:bg-red-500/10 border-l-4 border-red-500 p-4 m-4 rounded text-red-700 dark:text-red-300 text-sm">
+                {error}
               </div>
             )}
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                    <th className="px-6 py-3 text-left text-sm font-bold text-slate-700 dark:text-slate-300">{t('adminUsers.email')}</th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-slate-700 dark:text-slate-300">{t('adminUsers.name')}</th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-slate-700 dark:text-slate-300">{t('adminUsers.role')}</th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-slate-700 dark:text-slate-300">{t('adminUsers.joined')}</th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-slate-700 dark:text-slate-300">{t('adminUsers.actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="px-6 py-4 text-sm text-slate-900 dark:text-white font-medium">{user.email}</td>
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{user.full_name || '—'}</td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={user.role || 'user'}
+                          onChange={(e) => updateUserRole(user.id, e.target.value)}
+                          disabled={currentRole !== 'admin'}
+                          className={`px-2 py-1 rounded text-xs font-bold border ${getRoleColor(user.role)} ${
+                            currentRole !== 'admin' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                        >
+                          <option value="user">{t('adminUsers.user')}</option>
+                          <option value="support">{t('adminUsers.support')}</option>
+                          <option value="admin">{t('adminUsers.admin')}</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{new Date(user.created_at || '').toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-sm">
+                        <button className="text-indigo-600 dark:text-indigo-400 hover:text-blue-600 dark:hover:text-blue-300 font-bold transition-colors">
+                          {t('adminUsers.view')}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

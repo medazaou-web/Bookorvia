@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import supabase from "../../../lib/supabase/browserClient";
+import { useLanguage } from "../../../lib/context/LanguageContext";
+import { useTranslations } from "../../../lib/i18n";
 
 type ThemeStyles = {
   sectionCard: string;
@@ -29,6 +31,9 @@ function cleanPhone(p: string | null | undefined) {
 }
 
 export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
+  
   const defaultTheme: ThemeStyles = {
     sectionCard: "bg-white/60 border-slate-200",
     innerCard: "bg-white border-slate-200",
@@ -57,7 +62,7 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
     setCard(null);
     const cleaned = cleanPhone(phone);
     if (!cleaned) {
-      setError("Please enter a phone number.");
+      setError(t('booking.enterPhoneNumber'));
       return;
     }
 
@@ -74,7 +79,7 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
       const found = cards.find((c: any) => cleanPhone(c.client_phone) === cleaned);
       if (!found) {
         setCard(null);
-        setError("No loyalty card found for this phone number. Ask the business to create one for you.");
+        setError(t('booking.noLoyaltyCard'));
       } else {
         setCard(found);
       }
@@ -87,12 +92,12 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
 
   return (
     <div>
-      <h3 className={`text-sm font-semibold ${theme.label}`}>Check your loyalty card</h3>
+      <h3 className={`text-sm font-semibold ${theme.label}`}>{t('booking.checkLoyalty')}</h3>
       <form onSubmit={check} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
         <input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="Phone number"
+          placeholder={t('booking.phoneNumber')}
           className={`rounded-lg border p-3 text-sm w-full sm:w-64 focus:border-transparent focus:ring-2 transition-all ${theme.input}`}
         />
         <div className="flex items-center">
@@ -101,7 +106,7 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
             disabled={loading}
             className={`ml-0 sm:ml-3 rounded-lg px-4 py-3 text-sm font-semibold shadow-lg hover:shadow-md active:scale-[0.98] focus:ring-2 disabled:opacity-60 transition-all ${theme.buttonPrimary}`}
           >
-            {loading ? "Checking…" : "Check loyalty"}
+            {loading ? t('booking.checkingLoyalty') : t('booking.checkLoyalty')}
           </button>
         </div>
       </form>
@@ -127,7 +132,7 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
               <div className={`mt-2 text-sm ${theme.label}`}>{card.stamps ?? 0} / {card.target_stamps ?? 0} stamps</div>
               <div className={`mt-1 text-sm ${theme.mutedText}`}>Reward: {card.reward || '-'}</div>
               {card.status === 'reward_ready' && (
-                <div className={`mt-3 rounded-lg border p-3 text-sm font-semibold ${theme.success}`}>Your reward is ready.</div>
+                <div className={`mt-3 rounded-lg border p-3 text-sm font-semibold ${theme.success}`}>{t('booking.yourRewardReady')}</div>
               )}
             </div>
           </div>

@@ -4,9 +4,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import supabase from '@/lib/supabase/browserClient';
+import { useLanguage } from '@/lib/context/LanguageContext';
+import { useTranslations } from '@/lib/i18n';
+import { LanguageSwitcher } from '@/app/components/LanguageSwitcher';
+import { ThemeToggle } from '@/app/components/ThemeToggle';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -23,16 +29,16 @@ export default function ResetPasswordPage() {
         if (session && !error) {
           setIsSessionValid(true);
         } else {
-          setErrorMessage('Your reset link has expired or is invalid. Please request a new one.');
+          setErrorMessage(t('auth.resetLinkExpired'));
         }
       } catch (err) {
-        setErrorMessage('Unable to verify your session. Please try again.');
+        setErrorMessage(t('auth.sessionVerificationFailed'));
         console.error('Session check error:', err);
       }
     };
 
     checkSession();
-  }, []);
+  }, [t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,17 +47,17 @@ export default function ResetPasswordPage() {
 
     // Validation
     if (!password.trim()) {
-      setErrorMessage('Please enter a new password.');
+      setErrorMessage(t('auth.pleaseEnterNewPassword'));
       return;
     }
 
     if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long.');
+      setErrorMessage(t('auth.passwordTooShort'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match. Please try again.');
+      setErrorMessage(t('auth.passwordMustMatch'));
       return;
     }
 
@@ -62,10 +68,10 @@ export default function ResetPasswordPage() {
 
       if (error) {
         // Show user-friendly message, not raw error
-        setErrorMessage('Unable to update your password. Please try again.');
+        setErrorMessage(t('authMessages.unableToUpdatePassword'));
         console.error('Password update error:', error);
       } else {
-        setSuccessMessage('Password updated successfully!');
+        setSuccessMessage(t('auth.passwordUpdatedSuccess'));
         setPassword('');
         setConfirmPassword('');
         // Redirect to login after a short delay
@@ -82,18 +88,24 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex flex-col items-center justify-center p-4 transition-colors duration-200">
+      {/* Top controls */}
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="rounded-3xl bg-white/80 backdrop-blur border border-white/60 shadow-2xl p-8 sm:p-10">
           {/* Header */}
           <div className="mb-8 text-center">
             <div className="inline-block mb-4 px-4 py-2 rounded-full bg-indigo-100/60 border border-indigo-200/60">
-              <span className="text-xs font-semibold text-indigo-700">🔐 Reset Password</span>
+              <span className="text-xs font-semibold text-indigo-700">🔐 {t('auth.resetPasswordTitle')}</span>
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Set New Password</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">{t('auth.setNewPassword')}</h1>
             <p className="text-slate-600 text-sm">
-              Enter a new password to regain access to your account.
+              {t('auth.resetPasswordDescription')}
             </p>
           </div>
 
@@ -102,20 +114,20 @@ export default function ResetPasswordPage() {
             <div className="space-y-4">
               <div className="rounded-xl bg-red-50 border border-red-200 p-4">
                 <p className="text-sm text-red-800">
-                  ✕ Your reset link has expired or is invalid. Please request a new password reset link.
+                  ✕ {t('auth.resetLinkExpiredMessage')}
                 </p>
               </div>
               <Link
                 href="/forgot-password"
                 className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95 text-center block"
               >
-                Request New Reset Link
+                {t('auth.requestNewResetLink')}
               </Link>
               <Link
                 href="/login"
                 className="w-full px-4 py-3 rounded-xl border-2 border-indigo-200 bg-white/40 backdrop-blur text-indigo-600 font-semibold hover:bg-white/60 transition-all text-center block"
               >
-                Back to Sign In
+                {t('auth.backToSignIn')}
               </Link>
             </div>
           ) : (
@@ -123,33 +135,33 @@ export default function ResetPasswordPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* New Password Input */}
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  New Password
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                  {t('auth.newPassword')}
                 </label>
                 <input
                   id="password"
                   type="password"
-                  placeholder="Enter new password (min. 8 characters)"
+                  placeholder={t('auth.newPasswordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading || !!successMessage}
-                  className="w-full px-4 py-3 rounded-xl bg-white/50 backdrop-blur border border-white/60 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur border border-white/60 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
               {/* Confirm Password Input */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  Confirm Password
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                  {t('common.confirmPassword')}
                 </label>
                 <input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Confirm your new password"
+                  placeholder={t('auth.confirmNewPassword')}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={isLoading || !!successMessage}
-                  className="w-full px-4 py-3 rounded-xl bg-white/50 backdrop-blur border border-white/60 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur border border-white/60 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -173,7 +185,7 @@ export default function ResetPasswordPage() {
                 disabled={isLoading || !!successMessage}
                 className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
               >
-                {isLoading ? 'Updating...' : 'Update Password'}
+                {isLoading ? t('auth.updating') : t('auth.updatePassword')}
               </button>
             </form>
           )}
@@ -193,9 +205,9 @@ export default function ResetPasswordPage() {
               {/* Links */}
               <div className="text-center text-sm">
                 <p className="text-slate-700">
-                  Remember your password?{' '}
+                  {t('auth.rememberPassword')}{' '}
                   <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold hover:underline">
-                    Sign In
+                    {t('auth.signIn')}
                   </Link>
                 </p>
               </div>
@@ -205,11 +217,11 @@ export default function ResetPasswordPage() {
           {/* Legal Links Footer */}
           <div className="mt-8 pt-6 border-t border-slate-200/50">
             <div className="flex flex-wrap justify-center gap-3 text-xs text-slate-600">
-              <Link href="/terms" className="text-slate-700 hover:text-slate-900 transition-colors">Terms</Link>
+              <Link href="/terms" className="text-slate-700 hover:text-slate-900 transition-colors">{t('public.terms')}</Link>
               <span>•</span>
-              <Link href="/privacy" className="text-slate-700 hover:text-slate-900 transition-colors">Privacy</Link>
+              <Link href="/privacy" className="text-slate-700 hover:text-slate-900 transition-colors">{t('public.privacy')}</Link>
               <span>•</span>
-              <Link href="/help" className="text-slate-700 hover:text-slate-900 transition-colors">Help</Link>
+              <Link href="/help" className="text-slate-700 hover:text-slate-900 transition-colors">{t('public.help')}</Link>
             </div>
           </div>
         </div>

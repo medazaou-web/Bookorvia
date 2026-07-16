@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import RegisterForm from "./RegisterForm";
 
 export default async function Page() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerSupabase(cookieStore);
 
   try {

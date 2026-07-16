@@ -3,7 +3,7 @@ import { createServerSupabase } from "../../lib/supabase/serverClient";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerSupabase(cookieStore);
   try {
     await supabase.auth.signOut();
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerSupabase(cookieStore);
   try {
     await supabase.auth.signOut();
