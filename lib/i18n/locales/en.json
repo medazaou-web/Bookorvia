@@ -104,7 +104,14 @@
     "freeTrialDescription": "Create a free account to get started",
     "creatingAccount": "Creating account...",
     "startFreeTrial": "Start Free Trial",
-    "agreeToTermsRegister": "By creating an account, you agree to our Terms of Service, Privacy Policy and Cookies policy."
+    "agreeToTermsRegister": "By creating an account, you agree to our Terms of Service, Privacy Policy and Cookies policy.",
+    "forgotPasswordTitle": "Reset Your Password",
+    "passwordReset": "Password Reset",
+    "forgotPasswordDescription": "Enter your email to receive a password reset link",
+    "sendResetLink": "Send Reset Link",
+    "sending": "Sending...",
+    "rememberPassword": "Remember your password?",
+    "createOne": "Create one"
   },
   "generalMessages": {
     "notAuthenticated": "Please log in to continue."

@@ -123,6 +123,7 @@ export default function Home() {
             </div>
             
             <a href="/login" className="px-2.5 sm:px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50 text-xs sm:text-sm font-semibold transition-colors">{t('common.signIn')}</a>
+            <ThemeToggle />
             <a href="/register" className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white text-xs sm:text-sm font-semibold hover:shadow-lg transition-all">{t('public.start')}</a>
           </div>
         </div>
@@ -178,22 +179,22 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600"></div>
-                      <span className="font-semibold text-sm text-slate-900">Casa Barber Studio</span>
+                      <span className="font-semibold text-sm text-slate-900">Dr. Sarah's Clinic</span>
                     </div>
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">Live</span>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-white rounded-lg p-2">
-                      <div className="text-xs text-slate-600">Clients</div>
-                      <div className="text-lg font-bold text-slate-900">248</div>
+                      <div className="text-xs text-slate-600">Patients</div>
+                      <div className="text-lg font-bold text-slate-900">652</div>
                     </div>
                     <div className="bg-white rounded-lg p-2">
-                      <div className="text-xs text-slate-600">Bookings</div>
-                      <div className="text-lg font-bold text-slate-900">36</div>
+                      <div className="text-xs text-slate-600">Appointments</div>
+                      <div className="text-lg font-bold text-slate-900">89</div>
                     </div>
                     <div className="bg-white rounded-lg p-2">
                       <div className="text-xs text-slate-600">Rating</div>
-                      <div className="text-lg font-bold text-slate-900">4.8 <StarIcon className="h-5 w-5 inline" /></div>
+                      <div className="text-lg font-bold text-slate-900">4.9 <StarIcon className="h-5 w-5 inline" /></div>
                     </div>
                   </div>
                 </div>
@@ -202,7 +203,7 @@ export default function Home() {
                 <div className="space-y-3">
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-3 border border-amber-100">
                     <div className="text-xs font-semibold text-amber-900 mb-1 flex items-center gap-1"><CalendarIcon className="h-4 w-4" /> Booking Request</div>
-                    <div className="text-sm text-slate-700">John Smith • Haircut • Tomorrow 2:00 PM</div>
+                    <div className="text-sm text-slate-700">Emma Wilson • Consultation • Tomorrow 10:00 AM</div>
                   </div>
 
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100">
@@ -211,22 +212,22 @@ export default function Home() {
                   </div>
 
                   <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100">
-                    <div className="text-xs font-semibold text-purple-900 mb-1 flex items-center gap-1"><GiftIcon className="h-4 w-4" /> Loyalty Progress</div>
+                    <div className="text-xs font-semibold text-purple-900 mb-1 flex items-center gap-1"><GiftIcon className="h-4 w-4" /> Care Plan Progress</div>
                     <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1">
-                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 h-1.5 rounded-full" style={{width: '60%'}}></div>
+                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 h-1.5 rounded-full" style={{width: '75%'}}></div>
                     </div>
-                    <div className="text-xs text-slate-600">3/5 visits • Reward ready soon</div>
+                    <div className="text-xs text-slate-600">4/5 follow-ups • Checkup due soon</div>
                   </div>
 
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-3 border border-green-100">
-                    <div className="text-xs font-semibold text-green-900 mb-1 flex items-center gap-1"><MessageIcon className="h-4 w-4" /> WhatsApp Follow-up</div>
-                    <div className="text-sm text-slate-700">Ready to send • 2 clients</div>
+                    <div className="text-xs font-semibold text-green-900 mb-1 flex items-center gap-1"><MessageIcon className="h-4 w-4" /> Health Reminder</div>
+                    <div className="text-sm text-slate-700">Ready to send • 5 patients</div>
                   </div>
 
                   <div className="bg-indigo-900 text-white rounded-xl p-3 text-center">
-                    <div className="text-xs font-semibold mb-1 flex items-center justify-center gap-1"><QRIcon className="h-4 w-4" /> QR Code Activity</div>
-                    <div className="text-2xl font-bold">+32%</div>
-                    <div className="text-xs">Repeat clients this month</div>
+                    <div className="text-xs font-semibold mb-1 flex items-center justify-center gap-1"><QRIcon className="h-4 w-4" /> Check-ins</div>
+                    <div className="text-2xl font-bold">+47%</div>
+                    <div className="text-xs">Returning patients this month</div>
                   </div>
                 </div>
               </div>
