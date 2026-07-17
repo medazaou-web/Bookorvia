@@ -1,7 +1,7 @@
 "use client";
 import Sidebar from "./Sidebar";
 import NewBookingModal from "./NewBookingModal";
-import { ChevronRightIcon, ClockIcon, UsersIcon, CalendarIcon, StarIcon, MessageIcon } from "@/components/icons";
+import { ChevronRightIcon, ClockIcon, UsersIcon, CalendarIcon, StarIcon, MessageIcon, ClientsIcon, LoyaltyIcon, SparkIcon } from "@/components/icons";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/context/LanguageContext";
@@ -117,22 +117,48 @@ export default function DashboardPage() {
     <div>
       {/* Setup Prompt - No Business */}
       {noBusinessSetup && !loading && (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-white flex items-center justify-center px-4 py-8">
-          <div className="text-center max-w-2xl">
-            <div className="text-5xl sm:text-6xl mb-6">🚀</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t('dashboard.dashboardWelcomeTitle')}</h2>
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-400 mb-8">{t('dashboard.dashboardWelcomeMessage')}</p>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center px-4 py-8 transition-colors duration-200">
+          {/* Animated background elements */}
+          <div className="fixed inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-400/5 dark:bg-indigo-500/5 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-400/5 dark:bg-blue-500/5 rounded-full blur-3xl"></div>
+          </div>
+
+          <div className="text-center max-w-2xl relative z-10">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 mb-8 animate-bounce">
+              <SparkIcon className="h-10 w-10 text-white" />
+            </div>
+            
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-4">{t('dashboard.dashboardWelcomeTitle')}</h2>
+            
+            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl mx-auto leading-relaxed">{t('dashboard.dashboardWelcomeMessage')}</p>
+            
+            {/* Feature highlights */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10 max-w-lg mx-auto">
+              <div className="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-white/80 dark:border-slate-700/60 hover:shadow-lg transition-all">
+                <CalendarIcon className="h-8 w-8 mx-auto mb-2 text-indigo-600 dark:text-indigo-400" />
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">Smart Scheduling</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-white/80 dark:border-slate-700/60 hover:shadow-lg transition-all">
+                <ClientsIcon className="h-8 w-8 mx-auto mb-2 text-indigo-600 dark:text-indigo-400" />
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">Client Management</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-white/80 dark:border-slate-700/60 hover:shadow-lg transition-all">
+                <LoyaltyIcon className="h-8 w-8 mx-auto mb-2 text-indigo-600 dark:text-indigo-400" />
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">Loyalty Rewards</p>
+              </div>
+            </div>
             
             <button
               onClick={() => router.push("/dashboard/onboarding")}
-              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-base sm:text-lg hover:shadow-lg hover:-translate-y-1 active:scale-95 transition-all"
+              className="inline-block px-8 sm:px-12 py-4 sm:py-5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-lg hover:from-indigo-700 hover:to-blue-700 hover:shadow-2xl hover:-translate-y-1 dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 transition-all duration-200 shadow-lg mb-6"
             >
-              {t('dashboard.startSetup')}
+              {t('dashboard.startSetup')} →
             </button>
             
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-8">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
               {t('dashboard.orCreateManually')}{" "}
-              <a href="/dashboard/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-bold underline">
+              <a href="/dashboard/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-bold underline transition-colors">
                 {t('dashboard.createBusinessManually')}
               </a>
             </p>

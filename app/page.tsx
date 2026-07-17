@@ -57,7 +57,7 @@ export default function Home() {
               <button
                 onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors font-medium text-sm"
-                title="Change language / Cambiar idioma / Changer la langue"
+                title={t('public.changeLanguageTitle')}
               >
                 {languages.find(l => l.code === language)?.code.toUpperCase()}
               </button>
@@ -179,21 +179,21 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600"></div>
-                      <span className="font-semibold text-sm text-slate-900">Dr. Sarah's Clinic</span>
+                      <span className="font-semibold text-sm text-slate-900">{t('public.mockupClinicName')}</span>
                     </div>
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">Live</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">{t('public.statusLive')}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-white rounded-lg p-2">
-                      <div className="text-xs text-slate-600">Patients</div>
+                      <div className="text-xs text-slate-600">{t('public.mockupPatientsLabel')}</div>
                       <div className="text-lg font-bold text-slate-900">652</div>
                     </div>
                     <div className="bg-white rounded-lg p-2">
-                      <div className="text-xs text-slate-600">Appointments</div>
+                      <div className="text-xs text-slate-600">{t('public.mockupAppointmentsLabel')}</div>
                       <div className="text-lg font-bold text-slate-900">89</div>
                     </div>
                     <div className="bg-white rounded-lg p-2">
-                      <div className="text-xs text-slate-600">Rating</div>
+                      <div className="text-xs text-slate-600">{t('public.mockupRatingLabel')}</div>
                       <div className="text-lg font-bold text-slate-900">4.9 <StarIcon className="h-5 w-5 inline" /></div>
                     </div>
                   </div>
@@ -202,32 +202,32 @@ export default function Home() {
                 {/* Mockup Content */}
                 <div className="space-y-3">
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-3 border border-amber-100">
-                    <div className="text-xs font-semibold text-amber-900 mb-1 flex items-center gap-1"><CalendarIcon className="h-4 w-4" /> Booking Request</div>
-                    <div className="text-sm text-slate-700">Emma Wilson • Consultation • Tomorrow 10:00 AM</div>
+                    <div className="text-xs font-semibold text-amber-900 mb-1 flex items-center gap-1"><CalendarIcon className="h-4 w-4" /> {t('public.mockupBookingRequest')}</div>
+                    <div className="text-sm text-slate-700">{t('public.mockupClientConsultation')}</div>
                   </div>
 
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100">
-                    <div className="text-xs font-semibold text-blue-900 mb-1 flex items-center gap-1"><StarIcon className="h-4 w-4" /> New Review</div>
-                    <div className="text-sm text-slate-700">5/5 stars • "Excellent service!"</div>
+                    <div className="text-xs font-semibold text-blue-900 mb-1 flex items-center gap-1"><StarIcon className="h-4 w-4" /> {t('public.mockupNewReview')}</div>
+                    <div className="text-sm text-slate-700">{t('public.mockupReviewExample')}</div>
                   </div>
 
                   <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100">
-                    <div className="text-xs font-semibold text-purple-900 mb-1 flex items-center gap-1"><GiftIcon className="h-4 w-4" /> Care Plan Progress</div>
+                    <div className="text-xs font-semibold text-purple-900 mb-1 flex items-center gap-1"><GiftIcon className="h-4 w-4" /> {t('public.mockupCarePlanProgress')}</div>
                     <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1">
                       <div className="bg-gradient-to-r from-purple-600 to-pink-600 h-1.5 rounded-full" style={{width: '75%'}}></div>
                     </div>
-                    <div className="text-xs text-slate-600">4/5 follow-ups • Checkup due soon</div>
+                    <div className="text-xs text-slate-600">{t('public.mockupFollowUpsStatus')}</div>
                   </div>
 
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-3 border border-green-100">
-                    <div className="text-xs font-semibold text-green-900 mb-1 flex items-center gap-1"><MessageIcon className="h-4 w-4" /> Health Reminder</div>
-                    <div className="text-sm text-slate-700">Ready to send • 5 patients</div>
+                    <div className="text-xs font-semibold text-green-900 mb-1 flex items-center gap-1"><MessageIcon className="h-4 w-4" /> {t('public.mockupHealthReminder')}</div>
+                    <div className="text-sm text-slate-700">{t('public.mockupReminderStatus')}</div>
                   </div>
 
                   <div className="bg-indigo-900 text-white rounded-xl p-3 text-center">
-                    <div className="text-xs font-semibold mb-1 flex items-center justify-center gap-1"><QRIcon className="h-4 w-4" /> Check-ins</div>
+                    <div className="text-xs font-semibold mb-1 flex items-center justify-center gap-1"><QRIcon className="h-4 w-4" /> {t('public.mockupCheckInsLabel')}</div>
                     <div className="text-2xl font-bold">+47%</div>
-                    <div className="text-xs">Returning patients this month</div>
+                    <div className="text-xs">{t('public.mockupCheckInsDesc')}</div>
                   </div>
                 </div>
               </div>
@@ -248,111 +248,112 @@ export default function Home() {
             {/* Card 1: Missed Repeat Bookings */}
             <div className="bg-white/50 dark:bg-slate-900/70 backdrop-blur rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 hover:border-amber-200 dark:hover:border-amber-500/30 hover:shadow-lg dark:hover:shadow-black/20 transition-all hover:-translate-y-1">
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-4 sm:p-6 mb-6 border border-amber-100 dark:border-amber-800/30">
-                <div className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-200 mb-3 flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> MISSED BOOKINGS</div>
+                <div className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-200 mb-3 flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> {t('public.problemMissedBookingsLabel')}</div>
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex justify-between items-center bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg dark:text-slate-300">
-                    <span>Mon 9:00 AM</span>
-                    <span className="text-amber-700 dark:text-amber-400">✓ Done</span>
+                    <span>{t('public.problemMockupMondayTime')}</span>
+                    <span className="text-amber-700 dark:text-amber-400">✓ {t('public.mockupStatusDone')}</span>
                   </div>
                   <div className="flex justify-between items-center bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg dark:text-slate-300">
-                    <span>Follow-up needed</span>
-                    <span className="text-red-600 dark:text-red-400 font-bold">✗ Missed</span>
+                    <span>{t('public.problemFollowUpNeeded')}</span>
+                    <span className="text-red-600 dark:text-red-400 font-bold">✗ {t('public.mockupStatusMissed')}</span>
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">Missed Repeat Bookings</h3>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">A client visits once, loves the service, but you have no way to remind them to book again. They move on to a competitor.</p>
-              <div className="inline-block bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-red-400/20">No reminder system</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{t('public.problemForgottenFollowUpsDesc')}</h3>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{t('public.problemMissedBookingsExplain')}</p>
+              <div className="inline-block bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-red-400/20">{t('public.problemMissedBookingsExplain')}</div>
             </div>
 
             {/* Card 2: Forgotten Follow-ups */}
             <div className="bg-white/50 dark:bg-slate-900/70 backdrop-blur rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 hover:border-green-200 dark:hover:border-green-500/30 hover:shadow-lg dark:hover:shadow-black/20 transition-all hover:-translate-y-1">
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-4 sm:p-6 mb-6 border border-green-100 dark:border-green-800/30">
-                <div className="text-xs sm:text-sm font-bold text-green-900 dark:text-green-200 mb-3 flex items-center gap-2"><MessageIcon className="h-5 w-5" /> WHATSAPP MESSAGES</div>
+                <div className="text-xs sm:text-sm font-bold text-green-900 dark:text-green-200 mb-3 flex items-center gap-2"><MessageIcon className="h-5 w-5" /> {t('public.problemWhatsappLabel')}</div>
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300">
-                    <span className="font-semibold">Last visit:</span> 28 days ago
+                    <span className="font-semibold">{t('public.problemLastVisit')}:</span> 28 {t('public.problemDaysAgo')}
                   </div>
                   <div className="bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg">
-                    <span className="text-red-600 dark:text-red-400 font-bold">⚠ Follow-up overdue</span>
+                    <span className="text-red-600 dark:text-red-400 font-bold">⚠ {t('public.problemFollowUpOverdue')}</span>
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">Forgotten WhatsApp Follow-ups</h3>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">Businesses rely on memory to reach out to customers. Important follow-ups slip through the cracks, and regular clients never hear from you again.</p>
-              <div className="inline-block bg-yellow-100 dark:bg-yellow-500/15 text-yellow-700 dark:text-yellow-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-yellow-400/20">Manual work, easily forgotten</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{t('public.problemForgottenFollowUpsDesc')}</h3>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{t('public.problemForgottenFollowUpsExplain')}</p>
+              <div className="inline-block bg-yellow-100 dark:bg-yellow-500/15 text-yellow-700 dark:text-yellow-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-yellow-400/20">{t('public.problemForgottenFollowUpsTag')}</div>
             </div>
 
             {/* Card 3: No Review System */}
             <div className="bg-white/50 dark:bg-slate-900/70 backdrop-blur rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-500/30 hover:shadow-lg dark:hover:shadow-black/20 transition-all hover:-translate-y-1">
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-4 sm:p-6 mb-6 border border-blue-100 dark:border-blue-800/30">
-                <div className="text-xs sm:text-sm font-bold text-blue-900 dark:text-blue-200 mb-3 flex items-center gap-2"><StarIcon className="h-5 w-5" /> REVIEWS</div>
+                <div className="text-xs sm:text-sm font-bold text-blue-900 dark:text-blue-200 mb-3 flex items-center gap-2"><StarIcon className="h-5 w-5" /> {t('public.problemReviewsLabel')}</div>
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="flex items-center gap-2 bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg dark:text-slate-300">
-                    <span>Happy clients:</span>
+                    <span>{t('public.mockupHappyClientsLabel')}:</span>
                     <span className="font-bold text-blue-700 dark:text-blue-400">5/5 <StarIcon className="h-4 w-4 inline" /></span>
                   </div>
                   <div className="bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg text-red-700 dark:text-red-300 text-xs font-semibold">
-                    ✗ No Google reviews
+                    ✗ {t('public.problemNoGoogleReviews')}
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">No Clear Review System</h3>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">Happy clients don't know where to leave reviews. Meanwhile, even one upset client can post a negative review unchallenged. Your reputation stays hidden.</p>
-              <div className="inline-block bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-orange-400/20">Lost opportunity</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{t('public.problemNoReviewSystemDesc')}</h3>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{t('public.problemNoReviewSystemExplain')}</p>
+              <div className="inline-block bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-orange-400/20">{t('public.problemNoReviewSystemTag')}</div>
             </div>
 
             {/* Card 4: Messy Booking Flow */}
             <div className="bg-white/50 dark:bg-slate-900/70 backdrop-blur rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 hover:border-purple-200 dark:hover:border-purple-500/30 hover:shadow-lg dark:hover:shadow-black/20 transition-all hover:-translate-y-1">
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-4 sm:p-6 mb-6 border border-purple-100 dark:border-purple-800/30">
-                <div className="text-xs sm:text-sm font-bold text-purple-900 dark:text-purple-200 mb-3 flex items-center gap-1"><PhoneIcon className="h-5 w-5" /> BOOKING SOURCES</div>
+                <div className="text-xs sm:text-sm font-bold text-purple-900 dark:text-purple-200 mb-3 flex items-center gap-1"><PhoneIcon className="h-5 w-5" /> {t('public.problemBookingSourcesTitle')}</div>
                 <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
-                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg dark:text-slate-300 flex items-center gap-1"><PhoneIcon className="h-4 w-4" /> Call</span>
-                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg dark:text-slate-300 flex items-center gap-1"><MessageIcon className="h-4 w-4" /> WhatsApp</span>
-                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg dark:text-slate-300 flex items-center gap-1"><InstagramIcon className="h-4 w-4" /> Instagram</span>
-                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg text-red-600 dark:text-red-400 font-bold flex items-center gap-1"><AlertIcon className="h-4 w-4" /> Double-booking</span>
+                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg dark:text-slate-300 flex items-center gap-1"><PhoneIcon className="h-4 w-4" /> {t('public.bookingSourceCall')}</span>
+                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg dark:text-slate-300 flex items-center gap-1"><MessageIcon className="h-4 w-4" /> {t('public.bookingSourceWhatsapp')}</span>
+                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg dark:text-slate-300 flex items-center gap-1"><InstagramIcon className="h-4 w-4" /> {t('public.bookingSourceInstagram')}</span>
+                  <span className="bg-white/70 dark:bg-white/5 px-2 py-1 rounded-lg text-red-600 dark:text-red-400 font-bold flex items-center gap-1"><AlertIcon className="h-4 w-4" /> {t('public.mockupDoubleBooking')}</span>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">Messy Booking Flow</h3>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">Bookings come from calls, WhatsApp, Instagram, and walk-ins with zero central calendar. Double-bookings happen. Clients get conflicting information.</p>
-              <div className="inline-block bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-red-400/20">Chaos and lost sales</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{t('public.problemMessyBookingDesc')}</h3>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{t('public.problemMessyBookingExplain')}</p>
+              <div className="inline-block bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-red-400/20">{t('public.problemMessyBookingTag')}</div>
             </div>
 
             {/* Card 5: No Loyalty Tracking */}
             <div className="bg-white/50 dark:bg-slate-900/70 backdrop-blur rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 hover:border-pink-200 dark:hover:border-pink-500/30 hover:shadow-lg dark:hover:shadow-black/20 transition-all hover:-translate-y-1">
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-2xl p-4 sm:p-6 mb-6 border border-pink-100 dark:border-pink-800/30">
-                <div className="text-xs sm:text-sm font-bold text-pink-900 dark:text-pink-200 mb-3 flex items-center gap-2"><GiftIcon className="h-5 w-5" /> LOYALTY CARD</div>
+                <div className="text-xs sm:text-sm font-bold text-pink-900 dark:text-pink-200 mb-3 flex items-center gap-2"><GiftIcon className="h-5 w-5" /> {t('public.problemLoyaltyTitle')}</div>
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg flex justify-between dark:text-slate-300">
-                    <span>Visits:</span>
+                    <span>{t('public.mockupVisitsLabel')}:</span>
                     <span>3/5 ✓✓✓</span>
                   </div>
                   <div className="bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg text-red-700 dark:text-red-300 font-semibold">
-                    Reward not tracked
+                    {t('public.problemRewardNotTracked')}
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">No Loyalty Tracking</h3>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">Regular clients are your best asset, but many businesses track loyalty manually or not at all. Repeat customers feel undervalued and invisible.</p>
-              <div className="inline-block bg-pink-100 dark:bg-pink-500/15 text-pink-700 dark:text-pink-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-pink-400/20">Lost repeat business</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{t('public.problemNoLoyaltyDesc')}</h3>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{t('public.problemNoLoyaltyExplain')}</p>
+              <div className="inline-block bg-pink-100 dark:bg-pink-500/15 text-pink-700 dark:text-pink-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-pink-400/20">{t('public.problemNoLoyaltyTag')}</div>
             </div>
 
             {/* Card 6: No Customer History */}
             <div className="bg-white/50 dark:bg-slate-900/70 backdrop-blur rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:shadow-lg dark:hover:shadow-black/20 transition-all hover:-translate-y-1">
               <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-2xl p-4 sm:p-6 mb-6 border border-indigo-100 dark:border-indigo-800/30">
-                <div className="text-xs sm:text-sm font-bold text-indigo-900 dark:text-indigo-200 mb-3 flex items-center gap-2"><UserIcon className="h-5 w-5" /> CLIENT PROFILE</div>
+                <div className="text-xs sm:text-sm font-bold text-indigo-900 dark:text-indigo-200 mb-3 flex items-center gap-2"><UserIcon className="h-5 w-5" /> {t('public.problemClientProfileTitle')}</div>
                 <div className="space-y-2 text-xs sm:text-sm">
                   <div className="bg-white/70 dark:bg-white/5 px-3 py-2 rounded-lg dark:text-slate-300">
-                    <span className="font-semibold">Last service:</span> 21 days ago
+                    <span className="font-semibold">{t('public.mockupLastServiceLabel')}:</span> 21 {t('public.problemDaysAgo')}
+
                   </div>
                   <div className="bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg text-red-700 dark:text-red-300 font-semibold">
-                    ✗ Notes/history missing
+                    ✗ {t('public.mockupNotesHistoryMissing')}
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">No Customer History</h3>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">Without a client database, you forget names, preferences, what they bought, and their service history. Every visit feels like the first time.</p>
-              <div className="inline-block bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-indigo-400/20">Lost context</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{t('public.problemNoHistoryDesc')}</h3>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{t('public.problemNoHistoryExplain')}</p>
+              <div className="inline-block bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-200 text-xs sm:text-sm px-3 py-1 rounded-full font-semibold dark:border dark:border-indigo-400/20">{t('public.problemNoHistoryTag')}</div>
             </div>
           </div>
 
@@ -361,55 +362,55 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
               <div>
                 <h4 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                  <span className="text-red-500">✗</span> Before Bookorvia
+                  <span className="text-red-500">✗</span> {t('public.comparisonBefore')}
                 </h4>
                 <ul className="space-y-3 text-sm sm:text-base text-slate-700 dark:text-slate-300">
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 font-bold mt-0.5">•</span>
-                    <span>Bookings scattered across calls, WhatsApp, Instagram</span>
+                    <span>{t('public.comparisonBeforeItem1')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 font-bold mt-0.5">•</span>
-                    <span>Follow-ups depend on memory and manual reminders</span>
+                    <span>{t('public.comparisonBeforeItem2')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 font-bold mt-0.5">•</span>
-                    <span>Happy clients never asked for reviews</span>
+                    <span>{t('public.comparisonBeforeItem3')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 font-bold mt-0.5">•</span>
-                    <span>No loyalty tracking, clients feel forgotten</span>
+                    <span>{t('public.comparisonBeforeItem4')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-500 font-bold mt-0.5">•</span>
-                    <span>Client history lost between visits</span>
+                    <span>{t('public.comparisonBeforeItem5')}</span>
                   </li>
                 </ul>
               </div>
               <div>
                 <h4 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                  <span className="text-green-600">✓</span> With Bookorvia
+                  <span className="text-green-600">✓</span> {t('public.comparisonAfter')}
                 </h4>
                 <ul className="space-y-3 text-sm sm:text-base text-slate-700 dark:text-slate-300">
                   <li className="flex items-start gap-3">
                     <span className="text-green-600 font-bold mt-0.5">•</span>
-                    <span>One unified calendar. Bookings in one place.</span>
+                    <span>{t('public.comparisonAfterItem1')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-600 font-bold mt-0.5">•</span>
-                    <span>Automated follow-ups sent at the right time</span>
+                    <span>{t('public.comparisonAfterItem2')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-600 font-bold mt-0.5">•</span>
-                    <span>Auto-request reviews from happy clients</span>
+                    <span>{t('public.comparisonAfterItem3')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-600 font-bold mt-0.5">•</span>
-                    <span>Digital loyalty cards visible to customers</span>
+                    <span>{t('public.comparisonAfterItem4')}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-600 font-bold mt-0.5">•</span>
-                    <span>Complete client history at your fingertips</span>
+                    <span>{t('public.comparisonAfterItem5')}</span>
                   </li>
                 </ul>
               </div>
@@ -420,47 +421,47 @@ export default function Home() {
         {/* Features Section */}
         <section id="features" className="py-16 sm:py-20 md:py-32">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">Everything you need to manage your business</h2>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-2">Professional tools built for local service businesses</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">{t('public.featuresHeading')}</h2>
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto px-2">{t('public.featuresSubheading')}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {[
               {
                 Icon: CalendarIcon,
-                title: 'Smart Booking Calendar',
-                desc: 'Set your availability, let clients book instantly. Auto-confirm or review each booking.',
-                visual: 'Today\n• 9:00 AM - Haircut\n• 10:30 AM - Beard\n• 2:00 PM - (Open)\n• 4:00 PM - Color'
+                title: t('public.featureSmartBookingTitle'),
+                desc: t('public.featureSmartBookingDesc'),
+                visual: t('public.featureSmartBookingVisual')
               },
               {
                 Icon: ClientsIcon,
-                title: 'Client Database',
-                desc: 'Keep all customer info in one place. Track history, preferences, and contact info.',
-                visual: 'John Smith\nPhone: +34 612 345 678\n12 visits\nRating: 5.0'
+              title: t('public.featureClientDatabaseTitle'),
+              desc: t('public.featureClientDatabaseDesc'),
+                visual: t('public.featureClientDatabaseVisual')
               },
               {
                 Icon: ReviewsIcon,
-                title: 'Review Booster',
-                desc: 'Automatically ask for Google & Trustpilot reviews after each service.',
-                visual: 'Request sent\nVia email & SMS\n87% response rate\nRating +0.4'
+              title: t('public.featureReviewBoosterTitle'),
+              desc: t('public.featureReviewBoosterDesc'),
+                visual: t('public.featureReviewBoosterVisual')
               },
               {
                 Icon: FollowUpsIcon,
-                title: 'WhatsApp Follow-ups',
-                desc: 'Send automated reminders and follow-ups. Keep clients engaged between visits.',
-                visual: 'Ready to send\n2 clients\nScheduled\nAuto-reschedule'
+              title: t('public.featureWhatsappFollowupsTitle'),
+              desc: t('public.featureWhatsappFollowupsDesc'),
+                visual: t('public.featureWhatsappFollowupsVisual')
               },
               {
                 Icon: LoyaltyIcon,
-                title: 'Loyalty Cards',
-                desc: 'Digital loyalty programs. Customers collect stamps, earn rewards. Drive repeat visits.',
-                visual: 'Loyalty Card\n[■■■□□] 3/5\nReward ready\n€25 discount'
+              title: t('public.featureLoyaltyCardsTitle'),
+              desc: t('public.featureLoyaltyCardsDesc'),
+                visual: t('public.featureLoyaltyCardsVisual')
               },
               {
                 Icon: QRIcon,
-                title: 'QR/NFC Public Page',
-                desc: 'One link for everything. Booking, reviews, loyalty, business info. Share everywhere.',
-                visual: 'Scan with phone\nView availability\nBook instantly\nSee reviews'
+              title: t('public.featureQRPageTitle'),
+              desc: t('public.featureQRPageDesc'),
+                visual: t('public.featureQRPageVisual')
               },
             ].map((feature, i) => {
               const { Icon, title, desc, visual } = feature;
@@ -485,16 +486,16 @@ export default function Home() {
         {/* How It Works */}
         <section className="py-16 sm:py-20 md:py-32">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">How it works in 5 minutes</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">{t('public.howItWorksHeading')}</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-4">
             {[
-              { num: '1', title: 'Create Account', desc: 'Sign up with email' },
-              { num: '2', title: 'Add Services', desc: 'Define services & pricing' },
-              { num: '3', title: 'Set Hours', desc: 'Choose working hours' },
-              { num: '4', title: 'Share QR', desc: 'Get your QR code' },
-              { num: '5', title: 'Get Bookings', desc: 'Start receiving requests' },
+              { num: '1', title: t('public.stepCreateAccount'), desc: t('public.stepCreateAccountDesc') },
+              { num: '2', title: t('public.stepAddServices'), desc: t('public.stepAddServicesDesc') },
+              { num: '3', title: t('public.stepSetHours'), desc: t('public.stepSetHoursDesc') },
+              { num: '4', title: t('public.stepShareQR'), desc: t('public.stepShareQRDesc') },
+              { num: '5', title: t('public.stepGetBookings'), desc: t('public.stepGetBookingsDesc') },
             ].map((step, i) => (
               <div key={i} className="text-center">
                 <div className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-xl sm:text-2xl font-bold mx-auto mb-3 sm:mb-4">{step.num}</div>
@@ -508,42 +509,42 @@ export default function Home() {
         {/* Pricing Section */}
         <section id="pricing" className="py-16 sm:py-20 md:py-32">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">Simple, transparent pricing</h2>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300">Choose the plan that fits your business</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">{t('public.pricingHeading')}</h2>
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300">{t('public.pricingSubheading')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 auto-rows-max">
             {[
               {
-                name: 'Starter',
+                name: t('public.planStarter'),
                 price: '19€',
-                period: '/month',
-                desc: 'For small businesses starting online booking',
-                features: ['Booking calendar', 'Up to 50 bookings/month', 'Client database', 'Basic email support'],
-                button: 'Start Free Trial',
+                period: t('public.pricingPeriod'),
+                desc: t('public.planStarterDesc'),
+                features: [t('public.featureBookingCalendar'), t('public.featureBookingsLimit'), t('public.featureClientDatabase'), t('public.featureEmailSupport')],
+                button: t('public.pricingCTA'),
               },
               {
-                name: 'Pro',
+                name: t('public.planPro'),
                 price: '39€',
-                period: '/month',
-                desc: 'Most popular. For growing businesses',
-                features: ['Everything in Starter', 'Unlimited bookings', 'Reviews & ratings', 'WhatsApp follow-ups', 'Loyalty cards', 'QR/NFC page', 'Priority support'],
-                button: 'Start Free Trial',
+                period: t('public.pricingPeriod'),
+                desc: t('public.planProDesc'),
+                features: [t('public.featureEverythingInStarter'), t('public.featureUnlimitedBookings'), t('public.featureReviewsRatings'), t('public.featureWhatsappFollowups'), t('public.featureLoyaltyCards'), t('public.featureQRPage'), t('public.featurePrioritySupport')],
+                button: t('public.pricingCTA'),
                 popular: true,
               },
               {
-                name: 'Business',
+                name: t('public.planBusiness'),
                 price: '79€',
-                period: '/month',
-                desc: 'For teams and advanced management',
-                features: ['Everything in Pro', 'Advanced analytics', 'Multi-user access', 'Custom branding', 'API access', 'Dedicated support'],
-                button: 'Start Free Trial',
+                period: t('public.pricingPeriod'),
+                desc: t('public.planBusinessDesc'),
+                features: [t('public.featureEverythingInPro'), t('public.featureAdvancedAnalytics'), t('public.featureMultiUserAccess'), t('public.featureCustomBranding'), t('public.featureAPIAccess'), t('public.featureDedicatedSupport')],
+                button: t('public.pricingCTA'),
               },
             ].map((plan, i) => (
               <div key={i} className={`rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-all flex flex-col ${plan.popular ? 'md:scale-105 md:shadow-2xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white border-2 border-indigo-600' : 'bg-white/50 dark:bg-slate-900/70 border border-white/60 dark:border-white/10 hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:shadow-lg dark:hover:shadow-black/20'}`}>
                 <div className="mb-4 sm:mb-6">
                   <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${plan.popular ? '' : 'text-slate-900 dark:text-white'}`}>{plan.name}</h3>
-                  {plan.popular && <div className="inline-block bg-indigo-700 text-xs px-3 py-1 rounded-full font-semibold mb-4">Most popular</div>}
+                  {plan.popular && <div className="inline-block bg-indigo-700 text-xs px-3 py-1 rounded-full font-semibold mb-4">{t('public.planPopularBadge')}</div>}
                 </div>
                 <div className="mb-6 sm:mb-8">
                   <div className={`text-4xl sm:text-5xl font-bold ${plan.popular ? '' : 'text-slate-900 dark:text-white'}`}>{plan.price}</div>
@@ -568,10 +569,10 @@ export default function Home() {
         {/* Final CTA */}
         <section className="py-16 sm:py-20 md:py-32 text-center">
           <div className="max-w-3xl mx-auto px-2">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6">Ready to turn more clients into regulars?</h2>
-            <p className="text-base sm:text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-6 sm:mb-8 leading-relaxed">Start your 14-day free trial today. No credit card required.</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6">{t('public.finalCTAHeading')}</h2>
+            <p className="text-base sm:text-lg md:text-xl text-slate-700 dark:text-slate-300 mb-6 sm:mb-8 leading-relaxed">{t('public.finalCTASubheading')}</p>
             <a href="/register" className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold text-sm sm:text-lg hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95">
-              Start Free Trial
+              {t('public.finalCTAButton')}
             </a>
           </div>
         </section>
@@ -586,33 +587,33 @@ export default function Home() {
                 <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold">B</div>
                 <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Bookorvia</span>
               </div>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-xs leading-relaxed">Help local service businesses turn first-time clients into loyal regulars with smart booking, reviews, and loyalty tools.</p>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-xs leading-relaxed">{t('public.footerAbout')}</p>
             </div>
             <div className="grid grid-cols-2 gap-8">
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-4 text-sm sm:text-base">Product</h4>
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-4 text-sm sm:text-base">{t('public.footerProductHeading')}</h4>
                 <ul className="space-y-2 text-xs sm:text-sm">
-                  <li><a href="/#features" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Features</a></li>
-                  <li><a href="/#pricing" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</a></li>
-                  <li><a href="/b/demo" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Demo</a></li>
+                  <li><a href="/#features" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.features')}</a></li>
+                  <li><a href="/#pricing" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.pricing')}</a></li>
+                  <li><a href="/b/demo" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.demo')}</a></li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-4 text-sm sm:text-base">Legal</h4>
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-4 text-sm sm:text-base">{t('public.footerLegalHeading')}</h4>
                 <ul className="space-y-2 text-xs sm:text-sm">
-                  <li><a href="/terms" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Terms</a></li>
-                  <li><a href="/privacy" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Privacy</a></li>
-                  <li><a href="/cookies" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Cookies</a></li>
-                  <li><a href="/refund-policy" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Refunds</a></li>
+                  <li><a href="/terms" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.terms')}</a></li>
+                  <li><a href="/privacy" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.privacy')}</a></li>
+                  <li><a href="/cookies" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.cookies')}</a></li>
+                  <li><a href="/refund-policy" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.refunds')}</a></li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="border-t border-white/40 dark:border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
-            <div className="text-slate-600 dark:text-slate-400 text-center sm:text-left">© {new Date().getFullYear()} Bookorvia — Built for local businesses</div>
+            <div className="text-slate-600 dark:text-slate-400 text-center sm:text-left">© {new Date().getFullYear()} Bookorvia — {t('public.footerTagline')}</div>
             <div className="flex items-center gap-4 flex-wrap justify-center">
-              <a href="/contact" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Contact</a>
-              <a href="/help" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Help</a>
+              <a href="/contact" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.contact')}</a>
+              <a href="/help" className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">{t('public.help')}</a>
             </div>
           </div>
         </div>
