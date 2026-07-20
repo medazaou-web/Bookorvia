@@ -11,21 +11,28 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 
 export async function getAuthenticatedUser(request: NextRequest) {
-  // In API route handlers, we get cookies from the incoming request headers
-  const { cookies: getCookies } = await import('next/headers');
-  const cookieStore = getCookies();
-  
-  const supabase = createServerSupabase(cookieStore);
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  try {
+    // For API routes: create a server client that reads cookies from the request
+    const supabase = createServerSupabase();
+    
+    // The server client will automatically extract auth from cookies
+    // (they're available in the request context)
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-  if (error || !user) {
+    if (error || !user) {
+      console.log('❌ [getAuthenticatedUser] No user found:', error?.message);
+      return null;
+    }
+
+    console.log('✅ [getAuthenticatedUser] User authenticated:', user.id);
+    return user;
+  } catch (e: any) {
+    console.error('❌ [getAuthenticatedUser] Error:', e.message);
     return null;
   }
-
-  return user;
 }
 
 export async function getAuthenticatedUserOrThrow(request: NextRequest) {

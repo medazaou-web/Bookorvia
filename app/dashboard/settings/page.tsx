@@ -330,6 +330,8 @@ export default function DashboardSettings() {
       const timestamp = Date.now();
       const storagePath = `${userId}/${businessId}-cover-${timestamp}.${ext}`;
 
+      console.log('📤 [Cover Upload] Uploading to:', storagePath);
+
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadErr } = await supabase.storage
         .from("business-covers")
@@ -339,10 +341,14 @@ export default function DashboardSettings() {
         });
 
       if (uploadErr) {
-        console.error("Cover image upload error:", uploadErr);
+        console.error("❌ Cover image upload error:", uploadErr);
         const errorMsg = uploadErr?.message?.toLowerCase() || "";
         if (errorMsg.includes("bucket") || errorMsg.includes("not found")) {
-          throw new Error(t('dashboard.storageNotReadyError'));
+          // Try to initialize the bucket
+          await fetch('/api/services/init-bucket?type=business-covers').catch(() => {});
+          setUploadError("Storage bucket was not ready. Please try again in a moment.");
+          setUploading(false);
+          return;
         }
         throw uploadErr;
       }
@@ -358,7 +364,7 @@ export default function DashboardSettings() {
         throw new Error(t('dashboard.getPublicUrlError'));
       }
 
-      console.log("Cover image uploaded successfully:", { storagePath, publicUrl });
+      console.log("✅ Cover image uploaded successfully:", { storagePath, publicUrl });
 
       // Update database with new cover image URL
       const { error: updateErr } = await supabase
@@ -368,7 +374,7 @@ export default function DashboardSettings() {
         .eq("user_id", userId);
 
       if (updateErr) {
-        console.error("Database update error:", updateErr);
+        console.error("❌ Database update error:", updateErr);
         throw updateErr;
       }
 
@@ -377,7 +383,7 @@ export default function DashboardSettings() {
       setUploadError(null);
       setSuccess(t('dashboard.uploadedSuccess'));
     } catch (e: any) {
-      console.error("Cover image upload catch error:", e);
+      console.error("❌ Cover image upload catch error:", e);
       setUploadError(e?.message || "Failed to upload cover image. Please try again.");
     } finally {
       setUploading(false);

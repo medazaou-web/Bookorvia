@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import supabase from "../../../lib/supabase/browserClient";
 import { useTranslations } from "@/lib/i18n";
+import DatePicker from "@/components/ui/DatePicker";
 
 type Service = {
   id: string;
@@ -440,28 +441,13 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
           <span>📅</span>
           {t('booking.preferredDate')}
         </label>
-        <div className="relative group">
-          <input
-            value={requested_date}
-            onChange={(e) => setRequestedDate(e.target.value)}
-            type="date"
-            className={`w-full px-4 py-3 rounded-xl border-2 transition-all font-semibold shadow-sm hover:shadow-md focus:shadow-lg appearance-none cursor-pointer ${
-              theme.input
-            } ${
-              requested_date 
-                ? 'border-indigo-400 dark:border-indigo-500' 
-                : 'border-slate-300 dark:border-slate-600'
-            } focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/30`}
-            min={new Date().toISOString().split('T')[0]}
-            required={selectedServices.some(s => s.duration_minutes)}
-            disabled={selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes)}
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-        </div>
+        <DatePicker
+          value={requested_date}
+          onChange={setRequestedDate}
+          minDate={new Date().toISOString().split('T')[0]}
+          disabled={selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes)}
+          theme={{ input: theme.input, label: theme.label }}
+        />
       </div>
 
       {/* Time Slots */}

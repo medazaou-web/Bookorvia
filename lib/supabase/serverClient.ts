@@ -13,6 +13,7 @@ export function createServerSupabase(cookieStore?: any) {
     "";
 
   // Default to Next's cookies() helper when no cookieStore is provided.
+  // In Next.js 16, cookies() is sync if called synchronously from a sync context
   const cookiesToUse = cookieStore ?? nextCookies();
 
   // createServerClient takes (supabaseUrl, supabaseKey, { cookies })
