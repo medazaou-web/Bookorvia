@@ -140,7 +140,13 @@ export default function AdminNotificationsPage() {
         return;
       }
 
-      setSuccessMessage(t('adminMessages.notificationSent').replace('{count}', data.notificationsSent));
+      const deliveredCount = data?.notificationsSent ?? 0;
+      const usersWithoutBusiness = data?.usersWithoutBusiness ?? 0;
+      let successText = t('adminMessages.notificationSent').replace('{count}', String(deliveredCount));
+      if (usersWithoutBusiness > 0) {
+        successText += ` (${usersWithoutBusiness} targeted user${usersWithoutBusiness > 1 ? 's' : ''} had no business inbox)`;
+      }
+      setSuccessMessage(successText);
       setTitle("");
       setMessage("");
       setSendToAll(true);

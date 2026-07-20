@@ -113,34 +113,42 @@ export async function POST(request: NextRequest) {
       .in('user_id', targetUserIds)
       .limit(50000);
 
+    const uniqueBusinessOwnerIds = new Set((businesses || []).map((b: any) => b.user_id));
+    const usersWithoutBusinessCount = Math.max(0, targetUserIds.length - uniqueBusinessOwnerIds.size);
+
     // OPTIMIZED: Batch insert notifications instead of individual inserts
+    let inAppNotificationsSent = 0;
     if (businesses && businesses.length > 0) {
+      // DB table can enforce legacy type constraints; store a safe DB type and keep admin type in data.
+      const dbType = 'update';
       const notifications = businesses.map(business => ({
         business_id: business.id,
-        type,
+        type: dbType,
         title,
         message,
         data: {
           icon,
+          adminType: type,
           isAdmin: true,
           timestamp: new Date().toISOString(),
         },
         read: false,
       }));
 
-      try {
-        const { error: batchError } = await supabase
-          .from('notifications')
-          .insert(notifications);
+      const { error: batchError } = await supabase
+        .from('notifications')
+        .insert(notifications);
 
-        if (batchError) {
-          console.error(`❌ Failed to batch insert notifications:`, batchError);
-        } else {
-          console.log(`✅ Batch inserted ${notifications.length} in-app notifications (50-100x faster!)`);
-        }
-      } catch (err) {
-        console.error(`❌ Error batch inserting notifications:`, err);
+      if (batchError) {
+        console.error(`❌ Failed to batch insert notifications:`, batchError);
+        return NextResponse.json(
+          { error: `Failed to create in-app notifications: ${batchError.message}` },
+          { status: 500 }
+        );
       }
+
+      inAppNotificationsSent = notifications.length;
+      console.log(`✅ Batch inserted ${inAppNotificationsSent} in-app notifications`);
     }
 
     // Send emails if configured
@@ -248,8 +256,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: `Notification sent to ${targetUserIds.length} users`,
-        notificationsSent: targetUserIds.length,
+        message: `Notification delivered to ${inAppNotificationsSent} in-app inboxes`,
+        notificationsSent: inAppNotificationsSent,
+        usersTargeted: targetUserIds.length,
+        usersWithoutBusiness: usersWithoutBusinessCount,
       },
       { status: 200 }
     );

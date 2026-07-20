@@ -153,9 +153,13 @@ export default function NotificationBell() {
     oscillator.stop(audioContext.currentTime + 0.5);
   }
 
-  function getNotificationIconComponent(type: string) {
+  function getNotificationIconComponent(type: string, data?: any) {
+      const effectiveType = (data?.adminType as string) || type;
+      if (data?.icon) {
+        return <span className="text-xl">{data.icon}</span>;
+      }
     const iconProps = "w-5 h-5";
-    switch (type) {
+      switch (effectiveType) {
       case "announcement":
         return <span className="text-xl">📢</span>;
       case "issue":
@@ -169,8 +173,9 @@ export default function NotificationBell() {
     }
   }
 
-  function getNotificationColor(type: string) {
-    switch (type) {
+  function getNotificationColor(type: string, data?: any) {
+    const effectiveType = (data?.adminType as string) || type;
+    switch (effectiveType) {
       case "announcement":
         return "border-l-blue-600 bg-blue-50 dark:bg-blue-900/20";
       case "issue":
@@ -238,13 +243,14 @@ export default function NotificationBell() {
                 <div
                   key={notification.id}
                   className={`p-4 border-l-4 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${getNotificationColor(
-                    notification.type
+                    notification.type,
+                    notification.data
                   )}`}
                   onClick={() => !notification.read && markAsRead(notification.id)}
                 >
                   <div className="flex gap-3">
                     <div className="text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-1">
-                      {getNotificationIconComponent(notification.type)}
+                      {getNotificationIconComponent(notification.type, notification.data)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className={`font-semibold text-sm ${!notification.read ? "text-slate-900 dark:text-slate-100" : "text-slate-700 dark:text-slate-300"}`}>
