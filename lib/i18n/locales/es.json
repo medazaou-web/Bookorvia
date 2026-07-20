@@ -695,7 +695,7 @@
     "clientsRefresh": "Actualizar",
     "clientsAddClient": "+ Añadir Cliente",
     "clientsLoading": "Cargando clientes…",
-    "clientsNoClientes": "Sin clientes aún",
+    "clientsNoClients": "Sin clientes aún",
     "clientsNoClinetsHint": "Las nuevas solicitudes de reserva y mensajes de WhatsApp crearán automáticamente clientes",
     "clientsAddFirstClient": "Añadir Tu Primer Cliente",
     "clientsTableHeaders": {

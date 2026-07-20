@@ -235,7 +235,7 @@ export default function DashboardClients() {
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center">
             <UsersIcon className="h-12 w-12 mx-auto mb-4 opacity-40" />
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">{t('dashboardUI.clientsNoClientes')}</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">{t('dashboardUI.clientsNoClients')}</h3>
             <p className="text-slate-600 dark:text-slate-400 mb-6">{t('dashboardUI.clientsNoClinetsHint')}</p>
             <button onClick={() => setShowAdd(true)} className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:shadow-lg transition-all">{t('dashboardUI.clientsAddFirstClient')}</button>
           </div>

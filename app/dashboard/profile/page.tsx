@@ -181,8 +181,8 @@ export default function ProfilePage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('dashboardUI.profile.profileSettings')}</h1>
-        <p className="text-slate-600">{t('dashboardUI.profile.manageAccountInfo')}</p>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">{t('dashboardUI.profile.profileSettings')}</h1>
+        <p className="text-slate-600 dark:text-slate-400">{t('dashboardUI.profile.manageAccountInfo')}</p>
       </div>
 
       {/* Messages */}
@@ -190,8 +190,8 @@ export default function ProfilePage() {
         <div
           className={`mb-6 p-4 rounded-xl border ${
             message.type === "success"
-              ? "bg-emerald-50 border-emerald-200/60 text-emerald-800"
-              : "bg-red-50 border-red-200/60 text-red-800"
+              ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300"
+              : "bg-red-50 dark:bg-red-900/20 border-red-200/60 dark:border-red-800/60 text-red-800 dark:text-red-300"
           }`}
         >
           {message.type === "success" ? "✓" : "✕"} {message.text}
@@ -199,11 +199,11 @@ export default function ProfilePage() {
       )}
 
       {/* Profile Card */}
-      <div className="rounded-3xl bg-white/70 backdrop-blur border border-slate-200/60 p-8 max-w-2xl">
+      <div className="rounded-3xl bg-white/70 dark:bg-slate-900/50 backdrop-blur border border-slate-200/60 dark:border-slate-700/60 p-8 max-w-2xl">
         <div className="space-y-8">
           {/* Avatar Section */}
           <div>
-            <label className="block text-sm font-bold text-slate-900 mb-4">
+            <label className="block text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">
               {t('dashboardUI.profile.profilePicture')}
             </label>
 
@@ -247,12 +247,12 @@ export default function ProfilePage() {
                   {t('dashboardUI.profile.uploadPhoto')}
                 </button>
 
-                <p className="text-xs text-slate-600 mt-2">
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
                   {t('dashboardUI.profile.pictureRequirements')}
                 </p>
 
                 {avatarFile && (
-                  <p className="text-sm text-indigo-600 font-medium mt-2">
+                  <p className="text-sm text-indigo-600 dark:text-indigo-400 font-medium mt-2">
                     ✓ {avatarFile.name} selected
                   </p>
                 )}
@@ -261,7 +261,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-slate-200/40" />
+          <div className="border-t border-slate-200/40 dark:border-slate-700/40" />
 
           {/* Full Name */}
           <div>

@@ -296,27 +296,27 @@ export default async function BusinessPage({ params }: Props) {
                     {/* Content */}
                     <div className="relative p-6 sm:p-8 h-full flex flex-col justify-between">
                       <div className="mb-4">
-                        <h3 className={`text-xl font-bold transition-colors text-white`} style={{textShadow: "0 2px 8px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3)"}}>{s.name}</h3>
+                        <h3 className={`text-xl font-bold transition-colors ${s.background_image_url ? 'text-white' : theme.text}`} style={s.background_image_url ? {textShadow: "0 2px 8px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3)"} : {}}>{s.name}</h3>
                         {s.description && (
-                          <p className={`text-white/95 text-sm mt-2`} style={{textShadow: "0 1px 4px rgba(0,0,0,0.5)"}}>{s.description}</p>
+                          <p className={`text-sm mt-2 ${s.background_image_url ? 'text-white/95' : 'opacity-70'}`} style={s.background_image_url ? {textShadow: "0 1px 4px rgba(0,0,0,0.5)"} : {}}>{s.description}</p>
                         )}
                       </div>
 
                       {/* Price & Duration */}
-                      <div className="my-6 pt-6 border-t border-white/30">
+                      <div className="my-6 pt-6 border-t" style={{borderColor: s.background_image_url ? 'rgba(255,255,255,0.3)' : 'var(--border-color, #e2e8f0)'}}>
                         <div className="grid grid-cols-2 gap-4">
                           {s.price && (
                             <div>
-                              <p className={`text-xs font-semibold uppercase text-white/80`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>Price</p>
-                              <p className={`text-2xl font-bold mt-1 text-white`} style={{textShadow: "0 2px 6px rgba(0,0,0,0.5)"}}>{s.price}</p>
-                              <p className={`text-xs text-white/80 mt-1`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>{s.currency || 'MAD'}</p>
+                              <p className={`text-xs font-semibold uppercase ${s.background_image_url ? 'text-white/80' : 'opacity-60'}`} style={s.background_image_url ? {textShadow: "0 1px 3px rgba(0,0,0,0.5)"} : {}}>Price</p>
+                              <p className={`text-2xl font-bold mt-1 ${s.background_image_url ? 'text-white' : theme.text}`} style={s.background_image_url ? {textShadow: "0 2px 6px rgba(0,0,0,0.5)"} : {}}>{s.price}</p>
+                              <p className={`text-xs mt-1 ${s.background_image_url ? 'text-white/80' : 'opacity-60'}`} style={s.background_image_url ? {textShadow: "0 1px 3px rgba(0,0,0,0.5)"} : {}}>{s.currency || 'MAD'}</p>
                             </div>
                           )}
                           {s.duration_minutes && (
                             <div>
-                              <p className={`text-xs font-semibold uppercase text-white/80`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>Duration</p>
-                              <p className={`text-2xl font-bold mt-1 text-white`} style={{textShadow: "0 2px 6px rgba(0,0,0,0.5)"}}>{s.duration_minutes}</p>
-                              <p className={`text-xs text-white/80 mt-1`} style={{textShadow: "0 1px 3px rgba(0,0,0,0.5)"}}>min</p>
+                              <p className={`text-xs font-semibold uppercase ${s.background_image_url ? 'text-white/80' : 'opacity-60'}`} style={s.background_image_url ? {textShadow: "0 1px 3px rgba(0,0,0,0.5)"} : {}}>Duration</p>
+                              <p className={`text-2xl font-bold mt-1 ${s.background_image_url ? 'text-white' : theme.text}`} style={s.background_image_url ? {textShadow: "0 2px 6px rgba(0,0,0,0.5)"} : {}}>{s.duration_minutes}</p>
+                              <p className={`text-xs mt-1 ${s.background_image_url ? 'text-white/80' : 'opacity-60'}`} style={s.background_image_url ? {textShadow: "0 1px 3px rgba(0,0,0,0.5)"} : {}}>min</p>
                             </div>
                           )}
                         </div>

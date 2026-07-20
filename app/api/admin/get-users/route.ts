@@ -26,10 +26,10 @@ export async function GET(request: NextRequest) {
     const emailMap = new Map(authUsers.map(u => [u.id, u.email]));
     console.log(`⚡ [get-users API] Fetched ${authUsers.length} auth users`);
 
-    // Get profiles with pagination
+    // Get profiles with all needed fields
     const { data: profiles, error } = await supabase
       .from('profiles')
-      .select('id, full_name')
+      .select('id, full_name, role, avatar_url, created_at')
       .limit(10000); // Add pagination limit
 
     if (error) {
@@ -46,6 +46,9 @@ export async function GET(request: NextRequest) {
         id: profile.id,
         name: profile.full_name || 'Unknown User',
         email: emailMap.get(profile.id) || '',
+        role: profile.role || 'user',
+        avatar_url: profile.avatar_url || null,
+        created_at: profile.created_at,
       }))
       .filter(u => u.email); // Only return users with emails
 

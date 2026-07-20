@@ -913,23 +913,17 @@ function CalendarSettingsTab({ businessId }: any) {
     setMessage(null);
 
     try {
-      // Delete existing settings for this business
-      const { error: deleteErr } = await supabase
+      // Use upsert to avoid constraint conflicts
+      const { error: upsertErr } = await supabase
         .from('business_calendar_settings')
-        .delete()
-        .eq('business_id', businessId);
-
-      if (deleteErr) throw deleteErr;
-
-      // Insert new settings
-      const { error: insertErr } = await supabase
-        .from('business_calendar_settings')
-        .insert({
+        .upsert({
           business_id: businessId,
           ...settings,
+        }, {
+          onConflict: 'business_id'
         });
 
-      if (insertErr) throw insertErr;
+      if (upsertErr) throw upsertErr;
 
       setMessage({ type: 'success', text: '✓ ' + t('dashboardUI.calendarSettings.settingsSaved') });
     } catch (err: any) {
@@ -1240,7 +1234,7 @@ function QuickAddModal({ businessId, initialDate, initialTime, onClose, onEventA
               disabled={saving}
               className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:shadow-lg transition-all disabled:opacity-50"
             >
-              {saving ? '⏳ ' + t('dashboardUI.calendarEvent.adding') : '✓ ' + t('dashboardUI.calendarEvent.add')}
+              {saving ? '⏳ ' + t('dashboardUI.calendarEvent.adding') : '✓ ' + t('dashboardUI.calendarEvent.addEvent')}
             </button>
           </div>
         </form>

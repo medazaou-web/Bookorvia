@@ -10,7 +10,7 @@ import AdminGuard from "../AdminGuard";
 interface UserProfile {
   id: string;
   email?: string;
-  full_name?: string;
+  name?: string;
   role?: string;
   avatar_url?: string;
   created_at?: string;
@@ -40,30 +40,21 @@ export default function AdminUsersPage() {
         setCurrentRole((profile as any)?.role ?? "user");
       }
 
-      // Get all profiles
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, role, avatar_url, created_at");
+      // Get all users from API endpoint
+      const response = await fetch('/api/admin/get-users', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-      // Fetch emails from auth for each profile
-      const usersWithEmails = await Promise.all(
-        (profiles ?? []).map(async (profile: any) => {
-          let email = "";
-          try {
-            const { data: authData } = await supabase.auth.admin.getUserById(profile.id);
-            email = (authData?.user?.email) ?? "";
-          } catch (e) {
-            // If admin API not available, we can't get email
-            email = "N/A";
-          }
-          return {
-            ...profile,
-            email,
-          };
-        })
-      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
 
-      setUsers(usersWithEmails);
+      const data = await response.json();
+      setUsers(data.users || []);
     } catch (e: any) {
       console.error("Error loading users:", e);
+      setError(e.message || "Failed to load users");
     } finally {
       setLoading(false);
     }
@@ -137,7 +128,7 @@ export default function AdminUsersPage() {
                   {users.map((user) => (
                     <tr key={user.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4 text-sm text-slate-900 dark:text-white font-medium">{user.email}</td>
-                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{user.full_name || '—'}</td>
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{user.name || '—'}</td>
                       <td className="px-6 py-4">
                         <select
                           value={user.role || 'user'}
