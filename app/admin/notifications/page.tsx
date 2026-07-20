@@ -53,13 +53,24 @@ export default function AdminNotificationsPage() {
 
         // Load available users from API (bypasses RLS)
         try {
+          const { data: sessionData } = await supabase.auth.getSession();
+          const accessToken = sessionData?.session?.access_token;
+
           console.log("🔍 [Admin Notifications] Fetching users from API...");
-          const res = await fetch('/api/admin/get-users');
+          const res = await fetch('/api/admin/get-users', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            },
+          });
           console.log("🔍 [Admin Notifications] API response status:", res.status);
           
           if (!res.ok) {
-            const errorText = await res.text();
-            console.error("🔍 [Admin Notifications] API error response:", errorText);
+            const errPayload = await res.json().catch(() => ({}));
+            console.error("🔍 [Admin Notifications] API error response:", errPayload);
+            setErrorMessage(errPayload?.error || 'Failed to fetch users');
             return;
           }
           
@@ -71,9 +82,11 @@ export default function AdminNotificationsPage() {
             setAvailableUsers(data.users);
           } else {
             console.warn("🔍 [Admin Notifications] No users array in response or users is not an array");
+            setAvailableUsers([]);
           }
         } catch (err) {
           console.error("🔍 [Admin Notifications] Error loading users:", err);
+          setErrorMessage('Failed to fetch users');
         }
       } catch (err) {
         console.error("Error checking admin:", err);
@@ -100,9 +113,16 @@ export default function AdminNotificationsPage() {
 
       const userIds = sendToAll ? [] : selectedUserIds;
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
       const res = await fetch("/api/admin/send-notification", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify({
           userIds,
           sendToAll,
