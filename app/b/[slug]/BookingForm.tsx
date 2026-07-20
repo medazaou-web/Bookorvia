@@ -436,22 +436,41 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Date Selection */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.preferredDate')}</label>
-        <input
-          value={requested_date}
-          onChange={(e) => setRequestedDate(e.target.value)}
-          type="date"
-          className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
-          min={new Date().toISOString().split('T')[0]}
-          required={selectedServices.some(s => s.duration_minutes)}
-          disabled={selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes)}
-        />
+        <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
+          <span>📅</span>
+          {t('booking.preferredDate')}
+        </label>
+        <div className="relative group">
+          <input
+            value={requested_date}
+            onChange={(e) => setRequestedDate(e.target.value)}
+            type="date"
+            className={`w-full px-4 py-3 rounded-xl border-2 transition-all font-semibold shadow-sm hover:shadow-md focus:shadow-lg appearance-none cursor-pointer ${
+              theme.input
+            } ${
+              requested_date 
+                ? 'border-indigo-400 dark:border-indigo-500' 
+                : 'border-slate-300 dark:border-slate-600'
+            } focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/30`}
+            min={new Date().toISOString().split('T')[0]}
+            required={selectedServices.some(s => s.duration_minutes)}
+            disabled={selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes)}
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </div>
       </div>
 
       {/* Time Slots */}
       {selectedServices.some(s => s.duration_minutes) && requested_date && (
         <div>
-          <label className={`block text-sm font-medium ${theme.label} mb-3`}>{t('booking.availableTimes')}</label>
+          <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
+            <span>🕐</span>
+            {t('booking.availableTimes')}
+          </label>
           {loadingSlots ? (
             <div className={`text-center py-6 ${theme.mutedText}`}>{t('booking.loadingTimes')}</div>
           ) : availableSlots.length > 0 ? (
@@ -461,10 +480,10 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                   key={slot.starts_at}
                   type="button"
                   onClick={() => setRequestedTime(slot.label)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
+                  className={`px-3 py-2.5 rounded-lg text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 ${
                     requestedTime === slot.label
-                      ? `${theme.timeSlotSelected} shadow-lg`
-                      : `${theme.timeSlot}`
+                      ? `${theme.timeSlotSelected} shadow-lg border-indigo-600 dark:border-indigo-400 scale-105`
+                      : `${theme.timeSlot} border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500`
                   }`}
                 >
                   {slot.label}

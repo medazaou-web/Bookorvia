@@ -403,7 +403,13 @@ export default function DashboardServices() {
 
       {/* Service Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
+        <div 
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50"
+          onClick={(e) => {
+            // Close only if clicking the backdrop itself, not the modal content
+            if (e.target === e.currentTarget) setShowForm(false);
+          }}
+        >
           <div className="w-full max-w-2xl max-h-[90vh] rounded-3xl bg-white/90 dark:bg-slate-900 backdrop-blur border border-white/60 dark:border-white/10 shadow-2xl overflow-y-auto">
             <div className="sticky top-0 bg-white/90 dark:bg-slate-900 border-b border-white/60 dark:border-white/10 p-4 sm:p-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{editing ? t('dashboard.editService') : t('dashboard.addNewService')}</h2>

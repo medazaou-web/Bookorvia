@@ -295,6 +295,98 @@ export default function DashboardSettings() {
     }
   }
 
+  async function handleCoverImageUpload(file: File) {
+    setUploadError(null);
+    setUploading(true);
+
+    try {
+      // Validation
+      const maxSizeMB = 5;
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+      const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+
+      if (!allowedTypes.includes(file.type)) {
+        setUploadError(t('dashboard.uploadImageFormatError'));
+        setUploading(false);
+        return;
+      }
+
+      if (file.size > maxSizeBytes) {
+        setUploadError(t('dashboard.uploadImageSizeError').replace('{maxSizeMB}', String(maxSizeMB)));
+        setUploading(false);
+        return;
+      }
+
+      if (!businessId || !userId) {
+        setUploadError(t('dashboard.businessIdNotFoundError'));
+        setUploading(false);
+        return;
+      }
+
+      // Get file extension
+      const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+
+      // Create storage path
+      const timestamp = Date.now();
+      const storagePath = `${userId}/${businessId}-cover-${timestamp}.${ext}`;
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadErr } = await supabase.storage
+        .from("business-covers")
+        .upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (uploadErr) {
+        console.error("Cover image upload error:", uploadErr);
+        const errorMsg = uploadErr?.message?.toLowerCase() || "";
+        if (errorMsg.includes("bucket") || errorMsg.includes("not found")) {
+          throw new Error(t('dashboard.storageNotReadyError'));
+        }
+        throw uploadErr;
+      }
+
+      // Get public URL
+      const { data: publicUrlData } = supabase.storage
+        .from("business-covers")
+        .getPublicUrl(storagePath);
+
+      const publicUrl = publicUrlData?.publicUrl;
+
+      if (!publicUrl) {
+        throw new Error(t('dashboard.getPublicUrlError'));
+      }
+
+      console.log("Cover image uploaded successfully:", { storagePath, publicUrl });
+
+      // Update database with new cover image URL
+      const { error: updateErr } = await supabase
+        .from("businesses")
+        .update({ cover_image_url: publicUrl })
+        .eq("id", businessId)
+        .eq("user_id", userId);
+
+      if (updateErr) {
+        console.error("Database update error:", updateErr);
+        throw updateErr;
+      }
+
+      // Update local state
+      setCoverImageUrl(publicUrl);
+      setUploadError(null);
+      setSuccess(t('dashboard.uploadedSuccess'));
+    } catch (e: any) {
+      console.error("Cover image upload catch error:", e);
+      setUploadError(e?.message || "Failed to upload cover image. Please try again.");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  }
+
   async function handleRemoveLogo() {
     setUploadError(null);
     setUploading(true);
@@ -536,13 +628,44 @@ export default function DashboardSettings() {
               {/* Cover Image */}
               <div className="mb-6 sm:mb-8">
                 <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2 sm:mb-3">{t('dashboard.coverImageUrlOptional')} <span className="text-xs text-slate-500 dark:text-slate-400"></span></label>
-                <input
-                  type="url"
-                  value={cover_image_url}
-                  onChange={(e) => setCoverImageUrl(e.target.value)}
-                  placeholder={t('dashboard.coverImagePlaceholder')}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                />
+                <div className="space-y-3">
+                  {/* Upload Option */}
+                  <div>
+                    <label className="flex flex-col items-center justify-center gap-2 p-4 sm:p-6 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer transition-all">
+                      <span className="text-2xl">📸</span>
+                      <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        {uploading ? t('dashboard.uploadingProcessing') : "Click to upload cover image"}
+                      </span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">or paste a URL below</span>
+                      <input 
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleCoverImageUpload(file);
+                        }}
+                        disabled={uploading}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  
+                  {/* Or paste URL */}
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center px-3">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950 px-2">or</span>
+                    </div>
+                    <div className="border-t border-slate-300 dark:border-white/10"></div>
+                  </div>
+                  
+                  <input
+                    type="url"
+                    value={cover_image_url}
+                    onChange={(e) => setCoverImageUrl(e.target.value)}
+                    placeholder="https://example.com/cover-image.jpg"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  />
+                </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{t('dashboard.appearsAsHeroBackground')}</p>
               </div>
 

@@ -11,7 +11,11 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 
 export async function getAuthenticatedUser(request: NextRequest) {
-  const supabase = createServerSupabase();
+  // In API route handlers, we get cookies from the incoming request headers
+  const { cookies: getCookies } = await import('next/headers');
+  const cookieStore = getCookies();
+  
+  const supabase = createServerSupabase(cookieStore);
   const {
     data: { user },
     error,

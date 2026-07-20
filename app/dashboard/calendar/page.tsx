@@ -1117,7 +1117,13 @@ function QuickAddModal({ businessId, initialDate, initialTime, onClose, onEventA
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+      onClick={(e) => {
+        // Close only if clicking the backdrop itself, not the modal content
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-white">{t('dashboardUI.calendarEvent.addEvent')}</h2>
@@ -1418,7 +1424,13 @@ function BookingDetailsModal({ booking, t, onClose, onStatusChange }: any) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
+    <div 
+      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50"
+      onClick={(e) => {
+        // Close only if clicking the backdrop itself, not the modal content
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 p-6">
           <div className="flex items-center justify-between">
