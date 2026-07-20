@@ -27,6 +27,8 @@ interface BusinessHours {
   day_of_week: number;
   start_time: string;
   end_time: string;
+  enabled?: boolean;
+  is_enabled?: boolean;
 }
 
 interface CalendarSettings {
@@ -676,8 +678,20 @@ function WorkingHoursTab({ businessId, workingHours: initialHours, onSave }: any
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  function normalizeWorkingHours(sourceHours: any[]) {
+    return Array.from({ length: 7 }, (_, i) => {
+      const existing = (sourceHours || []).find((h: any) => h.day_of_week === i);
+      return {
+        day_of_week: i,
+        start_time: existing?.start_time || '09:00',
+        end_time: existing?.end_time || '17:00',
+        enabled: Boolean(existing?.enabled ?? existing?.is_enabled),
+      };
+    });
+  }
+
   useEffect(() => {
-    setHours(initialHours);
+    setHours(normalizeWorkingHours(initialHours || []));
     setIsEditing(false);
   }, [initialHours]);
 
@@ -745,7 +759,7 @@ function WorkingHoursTab({ businessId, workingHours: initialHours, onSave }: any
     <div className="rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{t('dashboardUI.calendarSettings.weeklyWorkingHours')}</h3>
-        {!isEditing && hours.length > 0 && hours.some((h: any) => h.enabled) && (
+        {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-all"
@@ -757,21 +771,31 @@ function WorkingHoursTab({ businessId, workingHours: initialHours, onSave }: any
       </div>
 
       {/* Locked View - Read-only display after saving */}
-      {!isEditing && hours.length > 0 && (
-        <div className="space-y-3 mb-6">
-          {hours.map((h: any, idx: number) => (
-            <div key={idx} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
-              <div className="w-24 font-semibold text-slate-900 dark:text-slate-100">{getDayName(h.day_of_week, t)}</div>
-              <div className="flex-1 text-slate-900 dark:text-slate-300 font-medium">
-                {formatTimeDisplay(h.start_time)} – {formatTimeDisplay(h.end_time)}
-              </div>
+      {!isEditing && (
+        <div className="mb-6">
+          {hours.some((h: any) => h.enabled) ? (
+            <div className="space-y-3">
+              {hours
+                .filter((h: any) => h.enabled)
+                .map((h: any, idx: number) => (
+                  <div key={idx} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <div className="w-24 font-semibold text-slate-900 dark:text-slate-100">{getDayName(h.day_of_week, t)}</div>
+                    <div className="flex-1 text-slate-900 dark:text-slate-300 font-medium">
+                      {formatTimeDisplay(h.start_time)} – {formatTimeDisplay(h.end_time)}
+                    </div>
+                  </div>
+                ))}
             </div>
-          ))}
+          ) : (
+            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+              {t('dashboardUI.calendarSettings.noWorkingHoursConfigured')}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Editable View - Show when editing OR when no hours saved yet */}
-      {(isEditing || hours.length === 0) && (
+      {/* Editable View */}
+      {isEditing && (
         <div className="space-y-3 mb-6">
           {Array.from({ length: 7 }, (_, i) => {
             const dayHours = hours.find((h: any) => h.day_of_week === i);

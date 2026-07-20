@@ -40,14 +40,22 @@ export default function AdminUsersPage() {
         setCurrentRole((profile as any)?.role ?? "user");
       }
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
       // Get all users from API endpoint
       const response = await fetch('/api/admin/get-users', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch users: ${response.statusText}`);
+        const errPayload = await response.json().catch(() => ({}));
+        throw new Error(errPayload?.error || `Failed to fetch users: ${response.status}`);
       }
 
       const data = await response.json();

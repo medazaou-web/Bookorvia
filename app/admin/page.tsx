@@ -25,8 +25,24 @@ export default function AdminPage() {
 
   async function loadStats() {
     try {
-      // Total users (count profiles)
-      const { count: userCount } = await supabase.from("profiles").select("id", { count: "exact", head: true });
+      // Total users via admin API (includes auth users even if profile row is missing)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      let userCount = 0;
+
+      const usersRes = await fetch('/api/admin/get-users', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+      });
+
+      if (usersRes.ok) {
+        const usersData = await usersRes.json();
+        userCount = Array.isArray(usersData?.users) ? usersData.users.length : 0;
+      }
 
       // Total businesses
       const { count: bizCount } = await supabase.from("businesses").select("id", { count: "exact", head: true });

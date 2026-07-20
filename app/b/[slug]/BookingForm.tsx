@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import supabase from "../../../lib/supabase/browserClient";
 import { useTranslations } from "@/lib/i18n";
 import DatePicker from "@/components/ui/DatePicker";
+import { CalendarIcon, ClockIcon } from "@/components/icons";
 
 type Service = {
   id: string;
@@ -437,7 +438,8 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Date Selection */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-3`}>
+        <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
+          <CalendarIcon className="h-4 w-4" />
           {t('booking.preferredDate')}
         </label>
         <DatePicker
@@ -453,7 +455,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       {selectedServices.some(s => s.duration_minutes) && requested_date && (
         <div>
           <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
-            <span>🕐</span>
+            <ClockIcon className="h-4 w-4" />
             {t('booking.availableTimes')}
           </label>
           {loadingSlots ? (
