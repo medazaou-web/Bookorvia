@@ -788,7 +788,7 @@ function WorkingHoursTab({ businessId, workingHours: initialHours, onSave }: any
             </div>
           ) : (
             <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-              {t('dashboardUI.calendarSettings.noWorkingHoursConfigured')}
+              No working hours configured yet. Click Edit to set your schedule.
             </div>
           )}
         </div>
