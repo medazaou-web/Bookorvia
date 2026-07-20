@@ -12,11 +12,30 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function getAuthenticatedUser(request: NextRequest) {
   try {
-    // For API routes: create a server client that reads cookies from the request
-    const supabase = createServerSupabase();
+    // Extract cookies from the request object
+    const cookieStore: any = {
+      getAll: () => {
+        const cookies: Array<{ name: string; value: string }> = [];
+        request.headers.getSetCookie().forEach((cookie) => {
+          const [nameValue] = cookie.split(';');
+          const [name, value] = nameValue.split('=');
+          cookies.push({ name: decodeURIComponent(name), value: decodeURIComponent(value) });
+        });
+        // Also get cookies from the request.cookies interface if available
+        request.cookies.getAll().forEach((cookie) => {
+          if (!cookies.find(c => c.name === cookie.name)) {
+            cookies.push({ name: cookie.name, value: cookie.value });
+          }
+        });
+        return cookies;
+      },
+      setAll: (cookies: any) => {},
+    };
+
+    // For API routes: create a server client with request cookies
+    const supabase = createServerSupabase(cookieStore);
     
-    // The server client will automatically extract auth from cookies
-    // (they're available in the request context)
+    // Get the authenticated user
     const {
       data: { user },
       error,
@@ -24,6 +43,7 @@ export async function getAuthenticatedUser(request: NextRequest) {
 
     if (error || !user) {
       console.log('❌ [getAuthenticatedUser] No user found:', error?.message);
+      console.log('📋 [getAuthenticatedUser] Available cookies:', cookieStore.getAll().map((c: any) => c.name).join(', '));
       return null;
     }
 

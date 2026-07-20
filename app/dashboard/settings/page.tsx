@@ -221,63 +221,30 @@ export default function DashboardSettings() {
         return;
       }
 
-      if (!businessId || !userId) {
+      if (!businessId) {
         setUploadError(t('dashboard.businessIdNotFoundError'));
         setUploading(false);
         return;
       }
 
-      // Get file extension
-      const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('businessId', businessId);
 
-      // Create storage path
-      const timestamp = Date.now();
-      const storagePath = `${userId}/${businessId}-${timestamp}.${ext}`;
+      const response = await fetch('/api/business/upload-logo-image', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
 
-      // Upload to Supabase Storage
-      const { data: uploadData, error: uploadErr } = await supabase.storage
-        .from("business-logos")
-        .upload(storagePath, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-      if (uploadErr) {
-        // Log full error for debugging
-        console.error("Logo upload error:", uploadErr);
-        
-        // Check for bucket-related errors
-        const errorMsg = uploadErr?.message?.toLowerCase() || "";
-        if (errorMsg.includes("bucket") || errorMsg.includes("not found")) {
-          throw new Error(t('dashboard.logoStorageNotReadyError'));
-        }
-        
-        throw uploadErr;
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Failed to upload logo');
       }
 
-      // Get public URL
-      const { data: publicUrlData } = supabase.storage
-        .from("business-logos")
-        .getPublicUrl(storagePath);
-
-      const publicUrl = publicUrlData?.publicUrl;
-
+      const publicUrl = payload?.imageUrl;
       if (!publicUrl) {
         throw new Error(t('dashboard.getPublicUrlError'));
-      }
-
-      console.log("Logo uploaded successfully:", { storagePath, publicUrl });
-
-      // Update database with new logo URL
-      const { error: updateErr } = await supabase
-        .from("businesses")
-        .update({ logo_url: publicUrl })
-        .eq("id", businessId)
-        .eq("user_id", userId);
-
-      if (updateErr) {
-        console.error("Database update error:", updateErr);
-        throw updateErr;
       }
 
       // Update local state
@@ -317,65 +284,30 @@ export default function DashboardSettings() {
         return;
       }
 
-      if (!businessId || !userId) {
+      if (!businessId) {
         setUploadError(t('dashboard.businessIdNotFoundError'));
         setUploading(false);
         return;
       }
 
-      // Get file extension
-      const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('businessId', businessId);
 
-      // Create storage path
-      const timestamp = Date.now();
-      const storagePath = `${userId}/${businessId}-cover-${timestamp}.${ext}`;
+      const response = await fetch('/api/business/upload-cover-image', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
 
-      console.log('📤 [Cover Upload] Uploading to:', storagePath);
-
-      // Upload to Supabase Storage
-      const { data: uploadData, error: uploadErr } = await supabase.storage
-        .from("business-covers")
-        .upload(storagePath, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-      if (uploadErr) {
-        console.error("❌ Cover image upload error:", uploadErr);
-        const errorMsg = uploadErr?.message?.toLowerCase() || "";
-        if (errorMsg.includes("bucket") || errorMsg.includes("not found")) {
-          // Try to initialize the bucket
-          await fetch('/api/services/init-bucket?type=business-covers').catch(() => {});
-          setUploadError("Storage bucket was not ready. Please try again in a moment.");
-          setUploading(false);
-          return;
-        }
-        throw uploadErr;
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Failed to upload cover image');
       }
 
-      // Get public URL
-      const { data: publicUrlData } = supabase.storage
-        .from("business-covers")
-        .getPublicUrl(storagePath);
-
-      const publicUrl = publicUrlData?.publicUrl;
-
+      const publicUrl = payload?.imageUrl;
       if (!publicUrl) {
         throw new Error(t('dashboard.getPublicUrlError'));
-      }
-
-      console.log("✅ Cover image uploaded successfully:", { storagePath, publicUrl });
-
-      // Update database with new cover image URL
-      const { error: updateErr } = await supabase
-        .from("businesses")
-        .update({ cover_image_url: publicUrl })
-        .eq("id", businessId)
-        .eq("user_id", userId);
-
-      if (updateErr) {
-        console.error("❌ Database update error:", updateErr);
-        throw updateErr;
       }
 
       // Update local state

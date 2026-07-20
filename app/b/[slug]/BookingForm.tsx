@@ -437,8 +437,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Date Selection */}
       <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
-          <span>📅</span>
+        <label className={`block text-sm font-medium ${theme.label} mb-3`}>
           {t('booking.preferredDate')}
         </label>
         <DatePicker

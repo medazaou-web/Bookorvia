@@ -207,7 +207,18 @@ export default function CalendarPage() {
         .eq('business_id', biz.id)
         .order('day_of_week');
 
-      setWorkingHours(hours || []);
+      // If no hours exist, initialize with all 7 days disabled
+      if (!hours || hours.length === 0) {
+        const defaultHours = Array.from({ length: 7 }, (_, i) => ({
+          day_of_week: i,
+          start_time: '09:00',
+          end_time: '17:00',
+          enabled: false,
+        }));
+        setWorkingHours(defaultHours);
+      } else {
+        setWorkingHours(hours);
+      }
 
       // Load calendar settings
       const { data: settingsData } = await supabase
@@ -734,7 +745,7 @@ function WorkingHoursTab({ businessId, workingHours: initialHours, onSave }: any
     <div className="rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{t('dashboardUI.calendarSettings.weeklyWorkingHours')}</h3>
-        {!isEditing && hours.length > 0 && (
+        {!isEditing && hours.length > 0 && hours.some((h: any) => h.enabled) && (
           <button
             onClick={() => setIsEditing(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-all"
@@ -759,8 +770,8 @@ function WorkingHoursTab({ businessId, workingHours: initialHours, onSave }: any
         </div>
       )}
 
-      {/* Editable View */}
-      {isEditing && (
+      {/* Editable View - Show when editing OR when no hours saved yet */}
+      {(isEditing || hours.length === 0) && (
         <div className="space-y-3 mb-6">
           {Array.from({ length: 7 }, (_, i) => {
             const dayHours = hours.find((h: any) => h.day_of_week === i);

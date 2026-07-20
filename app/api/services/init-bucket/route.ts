@@ -1,13 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+// Define all buckets that need to exist
+const BUCKETS = [
+  { name: 'service-images', public: true, fileSizeLimit: 10485760 }, // 10MB
+  { name: 'business-covers', public: true, fileSizeLimit: 10485760 }, // 10MB
+  { name: 'business-logos', public: true, fileSizeLimit: 5242880 }, // 5MB
+];
+
 export async function POST(request: NextRequest) {
   try {
     const adminSupabase = createAdminClient();
     
-    console.log('🔧 [init-bucket] Initializing service-images bucket...');
+    console.log('🔧 [init-bucket] Initializing all storage buckets...');
     
-    // Try to list buckets first
+    // Get query param to create specific bucket or all
+    const { searchParams } = new URL(request.url);
+    const bucketType = searchParams.get('type');
+    
+    // Filter buckets to create
+    let bucketsToCreate = BUCKETS;
+    if (bucketType) {
+      bucketsToCreate = BUCKETS.filter(b => b.name === bucketType);
+      if (bucketsToCreate.length === 0) {
+        return NextResponse.json(
+          { error: `Unknown bucket type: ${bucketType}` },
+          { status: 400 }
+        );
+      }
+    }
+    
+    // Try to list existing buckets
     const { data: buckets, error: listError } = await adminSupabase.storage.listBuckets();
     
     if (listError) {
@@ -18,41 +41,42 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const bucketExists = buckets?.some(b => b.name === 'service-images');
+    const existingBucketNames = buckets?.map(b => b.name) || [];
+    console.log('📋 [init-bucket] Existing buckets:', existingBucketNames.join(', '));
     
-    if (bucketExists) {
-      console.log('✅ [init-bucket] Bucket service-images already exists');
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Bucket service-images already exists'
-      });
-    }
+    const results = [];
     
-    // Create the bucket if it doesn't exist
-    console.log('📦 [init-bucket] Creating service-images bucket...');
-    
-    const { data: createData, error: createError } = await adminSupabase.storage.createBucket(
-      'service-images',
-      {
-        public: true,
-        fileSizeLimit: 10485760, // 10MB
+    // Create each bucket that doesn't exist
+    for (const bucket of bucketsToCreate) {
+      if (existingBucketNames.includes(bucket.name)) {
+        console.log(`✅ [init-bucket] Bucket ${bucket.name} already exists`);
+        results.push({ bucket: bucket.name, status: 'exists' });
+        continue;
       }
-    );
-    
-    if (createError) {
-      console.error('❌ [init-bucket] Error creating bucket:', createError);
-      return NextResponse.json(
-        { error: `Failed to create bucket: ${createError.message}` },
-        { status: 500 }
+      
+      console.log(`📦 [init-bucket] Creating bucket ${bucket.name}...`);
+      
+      const { data: createData, error: createError } = await adminSupabase.storage.createBucket(
+        bucket.name,
+        {
+          public: bucket.public,
+          fileSizeLimit: bucket.fileSizeLimit,
+        }
       );
+      
+      if (createError) {
+        console.error(`❌ [init-bucket] Error creating ${bucket.name}:`, createError);
+        results.push({ bucket: bucket.name, status: 'failed', error: createError.message });
+      } else {
+        console.log(`✅ [init-bucket] Bucket ${bucket.name} created successfully`);
+        results.push({ bucket: bucket.name, status: 'created' });
+      }
     }
-    
-    console.log('✅ [init-bucket] Bucket service-images created successfully');
     
     return NextResponse.json({ 
       success: true, 
-      message: 'Bucket service-images created successfully',
-      bucket: createData
+      message: 'Bucket initialization completed',
+      results
     });
   } catch (err: any) {
     console.error('❌ [init-bucket] Unexpected error:', err.message);

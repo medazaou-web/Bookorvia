@@ -90,8 +90,21 @@ export async function POST(request: NextRequest) {
         statusCode: (uploadError as any).statusCode,
         fullError: uploadError
       });
+      
+      // Provide better error messages for common issues
+      const errorMsg = uploadError.message?.toLowerCase() || '';
+      let userMessage = `Storage upload failed: ${uploadError.message}`;
+      
+      if (errorMsg.includes('bucket') || errorMsg.includes('not found')) {
+        userMessage = '⚠️ SETUP NEEDED: The service-images bucket hasn\'t been created yet in Supabase Storage. Please go to Supabase → Storage and create a new bucket named "service-images", then set it as PUBLIC.';
+      } else if (errorMsg.includes('permission') || errorMsg.includes('denied')) {
+        userMessage = '⚠️ Permission denied. Make sure the service-images bucket is set to PUBLIC in Supabase Storage settings.';
+      } else if (errorMsg.includes('row-level security') || errorMsg.includes('violates row-level security')) {
+        userMessage = 'RLS ERROR: Server upload is not using a valid service role key. In Vercel/Supabase env, set SUPABASE_SERVICE_ROLE_KEY to the Secret service_role key (not anon/publishable), then redeploy.';
+      }
+      
       return NextResponse.json(
-        { error: `Storage upload failed: ${uploadError.message}` },
+        { error: userMessage },
         { status: 500 }
       );
     }
