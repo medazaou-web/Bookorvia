@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     console.log("📧 Sending test email to:", testEmail);
     
     const info = await transporter.sendMail({
-      from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
+      from: `${process.env.SMTP_FROM_NAME || 'Bookorvia'} <${process.env.SMTP_FROM_EMAIL || 'no-reply@bookorvia.com'}>`,
       to: testEmail,
       subject: '🧪 Bookorvia SMTP Test',
       html: `

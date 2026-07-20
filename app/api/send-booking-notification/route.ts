@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { createServerSupabase } from '../../../lib/supabase/serverClient';
-import { getAuthenticatedUserOrThrow, unauthorizedResponse } from '@/lib/security/auth';
-import { cookies } from 'next/headers';
+import { createAdminClient } from '../../../lib/supabase/admin';
+import { getAuthenticatedUser, unauthorizedResponse } from '@/lib/security/auth';
 
 type BookingStatus = 'pending' | 'accepted' | 'completed' | 'refused';
 
@@ -19,24 +18,20 @@ interface EmailRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    // SECURITY: Verify user is authenticated
-    let user;
-    try {
-      user = await getAuthenticatedUserOrThrow(request);
-    } catch {
-      return unauthorizedResponse('User not authenticated');
-    }
+    // Auth is optional here: business dashboards are authenticated, client-side booking tracker is public.
+    const user = await getAuthenticatedUser(request);
 
     const body: EmailRequest = await request.json();
     let { bookingId, clientEmail, clientName, status, businessName, serviceName, bookingDate, bookingTime } = body;
 
-    console.log("📧 Email Request Received from user:", user.id, { bookingId, clientEmail, clientName, status });
+    console.log("📧 Email Request Received:", { bookingId, clientEmail, clientName, status, requester: user?.id || 'public' });
 
-    // SECURITY: Verify the booking belongs to one of the user's businesses
-    const supabaseAuth = createServerSupabase();
-    const { data: booking, error: bookingError } = await supabaseAuth
+    const supabase = createAdminClient();
+
+    // SECURITY: Fetch booking record for validation
+    const { data: booking, error: bookingError } = await supabase
       .from('booking_requests')
-      .select('id, business_id, booking_requests(business_id)')
+      .select('id, business_id, client_email')
       .eq('id', bookingId)
       .single();
 
@@ -47,15 +42,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // If authenticated, verify requester owns the booking business.
+    // If public, verify the provided email matches the booking's stored client email.
+    if (user?.id) {
+      const { data: business, error: businessError } = await supabase
+        .from('businesses')
+        .select('id, user_id')
+        .eq('id', booking.business_id)
+        .single();
+
+      if (businessError || !business || business.user_id !== user.id) {
+        return unauthorizedResponse('You do not own the business for this booking');
+      }
+    } else {
+      const matchesClient =
+        !!booking.client_email &&
+        booking.client_email.toLowerCase() === (clientEmail || '').toLowerCase();
+
+      if (!matchesClient) {
+        return unauthorizedResponse('Public email notification request does not match booking email');
+      }
+    }
+
     // SECURITY: Check that the booking's business belongs to the authenticated user
-    const { data: business, error: businessError } = await supabaseAuth
+    const { data: business, error: businessError } = await supabase
       .from('businesses')
-      .select('id, user_id')
+      .select('id, name')
       .eq('id', booking.business_id)
       .single();
 
-    if (businessError || !business || business.user_id !== user.id) {
-      return unauthorizedResponse('You do not own the business for this booking');
+    if (businessError || !business) {
+      return NextResponse.json(
+        { error: 'Business not found for booking' },
+        { status: 404 }
+      );
     }
 
     // Use fallback for empty clientName
@@ -178,7 +198,7 @@ export async function POST(request: NextRequest) {
                     ${businessName ? `
                     <div class="detail-row">
                       <span class="detail-label">Business:</span>
-                      <span class="detail-value">${businessName}</span>
+                      <span class="detail-value">${businessName || business.name || 'Bookorvia Business'}</span>
                     </div>
                     ` : ''}
                     ${serviceName ? `
@@ -232,7 +252,7 @@ export async function POST(request: NextRequest) {
     
     try {
       const info = await transporter.sendMail({
-        from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
+        from: `${process.env.SMTP_FROM_NAME || 'Bookorvia'} <${process.env.SMTP_FROM_EMAIL || 'no-reply@bookorvia.com'}>`,
         to: clientEmail,
         subject: emailContent.subject,
         html: emailContent.html,

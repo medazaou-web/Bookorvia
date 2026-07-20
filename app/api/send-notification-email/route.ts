@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     });
 
     const mailOptions = {
-      from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
+      from: `${process.env.SMTP_FROM_NAME || 'Bookorvia'} <${process.env.SMTP_FROM_EMAIL || 'no-reply@bookorvia.com'}>`,
       to: businessOwnerEmail,
       subject,
       html,

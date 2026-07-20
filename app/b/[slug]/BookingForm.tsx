@@ -197,95 +197,12 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
         throw insertErr;
       }
 
-      // Get business owner email using server-side endpoint (bypasses RLS)
-      console.log("📧 Fetching business owner email for:", businessId);
-      let businessOwnerEmail: string | null = null;
-      try {
-        const emailRes = await fetch(`/api/get-business-owner-email?businessId=${businessId}`);
-        const emailData = await emailRes.json();
-        businessOwnerEmail = emailData?.email || null;
-        console.log("📧 Business owner email:", businessOwnerEmail ? "✓ Found" : "✗ Not found");
-      } catch (emailErr) {
-        console.error("❌ Failed to fetch business owner email:", emailErr);
-      }
-
-      // Get business data for email
-      const { data: businessData } = await supabase
-        .from('businesses')
-        .select('name')
-        .eq('id', businessId)
-        .single();
-
-      // Create in-app notification for business owner
-      console.log("📬 Creating notification for business:", businessId);
-      const notificationRes = await fetch("/api/notifications/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          businessId,
-          type: "booking",
-          title: "New Booking Received! 📅",
-          message: `${client_name} booked ${serviceNames} for ${requested_date} at ${requestedTime}`,
-          data: {
-            bookingId: data?.id,
-            clientName: client_name,
-            services: serviceNames,
-            date: requested_date,
-            time: requestedTime,
-          },
-        }),
-      });
-      const notificationData = await notificationRes.json();
-      console.log("📬 Notification creation response:", { status: notificationRes.status, data: notificationData });
-
-      // Send email notification to business owner
-      if (businessOwnerEmail) {
-        const emailHtml = `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background: linear-gradient(to right, #4f46e5, #2563eb); color: white; padding: 24px; border-radius: 12px 12px 0 0;">
-              <h1 style="margin: 0; font-size: 24px;">📅 New Booking Received!</h1>
-            </div>
-            <div style="background: #f8f9fa; padding: 24px; border-radius: 0 0 12px 12px;">
-              <p style="margin: 0 0 16px 0; font-size: 16px;">
-                You have received a new booking request:
-              </p>
-              
-              <div style="background: white; padding: 16px; border-left: 4px solid #4f46e5; margin: 16px 0; border-radius: 4px;">
-                <p style="margin: 8px 0;"><strong>Client Name:</strong> ${client_name}</p>
-                <p style="margin: 8px 0;"><strong>Phone:</strong> ${client_phone}</p>
-                <p style="margin: 8px 0;"><strong>Email:</strong> ${client_email}</p>
-                <p style="margin: 8px 0;"><strong>Service(s):</strong> ${serviceNames}</p>
-                <p style="margin: 8px 0;"><strong>Date:</strong> ${requested_date}</p>
-                <p style="margin: 8px 0;"><strong>Time:</strong> ${requestedTime}</p>
-                <p style="margin: 8px 0;"><strong>Duration:</strong> ${totalDurationMinutes < 60 ? `${totalDurationMinutes} min` : `${Math.floor(totalDurationMinutes / 60)}h ${totalDurationMinutes % 60}m`}</p>
-                ${message ? `<p style="margin: 8px 0;"><strong>Message:</strong> ${message}</p>` : ''}
-              </div>
-
-              <p style="margin: 16px 0; text-align: center;">
-                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/bookings" style="display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
-                  View in Dashboard
-                </a>
-              </p>
-
-              <p style="margin: 16px 0 0 0; font-size: 12px; color: #666; text-align: center;">
-                You can manage this booking from your dashboard.
-              </p>
-            </div>
-          </div>
-        `;
-
-        await fetch("/api/send-notification-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            businessOwnerEmail,
-            businessName: businessData?.name,
-            type: "booking",
-            subject: `New Booking: ${client_name} - ${requested_date} at ${requestedTime}`,
-            html: emailHtml,
-          }),
-        }).catch(err => console.error("Failed to send email notification:", err));
-      }
+      // Send owner + client emails from a server-side verified route
+      await fetch('/api/public/send-booking-emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: data?.id }),
+      }).catch((emailErr) => console.error('Failed to trigger booking emails:', emailErr));
 
 
       setSuccess(`✅ Your booking has been confirmed! Opening booking status in a new tab...`);

@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     const { data: ownerProfile } = await supabase
       .from('profiles')
       .select('email_notifications_enabled, email_status_notifications')
-      .eq('id', (await supabase.auth.getUser()).data.user?.id)
+      .eq('id', business.user_id)
       .single();
 
     const emailNotificationsEnabled = (ownerProfile as any)?.email_notifications_enabled ?? true;
@@ -123,7 +123,12 @@ export async function POST(request: NextRequest) {
       new URL('/api/send-booking-notification', request.url),
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(request.headers.get('authorization')
+            ? { Authorization: request.headers.get('authorization') as string }
+            : {}),
+        },
         body: JSON.stringify(emailPayload),
       }
     );
