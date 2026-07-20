@@ -12,43 +12,52 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function getAuthenticatedUser(request: NextRequest) {
   try {
-    // Extract cookies from the request object
+    // Use request cookies for route handler auth.
     const cookieStore: any = {
       getAll: () => {
-        const cookies: Array<{ name: string; value: string }> = [];
-        request.headers.getSetCookie().forEach((cookie) => {
-          const [nameValue] = cookie.split(';');
-          const [name, value] = nameValue.split('=');
-          cookies.push({ name: decodeURIComponent(name), value: decodeURIComponent(value) });
-        });
-        // Also get cookies from the request.cookies interface if available
-        request.cookies.getAll().forEach((cookie) => {
-          if (!cookies.find(c => c.name === cookie.name)) {
-            cookies.push({ name: cookie.name, value: cookie.value });
-          }
-        });
-        return cookies;
+        return request.cookies.getAll().map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value,
+        }));
       },
-      setAll: (cookies: any) => {},
+      setAll: (_cookies: any) => {},
     };
 
-    // For API routes: create a server client with request cookies
+    // Primary auth path: Supabase SSR cookies
     const supabase = createServerSupabase(cookieStore);
-    
-    // Get the authenticated user
     const {
       data: { user },
       error,
     } = await supabase.auth.getUser();
 
-    if (error || !user) {
-      console.log('❌ [getAuthenticatedUser] No user found:', error?.message);
-      console.log('📋 [getAuthenticatedUser] Available cookies:', cookieStore.getAll().map((c: any) => c.name).join(', '));
-      return null;
+    if (!error && user) {
+      console.log('✅ [getAuthenticatedUser] User authenticated via cookie:', user.id);
+      return user;
     }
 
-    console.log('✅ [getAuthenticatedUser] User authenticated:', user.id);
-    return user;
+    // Fallback auth path: Bearer token from client
+    const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
+    const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+
+    if (bearerToken) {
+      const adminSupabase = createAdminClient();
+      const {
+        data: { user: bearerUser },
+        error: bearerError,
+      } = await adminSupabase.auth.getUser(bearerToken);
+
+      if (!bearerError && bearerUser) {
+        console.log('✅ [getAuthenticatedUser] User authenticated via bearer:', bearerUser.id);
+        return bearerUser;
+      }
+    }
+
+    console.log('❌ [getAuthenticatedUser] No user found:', error?.message);
+    console.log(
+      '📋 [getAuthenticatedUser] Available cookies:',
+      cookieStore.getAll().map((c: any) => c.name).join(', ')
+    );
+    return null;
   } catch (e: any) {
     console.error('❌ [getAuthenticatedUser] Error:', e.message);
     return null;

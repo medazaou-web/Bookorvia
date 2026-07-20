@@ -223,10 +223,14 @@ export default function DashboardServices() {
       formData.append('serviceId', serviceId);
       formData.append('userId', user.id);
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
       const response = await fetch('/api/services/upload-image', {
         method: 'POST',
         body: formData,
         credentials: 'include',
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
       });
 
       if (!response.ok) {

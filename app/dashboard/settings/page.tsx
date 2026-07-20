@@ -231,10 +231,14 @@ export default function DashboardSettings() {
       formData.append('file', file);
       formData.append('businessId', businessId);
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
       const response = await fetch('/api/business/upload-logo-image', {
         method: 'POST',
         body: formData,
         credentials: 'include',
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
       });
 
       const payload = await response.json();
@@ -294,10 +298,14 @@ export default function DashboardSettings() {
       formData.append('file', file);
       formData.append('businessId', businessId);
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
       const response = await fetch('/api/business/upload-cover-image', {
         method: 'POST',
         body: formData,
         credentials: 'include',
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
       });
 
       const payload = await response.json();
