@@ -25,7 +25,8 @@ export default function BookingSection({
   themeStyles,
   language = 'en',
   brandColor,
-  accentColor
+  accentColor,
+  buttonTextColor
 }: { 
   businessId: string;
   services: any[];
@@ -34,6 +35,7 @@ export default function BookingSection({
   language?: string;
   brandColor?: string;
   accentColor?: string;
+  buttonTextColor?: string;
 }) {
   const t = useTranslations(language as any);
 
@@ -48,6 +50,7 @@ export default function BookingSection({
           language={language}
           brandColor={brandColor}
           accentColor={accentColor}
+          buttonTextColor={buttonTextColor}
         />
       </div>
     </div>

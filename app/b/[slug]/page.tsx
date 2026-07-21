@@ -36,6 +36,11 @@ function withAlpha(hexColor: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${safeAlpha})`;
 }
 
+function isLikelyPng(url: string | null | undefined): boolean {
+  if (!url) return false;
+  return /\.png(\?|$)/i.test(url);
+}
+
 // Main theme configuration
 const themeConfig = {
   luxury_dark: {
@@ -165,6 +170,11 @@ export default async function BusinessPage({ params }: Props) {
     const theme = themeConfig[biz.public_theme as keyof typeof themeConfig] || themeConfig.modern_gradient;
     const brandColor = normalizeColor(biz.brand_color, "#4f46e5");
     const accentColor = normalizeColor(biz.accent_color, "#06b6d4");
+    const buttonTextColor = normalizeColor(
+      biz.button_text_color,
+      biz.public_theme === "luxury_dark" ? "#0f172a" : "#ffffff"
+    );
+    const backgroundStyle = (biz.background_style || "orbs") as string;
     const brandGradient = `linear-gradient(135deg, ${brandColor}, ${accentColor})`;
 
     // Load active services IN PARALLEL
@@ -187,6 +197,8 @@ export default async function BusinessPage({ params }: Props) {
     const reviews = reviewsResult.data ?? [];
     const logo = biz.logo_url;
     const coverImage = biz.cover_image_url;
+    const hasHeroMeta = Boolean((biz.description || "").trim() || (biz.address || "").trim());
+    const logoIsPng = isLikelyPng(logo);
     const initials = biz.name ? biz.name.split(" ").map((s: string) => s[0]).slice(0,2).join("") : "B";
     const websiteHref = biz.website_url
       ? (/^https?:\/\//i.test(biz.website_url) ? biz.website_url : `https://${biz.website_url}`)
@@ -203,8 +215,43 @@ export default async function BusinessPage({ params }: Props) {
     return (
       <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-48 -right-40 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: withAlpha(brandColor, 0.13) }}></div>
-          <div className="absolute bottom-0 -left-52 w-[28rem] h-[28rem] rounded-full blur-3xl" style={{ backgroundColor: withAlpha(accentColor, 0.13) }}></div>
+          {backgroundStyle === "orbs" && (
+            <>
+              <div className="absolute -top-48 -right-40 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: withAlpha(brandColor, 0.13) }}></div>
+              <div className="absolute bottom-0 -left-52 w-[28rem] h-[28rem] rounded-full blur-3xl" style={{ backgroundColor: withAlpha(accentColor, 0.13) }}></div>
+            </>
+          )}
+          {backgroundStyle === "mesh" && (
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `radial-gradient(circle at 15% 20%, ${withAlpha(brandColor, 0.2)} 0, transparent 34%), radial-gradient(circle at 85% 10%, ${withAlpha(accentColor, 0.2)} 0, transparent 36%), linear-gradient(120deg, ${withAlpha(brandColor, 0.08)}, ${withAlpha(accentColor, 0.08)})`,
+              }}
+            ></div>
+          )}
+          {backgroundStyle === "stripes" && (
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(135deg, ${withAlpha(brandColor, 0.09)} 0 14px, transparent 14px 28px), repeating-linear-gradient(45deg, ${withAlpha(accentColor, 0.08)} 0 12px, transparent 12px 24px)`,
+              }}
+            ></div>
+          )}
+          {backgroundStyle === "grid" && (
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `linear-gradient(${withAlpha(brandColor, 0.12)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, 0.12)} 1px, transparent 1px)`,
+                backgroundSize: "36px 36px",
+              }}
+            ></div>
+          )}
+          {backgroundStyle === "spotlight" && (
+            <>
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[44rem] h-[22rem] blur-3xl" style={{ background: `radial-gradient(circle, ${withAlpha(brandColor, 0.24)} 0%, transparent 70%)` }}></div>
+              <div className="absolute bottom-0 right-0 w-[24rem] h-[24rem] blur-3xl" style={{ background: `radial-gradient(circle, ${withAlpha(accentColor, 0.2)} 0%, transparent 70%)` }}></div>
+            </>
+          )}
         </div>
 
         <header className={`sticky top-0 z-50 ${theme.header} backdrop-blur border-b transition-colors px-4 sm:px-6 py-4 shadow-sm`}>
@@ -216,8 +263,8 @@ export default async function BusinessPage({ params }: Props) {
             <div className="flex items-center gap-2 sm:gap-3">
               <a
                 href="#book"
-                className="px-4 sm:px-5 py-2 rounded-xl text-sm font-bold text-white shadow-md hover:shadow-lg transition-all"
-                style={{ background: brandGradient }}
+                className="px-4 sm:px-5 py-2 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all"
+                style={{ background: brandGradient, color: buttonTextColor }}
               >
                 Book
               </a>
@@ -237,7 +284,7 @@ export default async function BusinessPage({ params }: Props) {
               <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/20 to-black/55"></div>
             </div>
 
-            <div className="px-5 sm:px-8 pb-8 -mt-16 sm:-mt-20 relative z-10">
+            <div className={`px-5 sm:px-8 pb-8 relative z-10 ${hasHeroMeta ? '-mt-16 sm:-mt-20' : 'pt-5 sm:pt-6'}`}>
               <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5 items-end">
                 <div
                   className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl shadow-2xl overflow-hidden border-4 flex items-center justify-center text-4xl sm:text-5xl font-bold"
@@ -248,7 +295,7 @@ export default async function BusinessPage({ params }: Props) {
                   }}
                 >
                   {logo ? (
-                    <img src={logo} alt={`${biz.name} logo`} className="w-full h-full object-contain p-2" />
+                    <img src={logo} alt={`${biz.name} logo`} className={logoIsPng ? "w-full h-full object-contain p-2" : "w-full h-full object-cover p-0"} />
                   ) : (
                     initials
                   )}
@@ -269,8 +316,8 @@ export default async function BusinessPage({ params }: Props) {
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href="#book"
-                  className="inline-flex items-center justify-center rounded-xl px-5 sm:px-7 py-3 text-sm sm:text-base font-bold text-white shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all"
-                  style={{ background: brandGradient }}
+                  className="inline-flex items-center justify-center rounded-xl px-5 sm:px-7 py-3 text-sm sm:text-base font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all"
+                  style={{ background: brandGradient, color: buttonTextColor }}
                 >
                   {t('booking.bookNow')}
                 </a>
@@ -356,7 +403,7 @@ export default async function BusinessPage({ params }: Props) {
                         </div>
                       </div>
 
-                      <a href="#book" className="mt-5 block w-full text-center rounded-xl py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95 text-white" style={{ background: brandGradient }}>
+                      <a href="#book" className="mt-5 block w-full text-center rounded-xl py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95" style={{ background: brandGradient, color: buttonTextColor }}>
                         {t('business.bookThisService')}
                       </a>
                     </div>
@@ -387,6 +434,7 @@ export default async function BusinessPage({ params }: Props) {
                 language={biz.language || 'en'}
                 brandColor={brandColor}
                 accentColor={accentColor}
+                buttonTextColor={buttonTextColor}
               />
             </div>
           </section>

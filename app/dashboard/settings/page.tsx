@@ -31,6 +31,8 @@ export default function DashboardSettings() {
   const [public_theme, setPublicTheme] = useState("modern_gradient");
   const [brand_color, setBrandColor] = useState("#4f46e5");
   const [accent_color, setAccentColor] = useState("#06b6d4");
+  const [button_text_color, setButtonTextColor] = useState("#ffffff");
+  const [background_style, setBackgroundStyle] = useState("orbs");
   const [cover_image_url, setCoverImageUrl] = useState("");
   
   // Notification preferences
@@ -90,6 +92,8 @@ export default function DashboardSettings() {
           setPublicTheme((data as any).public_theme ?? "modern_gradient");
           setBrandColor((data as any).brand_color ?? "#4f46e5");
           setAccentColor((data as any).accent_color ?? "#06b6d4");
+          setButtonTextColor((data as any).button_text_color ?? ((data as any).public_theme === "luxury_dark" ? "#0f172a" : "#ffffff"));
+          setBackgroundStyle((data as any).background_style ?? "orbs");
           setCoverImageUrl((data as any).cover_image_url ?? "");
         }
 
@@ -149,6 +153,27 @@ export default function DashboardSettings() {
         public_theme,
         brand_color,
         accent_color,
+        button_text_color,
+        background_style,
+        cover_image_url,
+      } as any;
+
+      const legacyPayload = {
+        user_id: user.id,
+        name,
+        slug,
+        category,
+        description,
+        phone,
+        whatsapp,
+        address,
+        instagram_url,
+        website_url,
+        google_review_url,
+        logo_url,
+        public_theme,
+        brand_color,
+        accent_color,
         cover_image_url,
       } as any;
 
@@ -168,23 +193,54 @@ export default function DashboardSettings() {
       }
 
       if (businessId) {
-        const { data, error: updateErr } = await supabase
+        let { error: updateErr } = await supabase
           .from("businesses")
           .update(payload)
           .eq("id", businessId)
           .select()
           .single();
 
+        if (updateErr && /button_text_color|background_style/i.test(updateErr.message || "")) {
+          const { error: fallbackErr } = await supabase
+            .from("businesses")
+            .update(legacyPayload)
+            .eq("id", businessId)
+            .select()
+            .single();
+          updateErr = fallbackErr || null;
+          if (!fallbackErr) {
+            setSuccess("Business profile updated. New design fields need database migration to persist.");
+            setSaving(false);
+            return;
+          }
+        }
+
         if (updateErr) {
           throw updateErr;
         }
         setSuccess(t('dashboard.businessProfileUpdated'));
       } else {
-        const { data, error: insertErr } = await supabase
+        let { data, error: insertErr } = await supabase
           .from("businesses")
           .insert(payload)
           .select()
           .single();
+
+        if (insertErr && /button_text_color|background_style/i.test(insertErr.message || "")) {
+          const fallbackResult = await supabase
+            .from("businesses")
+            .insert(legacyPayload)
+            .select()
+            .single();
+          data = fallbackResult.data;
+          insertErr = fallbackResult.error;
+          if (!insertErr) {
+            setBusinessId((data as any).id ?? null);
+            setSuccess("Business profile created. New design fields need database migration to persist.");
+            setSaving(false);
+            return;
+          }
+        }
 
         if (insertErr) {
           throw insertErr;
@@ -601,6 +657,44 @@ export default function DashboardSettings() {
                     </div>
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2 sm:mb-3">Button Text Color</label>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <input
+                      type="color"
+                      value={button_text_color}
+                      onChange={(e) => setButtonTextColor(e.target.value)}
+                      className="w-12 sm:w-16 h-12 sm:h-16 rounded-lg sm:rounded-xl border-2 border-slate-300 dark:border-white/20 cursor-pointer"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <input
+                        type="text"
+                        value={button_text_color}
+                        onChange={(e) => setButtonTextColor(e.target.value)}
+                        placeholder="#ffffff"
+                        className={`${inputClass} font-mono`}
+                      />
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Applied to primary booking buttons on your public page.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2 sm:mb-3">Background Style</label>
+                  <select
+                    value={background_style}
+                    onChange={(e) => setBackgroundStyle(e.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="orbs">Orbs Glow</option>
+                    <option value="mesh">Mesh Gradient</option>
+                    <option value="stripes">Aurora Stripes</option>
+                    <option value="grid">Soft Grid</option>
+                    <option value="spotlight">Spotlight</option>
+                  </select>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Sets the decorative atmosphere behind your public page.</p>
+                </div>
               </div>
 
               {/* Cover Image */}
@@ -654,6 +748,16 @@ export default function DashboardSettings() {
                         </div>
                       </>
                     )}
+                    <button
+                      type="button"
+                      className="mt-1 px-3 py-1.5 rounded-lg text-xs font-bold"
+                      style={{
+                        background: `linear-gradient(135deg, ${brand_color || "#4f46e5"}, ${accent_color || "#06b6d4"})`,
+                        color: button_text_color || "#ffffff",
+                      }}
+                    >
+                      Book Now
+                    </button>
                   </div>
                 </div>
               </div>

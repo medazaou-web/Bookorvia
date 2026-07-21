@@ -75,7 +75,7 @@ function contrastText(hexColor: string): string {
   return luminance > 0.58 ? "#0f172a" : "#ffffff";
 }
 
-export default function BookingForm({ businessId, services, businessSlug, themeStyles, language = 'en', brandColor = '#4f46e5', accentColor = '#06b6d4' }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles; language?: string; brandColor?: string; accentColor?: string }) {
+export default function BookingForm({ businessId, services, businessSlug, themeStyles, language = 'en', brandColor = '#4f46e5', accentColor = '#06b6d4', buttonTextColor = '#ffffff' }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles; language?: string; brandColor?: string; accentColor?: string; buttonTextColor?: string }) {
   const searchParams = useSearchParams();
   const preSelectedServiceId = searchParams.get("service");
   const t = useTranslations(language as any);
@@ -99,6 +99,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
   const theme = themeStyles || defaultTheme;
   const safeBrandColor = normalizeColor(brandColor, "#4f46e5");
   const safeAccentColor = normalizeColor(accentColor, "#06b6d4");
+  const safeButtonTextColor = normalizeColor(buttonTextColor, "#ffffff");
   const selectedTextColor = contrastText(safeBrandColor);
   const isDarkTheme = theme.label.includes("text-white");
   const [client_name, setClientName] = useState("");
@@ -501,8 +502,8 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
         <button
           type="submit"
           disabled={loading || selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes) || !requestedTime}
-          className={`px-6 py-3 rounded-lg text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
-          style={{ background: `linear-gradient(135deg, ${safeBrandColor}, ${safeAccentColor})` }}
+          className={`px-6 py-3 rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
+          style={{ background: `linear-gradient(135deg, ${safeBrandColor}, ${safeAccentColor})`, color: safeButtonTextColor }}
         >
           {loading ? t('booking.booking') : t('booking.bookNow')}
         </button>
