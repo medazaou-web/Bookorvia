@@ -23,13 +23,17 @@ export default function BookingSection({
   services, 
   businessSlug, 
   themeStyles,
-  language = 'en'
+  language = 'en',
+  brandColor,
+  accentColor
 }: { 
   businessId: string;
   services: any[];
   businessSlug: string;
   themeStyles: ThemeStyles;
   language?: string;
+  brandColor?: string;
+  accentColor?: string;
 }) {
   const t = useTranslations(language as any);
 
@@ -42,6 +46,8 @@ export default function BookingSection({
           businessSlug={businessSlug} 
           themeStyles={themeStyles}
           language={language}
+          brandColor={brandColor}
+          accentColor={accentColor}
         />
       </div>
     </div>

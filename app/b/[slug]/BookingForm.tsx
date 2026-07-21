@@ -39,7 +39,7 @@ type ThemeStyles = {
   progressBar: string;
 };
 
-export default function BookingForm({ businessId, services, businessSlug, themeStyles, language = 'en' }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles; language?: string }) {
+export default function BookingForm({ businessId, services, businessSlug, themeStyles, language = 'en', brandColor = '#4f46e5', accentColor = '#06b6d4' }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles; language?: string; brandColor?: string; accentColor?: string }) {
   const searchParams = useSearchParams();
   const preSelectedServiceId = searchParams.get("service");
   const t = useTranslations(language as any);
@@ -300,9 +300,10 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                 onClick={() => toggleService(service.id)}
                 className={`relative rounded-2xl border-2 transition-all text-left overflow-hidden ${
                   selectedServiceIds.includes(service.id)
-                    ? `border-indigo-600 dark:border-indigo-400 shadow-lg scale-[1.01]`
+                    ? `shadow-lg scale-[1.01]`
                     : `border-slate-300 dark:border-slate-600 hover:shadow-md`
                 }`}
+                style={selectedServiceIds.includes(service.id) ? { borderColor: brandColor, boxShadow: `0 10px 25px ${brandColor}33` } : {}}
               >
                 {/* Background Image */}
                 {service.background_image_url && (
@@ -323,10 +324,9 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                 <div className={`relative p-4 sm:p-5 ${service.background_image_url ? 'min-h-36' : ''}`}>
                   <div className="flex items-center gap-3">
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0 ${
-                      selectedServiceIds.includes(service.id)
-                        ? 'bg-indigo-600 dark:bg-indigo-500 border-indigo-600 dark:border-indigo-500'
-                        : 'border-slate-400 dark:border-slate-500'
-                    } ${service.background_image_url ? 'bg-white/20 backdrop-blur border-white/40' : ''}`}>
+                      service.background_image_url ? 'bg-white/20 backdrop-blur border-white/40' : 'border-slate-400 dark:border-slate-500'
+                    }`}
+                    style={selectedServiceIds.includes(service.id) && !service.background_image_url ? { backgroundColor: brandColor, borderColor: brandColor } : {}}>
                       {selectedServiceIds.includes(service.id) && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -337,7 +337,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                       <div className={`font-semibold ${
                         service.background_image_url 
                           ? 'text-white'
-                          : selectedServiceIds.includes(service.id) ? 'text-white' : theme.label
+                          : theme.label
                       }`}
                       style={service.background_image_url ? {textShadow: "0 2px 6px rgba(0,0,0,0.5)"} : {}}>
                         {service.name}
@@ -401,11 +401,12 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                   key={slot.starts_at}
                   type="button"
                   onClick={() => setRequestedTime(slot.label)}
-                  className={`px-3 py-3 rounded-xl text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 ${
+                  className={`px-3 py-3 rounded-xl text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 text-white ${
                     requestedTime === slot.label
-                      ? `${theme.timeSlotSelected} shadow-lg border-indigo-600 dark:border-indigo-400 scale-105`
-                      : `${theme.timeSlot} border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500`
+                      ? `shadow-lg scale-105`
+                      : `${theme.timeSlot}`
                   }`}
+                  style={requestedTime === slot.label ? { backgroundColor: brandColor, borderColor: brandColor, boxShadow: `0 8px 20px ${brandColor}44` } : {}}
                 >
                   {slot.label}
                 </button>
@@ -436,7 +437,8 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
         <button
           type="submit"
           disabled={loading || selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes) || !requestedTime}
-          className={`px-6 py-3 rounded-lg ${theme.buttonPrimary} shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
+          className={`px-6 py-3 rounded-lg text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
+          style={{ background: `linear-gradient(135deg, ${brandColor}, ${accentColor})` }}
         >
           {loading ? t('booking.booking') : t('booking.bookNow')}
         </button>

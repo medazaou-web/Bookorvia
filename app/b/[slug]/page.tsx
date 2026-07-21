@@ -358,6 +358,8 @@ export default async function BusinessPage({ params }: Props) {
                 businessSlug={biz.slug}
                 themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]}
                 language={biz.language || 'en'}
+                brandColor={brandColor}
+                accentColor={accentColor}
               />
             </div>
           </section>
