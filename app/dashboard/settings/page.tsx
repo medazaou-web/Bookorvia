@@ -366,6 +366,20 @@ export default function DashboardSettings() {
     }
   }
 
+  const inputClass = "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all";
+  const sectionCardClass = "glass-panel neon-outline rounded-2xl sm:rounded-3xl p-5 sm:p-6";
+  const sectionTitleClass = "text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2";
+  const sectionSubtitleClass = "text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6";
+
+  const sectionLinks = [
+    { id: 'logo-settings', label: t('dashboard.logoSettings') },
+    { id: 'public-design', label: t('dashboard.publicPageDesign') },
+    { id: 'business-basics', label: t('dashboard.businessBasics') },
+    { id: 'contact-info', label: t('dashboard.contactInformation') },
+    { id: 'online-presence', label: t('dashboard.onlinePresence') },
+    { id: 'notification-preferences', label: t('dashboard.emailNotifications') },
+  ];
+
   return (
     <div>
       {/* Header */}
@@ -374,12 +388,27 @@ export default function DashboardSettings() {
         <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">{t('dashboard.manageYourBusinessProfile')}</p>
       </div>
 
+      <div className="futuristic-header neon-outline mb-6 sm:mb-8 rounded-2xl p-3 sm:p-4">
+        <div className="text-xs uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">Quick Navigation</div>
+        <div className="flex flex-wrap gap-2">
+          {sectionLinks.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="hover-lift px-3 py-1.5 rounded-lg border border-slate-300/70 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
       {loading ? (
-        <div className="rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-slate-900 backdrop-blur border border-white/60 dark:border-white/10 shadow-lg p-8 sm:p-12 text-center text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        <div className="glass-panel neon-outline rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center text-sm sm:text-base text-slate-600 dark:text-slate-300">
           {t('common.loading')}
         </div>
       ) : (
-        <div className="rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-slate-900 backdrop-blur border border-white/60 dark:border-white/10 shadow-lg p-6 sm:p-8">
+        <div className="glass-panel neon-outline rounded-2xl sm:rounded-3xl p-6 sm:p-8">
           <form onSubmit={handleSave} className="space-y-6 sm:space-y-8">
             {error && (
               <div className="rounded-xl sm:rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-400/20 p-4 sm:p-6 text-xs sm:text-sm text-red-700 dark:text-red-200 font-medium">
@@ -398,10 +427,12 @@ export default function DashboardSettings() {
             )}
 
             {/* Business Logo Section */}
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center gap-2">
+            <div id="logo-settings" className={sectionCardClass}>
+              <h2 className={sectionTitleClass}>
+                <UploadCloudIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" />
                 <span>{t('dashboard.logoSettings')}</span>
               </h2>
+              <p className={sectionSubtitleClass}>Keep your brand visuals clean and recognizable across every booking touchpoint.</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 {/* Logo Preview */}
                 <div>
@@ -488,10 +519,11 @@ export default function DashboardSettings() {
             </div>
 
             {/* Public Page Design Section */}
-            <div className="pt-4 sm:pt-6 border-t border-slate-200 dark:border-white/10">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
-                <SparkIcon className="h-5 sm:h-6 w-5 sm:w-6" /> {t('dashboard.publicPageDesign')}
+            <div id="public-design" className={sectionCardClass}>
+              <h2 className={sectionTitleClass}>
+                <SparkIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.publicPageDesign')}
               </h2>
+              <p className={sectionSubtitleClass}>Customize theme, colors, and hero media so your public page looks premium and consistent.</p>
               
               {/* Theme Selector */}
               <div className="mb-6 sm:mb-8">
@@ -541,7 +573,7 @@ export default function DashboardSettings() {
                         value={brand_color}
                         onChange={(e) => setBrandColor(e.target.value)}
                         placeholder="#4f46e5"
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className={`${inputClass} font-mono`}
                       />
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t('dashboard.usedForButtonsAndAccents')}</p>
                     </div>
@@ -563,7 +595,7 @@ export default function DashboardSettings() {
                         value={accent_color}
                         onChange={(e) => setAccentColor(e.target.value)}
                         placeholder="#06b6d4"
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className={`${inputClass} font-mono`}
                       />
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t('dashboard.forHighlightsAndSecondaryElements')}</p>
                     </div>
@@ -609,7 +641,7 @@ export default function DashboardSettings() {
                     value={cover_image_url}
                     onChange={(e) => setCoverImageUrl(e.target.value)}
                     placeholder="https://example.com/cover-image.jpg"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{t('dashboard.appearsAsHeroBackground')}</p>
@@ -644,10 +676,11 @@ export default function DashboardSettings() {
             </div>
 
             {/* Business Basics Section */}
-            <div className="pt-4 sm:pt-6 border-t border-slate-200 dark:border-white/10">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
-                <BusinessIcon className="h-5 sm:h-6 w-5 sm:w-6" /> {t('dashboard.businessBasics')}
+            <div id="business-basics" className={sectionCardClass}>
+              <h2 className={sectionTitleClass}>
+                <BusinessIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.businessBasics')}
               </h2>
+              <p className={sectionSubtitleClass}>Define your business identity, category, and messaging in one place.</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2">{t('dashboard.businessNameLabel')}</label>
@@ -655,7 +688,7 @@ export default function DashboardSettings() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t('dashboard.businessNamePlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                     required
                   />
                 </div>
@@ -665,7 +698,7 @@ export default function DashboardSettings() {
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
                     placeholder={t('dashboard.slugPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                     required
                   />
                 </div>
@@ -675,7 +708,7 @@ export default function DashboardSettings() {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     placeholder={t('dashboard.categoryPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -684,7 +717,7 @@ export default function DashboardSettings() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder={t('dashboard.descriptionPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                    className={`${inputClass} resize-none`}
                     rows={4}
                   />
                 </div>
@@ -692,10 +725,11 @@ export default function DashboardSettings() {
             </div>
 
             {/* Contact Information Section */}
-            <div className="pt-4 sm:pt-6 border-t border-slate-200 dark:border-white/10">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
-                <PhoneIcon className="h-5 sm:h-6 w-5 sm:w-6" /> {t('dashboard.contactInformation')}
+            <div id="contact-info" className={sectionCardClass}>
+              <h2 className={sectionTitleClass}>
+                <PhoneIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.contactInformation')}
               </h2>
+              <p className={sectionSubtitleClass}>Make it easy for clients to call, chat, or find your location quickly.</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2">{t('dashboard.phoneLabel')}</label>
@@ -703,7 +737,7 @@ export default function DashboardSettings() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder={t('dashboard.phonePlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div>
@@ -712,7 +746,7 @@ export default function DashboardSettings() {
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder={t('dashboard.whatsappPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -721,17 +755,18 @@ export default function DashboardSettings() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder={t('dashboard.addressPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
               </div>
             </div>
 
             {/* Online Presence Section */}
-            <div className="pt-4 sm:pt-6 border-t border-slate-200 dark:border-white/10">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
-                <WebsiteIcon className="h-5 sm:h-6 w-5 sm:w-6" /> {t('dashboard.onlinePresence')}
+            <div id="online-presence" className={sectionCardClass}>
+              <h2 className={sectionTitleClass}>
+                <WebsiteIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.onlinePresence')}
               </h2>
+              <p className={sectionSubtitleClass}>Connect your website, social profile, and review link for better discoverability.</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2">{t('dashboard.websiteLabel')}</label>
@@ -739,7 +774,7 @@ export default function DashboardSettings() {
                     value={website_url}
                     onChange={(e) => setWebsiteUrl(e.target.value)}
                     placeholder={t('dashboard.websitePlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div>
@@ -748,7 +783,7 @@ export default function DashboardSettings() {
                     value={instagram_url}
                     onChange={(e) => setInstagramUrl(e.target.value)}
                     placeholder={t('dashboard.instagramPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -757,17 +792,18 @@ export default function DashboardSettings() {
                     value={google_review_url}
                     onChange={(e) => setGoogleReviewUrl(e.target.value)}
                     placeholder={t('dashboard.googleReviewLinkPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-slate-950/40 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className={inputClass}
                   />
                 </div>
               </div>
             </div>
 
             {/* Notification Preferences Section */}
-            <div className="pt-4 sm:pt-6 border-t border-slate-200 dark:border-white/10">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-6 sm:mb-8 flex items-center gap-3">
-                <BellIcon className="h-6 sm:h-7 w-6 sm:w-7" /> {t('dashboard.emailNotifications')}
+            <div id="notification-preferences" className={sectionCardClass}>
+              <h2 className={sectionTitleClass}>
+                <BellIcon className="h-6 sm:h-7 w-6 sm:w-7 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.emailNotifications')}
               </h2>
+              <p className={sectionSubtitleClass}>Choose exactly which events trigger emails, so users get useful updates without noise.</p>
 
               {/* Master Toggle - Separated */}
               <div className="mb-8 p-4 sm:p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border border-indigo-200 dark:border-indigo-500/30">
@@ -882,14 +918,17 @@ export default function DashboardSettings() {
             </div>
 
             {/* Save Button */}
-            <div className="pt-4 sm:pt-6 border-t border-slate-200 flex gap-2 sm:gap-3">
+            <div className="sticky bottom-3 z-20">
+              <div className="futuristic-header neon-outline rounded-2xl p-3 sm:p-4 flex items-center gap-3">
               <button
                 disabled={saving || loading}
                 type="submit"
-                className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-xs sm:text-sm hover:shadow-lg hover:-translate-y-1 active:scale-95 disabled:opacity-60 transition-all"
+                className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs sm:text-sm hover:shadow-lg hover:-translate-y-1 active:scale-95 disabled:opacity-60 transition-all"
               >
                 {saving ? <><SaveIcon className="h-3 sm:h-4 w-3 sm:w-4 inline mr-2" /> {t('common.saving')}</> : <><SaveIcon className="h-3 sm:h-4 w-3 sm:w-4 inline mr-2" /> {t('common.save')}</>}
               </button>
+              <span className="hidden sm:inline text-xs text-slate-600 dark:text-slate-300 font-semibold">Changes are saved to your live business profile.</span>
+              </div>
             </div>
           </form>
         </div>
