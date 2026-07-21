@@ -614,7 +614,7 @@ export default function DashboardSettings() {
                       <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                         {uploading ? t('dashboard.uploadingProcessing') : "Click to upload cover image"}
                       </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">or paste a URL below</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">PNG, JPG, or WEBP</span>
                       <input 
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
@@ -627,22 +627,6 @@ export default function DashboardSettings() {
                       />
                     </label>
                   </div>
-                  
-                  {/* Or paste URL */}
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center px-3">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950 px-2">or</span>
-                    </div>
-                    <div className="border-t border-slate-300 dark:border-white/10"></div>
-                  </div>
-                  
-                  <input
-                    type="url"
-                    value={cover_image_url}
-                    onChange={(e) => setCoverImageUrl(e.target.value)}
-                    placeholder="https://example.com/cover-image.jpg"
-                    className={inputClass}
-                  />
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{t('dashboard.appearsAsHeroBackground')}</p>
               </div>
