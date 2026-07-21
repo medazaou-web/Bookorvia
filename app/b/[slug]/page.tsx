@@ -341,15 +341,15 @@ export default async function BusinessPage({ params }: Props) {
 
           <section id="book" className="mb-10 sm:mb-14 scroll-mt-36">
             <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-xl p-5 sm:p-7`} style={{ borderColor: `${brandColor}55`, boxShadow: `0 18px 48px ${brandColor}18` }}>
-              <div className="mb-6 flex flex-col gap-4 rounded-[1.6rem] border p-5 sm:p-6" style={{ borderColor: `${brandColor}55`, background: `linear-gradient(145deg, ${brandColor}12, ${accentColor}10)` }}>
+              <div className="mb-6 flex flex-col gap-4 rounded-[1.6rem] border p-5 sm:p-6" style={{ borderColor: `${brandColor}88`, background: `linear-gradient(145deg, ${brandColor}22, ${accentColor}16)` }}>
                 <div>
-                  <h2 className="text-3xl sm:text-4xl font-bold">{t('booking.requestBooking')}</h2>
+                  <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: brandColor }}>{t('booking.requestBooking')}</h2>
                   <p className={`${theme.subtext} mt-2`}>{t('booking.selectServiceTime')}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('booking.selectServices')}</span>
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>{t('booking.preferredDate')}</span>
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('booking.availableTimes')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}66`, background: `${brandColor}22` }}>{t('booking.selectServices')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${accentColor}66`, background: `${accentColor}22` }}>{t('booking.preferredDate')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}66`, background: `${brandColor}22` }}>{t('booking.availableTimes')}</span>
                 </div>
               </div>
               <BookingSection
@@ -412,10 +412,10 @@ export default async function BusinessPage({ params }: Props) {
 
         <footer className={`${theme.header} backdrop-blur border-t transition-colors px-4 sm:px-6 py-8 mt-12 relative z-10`}>
           <div className="mx-auto max-w-7xl text-center">
-            <p className="opacity-70 text-sm">
+            <p className={`${theme.text} opacity-75 text-sm`}>
               Powered by <span className="font-semibold">Bookorvia</span> © {new Date().getFullYear()}
             </p>
-            <p className="opacity-50 text-xs mt-2">Professional booking & loyalty management</p>
+            <p className={`${theme.text} opacity-60 text-xs mt-2`}>Professional booking & loyalty management</p>
           </div>
         </footer>
       </div>
