@@ -59,6 +59,7 @@ export default function DashboardBusinessPage() {
 
   const appUrl = typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_APP_URL || window.location.origin) : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const publicLink = business ? `${appUrl}/b/${business.slug}` : "/b/demo";
+  const livePageHref = business ? `/b/${business.slug}` : '/b/demo';
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrLoading, setQrLoading] = useState(false);
 
@@ -148,62 +149,25 @@ export default function DashboardBusinessPage() {
           {error}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          {/* Public Link Section */}
-          <div className="glass-panel neon-outline rounded-3xl p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"><ExternalLinkIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.publicLink')}</h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-6">{t('dashboard.shareWithCustomers')}</p>
-            
-            <div className="mb-6 p-5 sm:p-6 rounded-2xl bg-slate-50/90 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10">
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">{t('dashboard.publicPageUrl')}</p>
-              <div className="font-mono text-sm sm:text-base lg:text-lg text-slate-900 dark:text-slate-100 break-all mb-4">{publicLink}</div>
-              <div className="flex gap-3 flex-wrap">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.86fr_1.14fr]">
+          <div className="space-y-6 xl:sticky xl:top-24 xl:self-start">
+            <div className="glass-panel neon-outline rounded-3xl p-6">
+              <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">Launch Actions</p>
+              <div className="space-y-3">
                 <button
                   onClick={handleCopy}
-                  className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center gap-2"
+                  className="w-full px-5 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center justify-center gap-2"
                 >
                   {copied ? `✓ ${t('dashboard.linkCopied')}` : <><CopyIcon className="h-4 w-4" /> {t('dashboard.copyLink')}</>}
                 </button>
                 <a
-                  href={business ? `/b/${business.slug}` : '/b/demo'}
+                  href={livePageHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-2.5 rounded-xl bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 font-bold hover:bg-slate-50 dark:hover:bg-white/15 transition-all inline-flex items-center gap-2"
+                  className="w-full px-5 py-3 rounded-xl bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 font-bold hover:bg-slate-50 dark:hover:bg-white/15 transition-all inline-flex items-center justify-center gap-2"
                 >
                   <EyeIcon className="h-4 w-4" /> {t('dashboard.viewPage')}
                 </a>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
-                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Reach</p>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Use this link in bio, stories, and posts.</p>
-              </div>
-              <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
-                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Speed</p>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">One tap from ad to booking form.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* QR Code Section */}
-          <div className="glass-panel neon-outline rounded-3xl p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2"><QRIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.qrCode')}</h2>
-
-            <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-              {/* QR Code Display */}
-              <div className="flex flex-col items-center">
-                <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-2xl bg-white dark:bg-slate-950/60 p-4 shadow-xl border border-slate-200 dark:border-white/10 flex items-center justify-center mb-6">
-                  {qrLoading ? (
-                    <div className="text-slate-500 dark:text-slate-400">{t('dashboard.generatingQrCode')}</div>
-                  ) : qrDataUrl ? (
-                    <img src={qrDataUrl} alt="QR code" className="max-w-full max-h-full" />
-                  ) : (
-                    <div className="text-slate-500 dark:text-slate-400">{t('dashboard.qrUnavailable')}</div>
-                  )}
-                </div>
-                
                 {qrDataUrl && (
                   <button
                     onClick={() => {
@@ -214,15 +178,68 @@ export default function DashboardBusinessPage() {
                       a.click();
                       document.body.removeChild(a);
                     }}
-                    className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center gap-2"
+                    className="w-full px-5 py-3 rounded-xl bg-emerald-600 text-white font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center justify-center gap-2"
                   >
                     <DownloadIcon className="h-4 w-4" /> {t('dashboard.downloadQr')}
                   </button>
                 )}
               </div>
+            </div>
 
-              {/* QR Code Info */}
-              <div>
+            <div className="glass-panel neon-outline rounded-3xl p-6">
+              <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">Distribution Checklist</p>
+              <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Add link to Instagram bio</li>
+                <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Print QR near front desk</li>
+                <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Attach QR to invoices</li>
+                <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Test booking flow weekly</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="glass-panel neon-outline rounded-3xl p-6 sm:p-8">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"><ExternalLinkIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.publicLink')}</h2>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-6">{t('dashboard.shareWithCustomers')}</p>
+
+              <div className="mb-6 p-5 sm:p-6 rounded-2xl bg-slate-50/90 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">{t('dashboard.publicPageUrl')}</p>
+                <div className="font-mono text-sm sm:text-base lg:text-lg text-slate-900 dark:text-slate-100 break-all">{publicLink}</div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Reach</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Social + bio + direct messages</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Speed</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">One tap from ad to booking</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Control</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Track, update, and share instantly</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-panel neon-outline rounded-3xl p-6 sm:p-8">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2"><QRIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.qrCode')}</h2>
+
+              <div className="grid md:grid-cols-[0.85fr_1.15fr] gap-6 lg:gap-8">
+                <div className="flex flex-col items-center">
+                  <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-2xl bg-white dark:bg-slate-950/60 p-4 shadow-xl border border-slate-200 dark:border-white/10 flex items-center justify-center mb-4">
+                    {qrLoading ? (
+                      <div className="text-slate-500 dark:text-slate-400">{t('dashboard.generatingQrCode')}</div>
+                    ) : qrDataUrl ? (
+                      <img src={qrDataUrl} alt="QR code" className="max-w-full max-h-full" />
+                    ) : (
+                      <div className="text-slate-500 dark:text-slate-400">{t('dashboard.qrUnavailable')}</div>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center">Scan test before printing batches.</p>
+                </div>
+
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2"><SparkIcon className="h-5 w-5 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.qrWhatIsIt')}</h3>
@@ -252,16 +269,14 @@ export default function DashboardBusinessPage() {
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="xl:col-span-2">
             <div className="futuristic-header neon-outline rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-1">Conversion Tip</p>
                 <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200">Place the QR near checkout, front desk, and social posts to increase repeat bookings.</p>
               </div>
               <a
-                href={business ? `/b/${business.slug}` : '/b/demo'}
+                href={livePageHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg transition-all inline-flex items-center justify-center gap-2"
