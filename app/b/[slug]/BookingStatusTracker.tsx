@@ -74,6 +74,9 @@ export default function BookingStatusTracker({
           setBookingStatus(data.status || "pending");
           if (data.client_email) setClientEmail(data.client_email);
           if (data.notification_enabled) setIsNotificationEnabled(data.notification_enabled);
+          if (data.status && data.status !== "pending") {
+            setMessage(`Booking status: ${data.status}. Please check details below.`);
+          }
         }
       } catch (err) {
         console.error("Error fetching booking status:", err);

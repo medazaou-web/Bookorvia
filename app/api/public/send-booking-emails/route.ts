@@ -72,6 +72,30 @@ export async function POST(request: NextRequest) {
     const from = getFromAddress();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
+    // Create in-app notification for business owner dashboard bell
+    try {
+      const { error: notificationErr } = await supabase.from('notifications').insert({
+        business_id: booking.business_id,
+        type: 'booking',
+        title: 'New Booking Received',
+        message: `${booking.client_name || 'A client'} booked ${booking.service || 'a service'} for ${booking.requested_date || 'a date'} at ${booking.requested_time || 'a time'}`,
+        data: {
+          icon: '📅',
+          bookingId: booking.id,
+          isAdmin: false,
+          source: 'public-booking',
+          timestamp: new Date().toISOString(),
+        },
+        read: false,
+      });
+
+      if (notificationErr) {
+        console.error('Failed to create in-app booking notification:', notificationErr.message);
+      }
+    } catch (notificationCatchErr: any) {
+      console.error('Error creating in-app booking notification:', notificationCatchErr?.message || notificationCatchErr);
+    }
+
     let ownerEmailSent = false;
     let clientEmailSent = false;
     const errors: string[] = [];
