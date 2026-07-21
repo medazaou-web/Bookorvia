@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
 
     let ownerEmailSent = false;
     let clientEmailSent = false;
+    const errors: string[] = [];
 
     if (ownerEmail && ownerWantsBookingEmails) {
       const ownerSubject = `New Booking: ${(booking.client_name || 'Client')} - ${booking.requested_date || ''} ${booking.requested_time || ''}`.trim();
@@ -98,14 +99,20 @@ export async function POST(request: NextRequest) {
         </div>
       `;
 
-      await transporter.sendMail({
-        from,
-        to: ownerEmail,
-        subject: ownerSubject,
-        html: ownerHtml,
-      });
+      try {
+        await transporter.sendMail({
+          from,
+          to: ownerEmail,
+          subject: ownerSubject,
+          html: ownerHtml,
+        });
 
-      ownerEmailSent = true;
+        ownerEmailSent = true;
+      } catch (ownerMailErr: any) {
+        const ownerMsg = ownerMailErr?.message || 'unknown owner email error';
+        console.error('Owner email send failed:', ownerMsg);
+        errors.push(`owner: ${ownerMsg}`);
+      }
     }
 
     if (booking.client_email) {
@@ -131,20 +138,40 @@ export async function POST(request: NextRequest) {
         </div>
       `;
 
-      await transporter.sendMail({
-        from,
-        to: booking.client_email,
-        subject: clientSubject,
-        html: clientHtml,
-      });
+      try {
+        await transporter.sendMail({
+          from,
+          to: booking.client_email,
+          subject: clientSubject,
+          html: clientHtml,
+        });
 
-      clientEmailSent = true;
+        clientEmailSent = true;
+      } catch (clientMailErr: any) {
+        const clientMsg = clientMailErr?.message || 'unknown client email error';
+        console.error('Client email send failed:', clientMsg);
+        errors.push(`client: ${clientMsg}`);
+      }
+    }
+
+    if (!ownerEmailSent && !clientEmailSent) {
+      return NextResponse.json(
+        {
+          success: false,
+          ownerEmailSent,
+          clientEmailSent,
+          errors,
+          error: 'Failed to send both owner and client emails',
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
       success: true,
       ownerEmailSent,
       clientEmailSent,
+      errors,
     });
   } catch (error: any) {
     console.error('Error sending booking emails:', error);

@@ -198,11 +198,22 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       }
 
       // Send owner + client emails from a server-side verified route
-      await fetch('/api/public/send-booking-emails', {
+      const emailResponse = await fetch('/api/public/send-booking-emails', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bookingId: data?.id }),
-      }).catch((emailErr) => console.error('Failed to trigger booking emails:', emailErr));
+      }).catch((emailErr) => {
+        console.error('Failed to trigger booking emails:', emailErr);
+        return null;
+      });
+
+      if (emailResponse) {
+        const emailPayload = await emailResponse.json().catch(() => ({}));
+        if (!emailResponse.ok) {
+          console.error('Booking created but email delivery failed:', emailPayload);
+          setError('Booking created successfully, but email delivery failed. Please contact the business directly.');
+        }
+      }
 
 
       setSuccess(`✅ Your booking has been confirmed! Opening booking status in a new tab...`);
