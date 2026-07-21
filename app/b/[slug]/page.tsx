@@ -157,6 +157,17 @@ export default async function BusinessPage({ params }: Props) {
     const logo = biz.logo_url;
     const coverImage = biz.cover_image_url;
     const initials = biz.name ? biz.name.split(" ").map((s: string) => s[0]).slice(0,2).join("") : "B";
+    const websiteHref = biz.website_url
+      ? (/^https?:\/\//i.test(biz.website_url) ? biz.website_url : `https://${biz.website_url}`)
+      : null;
+    const websiteDisplay = (() => {
+      if (!websiteHref) return "";
+      try {
+        return new URL(websiteHref).hostname;
+      } catch {
+        return biz.website_url;
+      }
+    })();
 
     return (
       <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
@@ -382,11 +393,11 @@ export default async function BusinessPage({ params }: Props) {
                   <p className={`font-bold ${theme.accent} truncate`}>@{biz.instagram_url.split('/').pop()}</p>
                 </a>
               )}
-              {biz.website_url && (
-                <a href={biz.website_url} target="_blank" rel="noreferrer" className={`rounded-2xl ${theme.surface} border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${brandColor}55` }}>
+              {websiteHref && (
+                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-2xl ${theme.surface} border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${brandColor}55` }}>
                   <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>Website</div>
                   <p className={`text-sm ${theme.subtext} mb-2`}>Visit</p>
-                  <p className={`font-bold ${theme.accent} truncate text-sm`}>{new URL(biz.website_url).hostname}</p>
+                  <p className={`font-bold ${theme.accent} truncate text-sm`}>{websiteDisplay}</p>
                 </a>
               )}
             </div>
