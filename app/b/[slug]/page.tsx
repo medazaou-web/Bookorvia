@@ -231,7 +231,6 @@ export default async function BusinessPage({ params }: Props) {
                       <MapPinIcon className="h-5 w-5 flex-shrink-0" /> {biz.address}
                     </p>
                   )}
-                  <div className="mt-4 w-full max-w-sm h-1.5 rounded-full" style={{ background: brandGradient }}></div>
                 </div>
               </div>
 
