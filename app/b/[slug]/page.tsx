@@ -245,39 +245,66 @@ export default async function BusinessPage({ params }: Props) {
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           {backgroundStyle === "orbs" && (
             <>
-              <div className="absolute -top-48 -right-40 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: withAlpha(brandColor, 0.13) }}></div>
-              <div className="absolute bottom-0 -left-52 w-[28rem] h-[28rem] rounded-full blur-3xl" style={{ backgroundColor: withAlpha(accentColor, 0.13) }}></div>
+              <div className="absolute inset-0" style={{ background: `radial-gradient(1200px 520px at 20% 12%, ${withAlpha(brandColor, 0.22)}, transparent 62%), radial-gradient(980px 460px at 84% 16%, ${withAlpha(accentColor, 0.18)}, transparent 65%), linear-gradient(130deg, ${withAlpha(brandColor, 0.06)}, ${withAlpha(accentColor, 0.05)})` }}></div>
+              <div className="absolute -top-44 -right-28 w-[30rem] h-[30rem] rounded-full blur-[90px]" style={{ backgroundColor: withAlpha(brandColor, 0.18) }}></div>
+              <div className="absolute bottom-[-8rem] left-[-6rem] w-[32rem] h-[32rem] rounded-full blur-[100px]" style={{ backgroundColor: withAlpha(accentColor, 0.16) }}></div>
+              <div className="absolute top-[28%] left-[40%] w-[28rem] h-[28rem] rounded-full blur-[110px]" style={{ backgroundColor: withAlpha(brandColor, 0.1) }}></div>
             </>
           )}
           {backgroundStyle === "mesh" && (
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `radial-gradient(circle at 15% 20%, ${withAlpha(brandColor, 0.2)} 0, transparent 34%), radial-gradient(circle at 85% 10%, ${withAlpha(accentColor, 0.2)} 0, transparent 36%), linear-gradient(120deg, ${withAlpha(brandColor, 0.08)}, ${withAlpha(accentColor, 0.08)})`,
-              }}
-            ></div>
+            <>
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `linear-gradient(145deg, ${withAlpha(brandColor, 0.1)}, ${withAlpha(accentColor, 0.09)}), radial-gradient(circle at 18% 22%, ${withAlpha(brandColor, 0.18)} 0, transparent 40%), radial-gradient(circle at 82% 20%, ${withAlpha(accentColor, 0.2)} 0, transparent 42%)`,
+                }}
+              ></div>
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `linear-gradient(${withAlpha(brandColor, 0.16)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, 0.14)} 1px, transparent 1px)`,
+                  backgroundSize: "56px 56px",
+                  maskImage: "radial-gradient(circle at center, black 34%, transparent 86%)",
+                }}
+              ></div>
+              <div className="absolute inset-x-0 top-[12%] h-44 blur-3xl" style={{ backgroundColor: withAlpha(brandColor, 0.12) }}></div>
+            </>
           )}
           {backgroundStyle === "stripes" && (
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `repeating-linear-gradient(135deg, ${withAlpha(brandColor, 0.09)} 0 14px, transparent 14px 28px), repeating-linear-gradient(45deg, ${withAlpha(accentColor, 0.08)} 0 12px, transparent 12px 24px)`,
-              }}
-            ></div>
+            <>
+              <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${withAlpha(brandColor, 0.08)}, ${withAlpha(accentColor, 0.06)})` }}></div>
+              <div className="absolute top-[-14%] left-[-10%] h-[20rem] w-[40rem] rotate-[-16deg] rounded-[3rem] blur-2xl" style={{ background: `linear-gradient(120deg, ${withAlpha(brandColor, 0.35)}, transparent)` }}></div>
+              <div className="absolute top-[24%] right-[-18%] h-[22rem] w-[44rem] rotate-[18deg] rounded-[3rem] blur-2xl" style={{ background: `linear-gradient(120deg, ${withAlpha(accentColor, 0.32)}, transparent)` }}></div>
+              <div className="absolute bottom-[-16%] left-[22%] h-[20rem] w-[36rem] rotate-[-10deg] rounded-[3rem] blur-2xl" style={{ background: `linear-gradient(120deg, ${withAlpha(brandColor, 0.24)}, ${withAlpha(accentColor, 0.18)})` }}></div>
+            </>
           )}
           {backgroundStyle === "grid" && (
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `linear-gradient(${withAlpha(brandColor, 0.12)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, 0.12)} 1px, transparent 1px)`,
-                backgroundSize: "36px 36px",
-              }}
-            ></div>
+            <>
+              <div className="absolute inset-0" style={{ background: `radial-gradient(980px 420px at 50% -10%, ${withAlpha(brandColor, 0.24)}, transparent 66%), linear-gradient(180deg, ${withAlpha(accentColor, 0.06)}, transparent 48%)` }}></div>
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `linear-gradient(${withAlpha(brandColor, 0.16)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, 0.16)} 1px, transparent 1px)`,
+                  backgroundSize: "48px 48px",
+                }}
+              ></div>
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `linear-gradient(${withAlpha(brandColor, 0.08)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, 0.08)} 1px, transparent 1px)`,
+                  backgroundSize: "12px 12px",
+                  opacity: 0.55,
+                }}
+              ></div>
+            </>
           )}
           {backgroundStyle === "spotlight" && (
             <>
-              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[44rem] h-[22rem] blur-3xl" style={{ background: `radial-gradient(circle, ${withAlpha(brandColor, 0.24)} 0%, transparent 70%)` }}></div>
-              <div className="absolute bottom-0 right-0 w-[24rem] h-[24rem] blur-3xl" style={{ background: `radial-gradient(circle, ${withAlpha(accentColor, 0.2)} 0%, transparent 70%)` }}></div>
+              <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, ${withAlpha(brandColor, 0.07)} 0%, transparent 48%)` }}></div>
+              <div className="absolute -top-28 left-[8%] h-[34rem] w-[16rem] rotate-[16deg] blur-3xl" style={{ background: `linear-gradient(180deg, ${withAlpha(brandColor, 0.34)}, transparent)` }}></div>
+              <div className="absolute -top-36 left-[44%] h-[36rem] w-[18rem] rotate-[-4deg] blur-3xl" style={{ background: `linear-gradient(180deg, ${withAlpha(accentColor, 0.3)}, transparent)` }}></div>
+              <div className="absolute -top-24 right-[8%] h-[34rem] w-[16rem] rotate-[-16deg] blur-3xl" style={{ background: `linear-gradient(180deg, ${withAlpha(brandColor, 0.28)}, transparent)` }}></div>
+              <div className="absolute bottom-[-6rem] left-1/2 -translate-x-1/2 w-[34rem] h-[16rem] rounded-full blur-[110px]" style={{ backgroundColor: withAlpha(accentColor, 0.16) }}></div>
             </>
           )}
         </div>

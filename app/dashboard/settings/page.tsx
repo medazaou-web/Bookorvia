@@ -735,11 +735,11 @@ export default function DashboardSettings() {
                     onChange={(e) => setBackgroundStyle(e.target.value)}
                     className={inputClass}
                   >
-                    <option value="orbs">Orbs Glow</option>
-                    <option value="mesh">Mesh Gradient</option>
-                    <option value="stripes">Aurora Stripes</option>
-                    <option value="grid">Soft Grid</option>
-                    <option value="spotlight">Spotlight</option>
+                    <option value="orbs">Liquid Chrome</option>
+                    <option value="mesh">Neural Lattice</option>
+                    <option value="stripes">Prism Shards</option>
+                    <option value="grid">Quantum Grid</option>
+                    <option value="spotlight">Velvet Stage</option>
                   </select>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Sets the decorative atmosphere behind your public page.</p>
                 </div>
