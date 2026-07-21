@@ -523,7 +523,7 @@ export default async function BusinessPage({ params }: Props) {
             <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-xl p-5 sm:p-7`} style={{ borderColor: withAlpha(brandColor, 0.33), boxShadow: `0 18px 48px ${withAlpha(brandColor, 0.11)}` }}>
               <div className="mb-6 flex flex-col gap-4 rounded-[1.6rem] border p-5 sm:p-6" style={{ borderColor: withAlpha(brandColor, 0.53), background: `linear-gradient(145deg, ${withAlpha(brandColor, 0.13)}, ${withAlpha(accentColor, 0.1)})` }}>
                 <div>
-                  <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: brandColor }}>{t('booking.requestBooking')}</h2>
+                  <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: selectedThemeKey === 'luxury_dark' ? '#ffffff' : '#0f172a' }}>{t('booking.requestBooking')}</h2>
                   <p className={`${theme.subtext} mt-2`}>{t('booking.selectServiceTime')}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
