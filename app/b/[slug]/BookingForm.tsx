@@ -39,6 +39,42 @@ type ThemeStyles = {
   progressBar: string;
 };
 
+function normalizeColor(color: string | null | undefined, fallback: string): string {
+  const value = (color || "").trim();
+  if (!value) return fallback;
+
+  const withHash = value.startsWith("#") ? value : `#${value}`;
+  if (/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/.test(withHash)) {
+    if (withHash.length === 4) {
+      const r = withHash[1];
+      const g = withHash[2];
+      const b = withHash[3];
+      return `#${r}${r}${g}${g}${b}${b}`;
+    }
+    return withHash;
+  }
+
+  return fallback;
+}
+
+function withAlpha(hexColor: string, alpha: number): string {
+  const safeAlpha = Math.max(0, Math.min(1, alpha));
+  const hex = normalizeColor(hexColor, "#4f46e5").replace("#", "");
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${safeAlpha})`;
+}
+
+function contrastText(hexColor: string): string {
+  const hex = normalizeColor(hexColor, "#4f46e5").replace("#", "");
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 0.58 ? "#0f172a" : "#ffffff";
+}
+
 export default function BookingForm({ businessId, services, businessSlug, themeStyles, language = 'en', brandColor = '#4f46e5', accentColor = '#06b6d4' }: { businessId: string; services?: Service[]; businessSlug?: string; themeStyles?: ThemeStyles; language?: string; brandColor?: string; accentColor?: string }) {
   const searchParams = useSearchParams();
   const preSelectedServiceId = searchParams.get("service");
@@ -61,6 +97,10 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
   };
 
   const theme = themeStyles || defaultTheme;
+  const safeBrandColor = normalizeColor(brandColor, "#4f46e5");
+  const safeAccentColor = normalizeColor(accentColor, "#06b6d4");
+  const selectedTextColor = contrastText(safeBrandColor);
+  const isDarkTheme = theme.label.includes("text-white");
   const [client_name, setClientName] = useState("");
   const [client_phone, setClientPhone] = useState("");
   const [client_email, setClientEmail] = useState("");
@@ -250,7 +290,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       {error && <div className={`mb-4 rounded-lg border p-4 text-sm ${theme.error}`}>{error}</div>}
       {success && <div className={`mb-4 rounded-lg border p-4 text-sm ${theme.success}`}>{success}</div>}
 
-      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`} style={{ borderColor: withAlpha(safeBrandColor, 0.24), boxShadow: `inset 0 1px 0 ${withAlpha(safeAccentColor, 0.2)}` }}>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.yourName')}</label>
@@ -258,6 +298,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
               value={client_name}
               onChange={(e) => setClientName(e.target.value)}
               className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+              style={{ borderColor: withAlpha(safeBrandColor, 0.22) }}
               placeholder="John Doe"
               required
             />
@@ -269,6 +310,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
               value={client_phone}
               onChange={(e) => setClientPhone(e.target.value)}
               className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+              style={{ borderColor: withAlpha(safeBrandColor, 0.22) }}
               placeholder="+212 6 12 34 56 78"
               required
             />
@@ -281,6 +323,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
               onChange={(e) => setClientEmail(e.target.value)}
               type="email"
               className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+              style={{ borderColor: withAlpha(safeBrandColor, 0.22) }}
               placeholder="you@example.com"
               required
             />
@@ -289,7 +332,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       </div>
 
       {/* Service Selection - Multi-select Grid */}
-      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`} style={{ borderColor: withAlpha(safeAccentColor, 0.24), background: `linear-gradient(165deg, ${withAlpha(safeBrandColor, 0.06)}, ${withAlpha(safeAccentColor, 0.03)})` }}>
         <label className={`block text-sm font-medium ${theme.label} mb-3`}>{t('booking.selectServices')}</label>
         {services && services.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -301,9 +344,17 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                 className={`relative rounded-2xl border-2 transition-all text-left overflow-hidden ${
                   selectedServiceIds.includes(service.id)
                     ? `shadow-lg scale-[1.01]`
-                    : `border-slate-300 dark:border-slate-600 hover:shadow-md`
+                    : `hover:shadow-md`
                 }`}
-                style={selectedServiceIds.includes(service.id) ? { borderColor: brandColor, boxShadow: `0 10px 25px ${brandColor}33` } : {}}
+                style={selectedServiceIds.includes(service.id)
+                  ? {
+                      borderColor: safeBrandColor,
+                      boxShadow: `0 12px 30px ${withAlpha(safeBrandColor, 0.28)}`,
+                      background: service.background_image_url ? undefined : `linear-gradient(140deg, ${withAlpha(safeBrandColor, 0.92)}, ${withAlpha(safeAccentColor, 0.88)})`,
+                    }
+                  : {
+                      borderColor: isDarkTheme ? "rgba(148,163,184,0.35)" : "rgba(148,163,184,0.42)",
+                    }}
               >
                 {/* Background Image */}
                 {service.background_image_url && (
@@ -314,9 +365,12 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                       className="w-full h-full object-cover"
                     />
                     {/* Strong gradient overlay for text readability */}
-                    <div className={`absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80 ${
-                      selectedServiceIds.includes(service.id) ? 'via-indigo-600/50 to-indigo-900/80' : ''
-                    }`}></div>
+                    <div
+                      className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"
+                      style={selectedServiceIds.includes(service.id)
+                        ? { background: `linear-gradient(180deg, rgba(0,0,0,0.35), ${withAlpha(safeBrandColor, 0.56)}, ${withAlpha(safeAccentColor, 0.72)})` }
+                        : {}}
+                    ></div>
                   </div>
                 )}
 
@@ -326,7 +380,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0 ${
                       service.background_image_url ? 'bg-white/20 backdrop-blur border-white/40' : 'border-slate-400 dark:border-slate-500'
                     }`}
-                    style={selectedServiceIds.includes(service.id) && !service.background_image_url ? { backgroundColor: brandColor, borderColor: brandColor } : {}}>
+                    style={selectedServiceIds.includes(service.id) && !service.background_image_url ? { backgroundColor: safeBrandColor, borderColor: safeBrandColor } : {}}>
                       {selectedServiceIds.includes(service.id) && (
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -337,17 +391,17 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                       <div className={`font-semibold ${
                         service.background_image_url 
                           ? 'text-white'
-                          : theme.label
+                          : selectedServiceIds.includes(service.id) ? '' : theme.label
                       }`}
-                      style={service.background_image_url ? {textShadow: "0 2px 6px rgba(0,0,0,0.5)"} : {}}>
+                      style={service.background_image_url ? {textShadow: "0 2px 6px rgba(0,0,0,0.5)"} : (selectedServiceIds.includes(service.id) ? { color: selectedTextColor } : {})}>
                         {service.name}
                       </div>
                       <div className={`text-sm ${
                         service.background_image_url 
                           ? 'text-white/90'
-                          : selectedServiceIds.includes(service.id) ? 'text-white/80' : theme.mutedText
+                          : selectedServiceIds.includes(service.id) ? '' : theme.mutedText
                       }`}
-                      style={service.background_image_url ? {textShadow: "0 1px 4px rgba(0,0,0,0.5)"} : {}}>
+                      style={service.background_image_url ? {textShadow: "0 1px 4px rgba(0,0,0,0.5)"} : (selectedServiceIds.includes(service.id) ? { color: withAlpha(selectedTextColor, 0.82) } : {})}>
                         {service.duration_minutes && `${service.duration_minutes} min`}
                         {service.duration_minutes && service.price && ' • '}
                         {service.price && `${service.price} ${service.currency || 'MAD'}`}
@@ -371,7 +425,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       </div>
 
       {/* Date Selection */}
-      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`} style={{ borderColor: withAlpha(safeAccentColor, 0.24) }}>
         <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
           <CalendarIcon className="h-4 w-4" />
           {t('booking.preferredDate')}
@@ -387,7 +441,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Time Slots */}
       {selectedServices.some(s => s.duration_minutes) && requested_date && (
-        <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
+        <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`} style={{ borderColor: withAlpha(safeBrandColor, 0.24), background: `linear-gradient(145deg, ${withAlpha(safeAccentColor, 0.07)}, transparent)` }}>
           <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
             <ClockIcon className="h-4 w-4" />
             {t('booking.availableTimes')}
@@ -401,12 +455,21 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                   key={slot.starts_at}
                   type="button"
                   onClick={() => setRequestedTime(slot.label)}
-                  className={`px-3 py-3 rounded-xl text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 text-white ${
+                  className={`px-3 py-3 rounded-xl text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 ${
                     requestedTime === slot.label
                       ? `shadow-lg scale-105`
                       : `${theme.timeSlot}`
                   }`}
-                  style={requestedTime === slot.label ? { backgroundColor: brandColor, borderColor: brandColor, boxShadow: `0 8px 20px ${brandColor}44` } : {}}
+                  style={requestedTime === slot.label
+                    ? {
+                        background: `linear-gradient(135deg, ${safeBrandColor}, ${safeAccentColor})`,
+                        color: contrastText(safeBrandColor),
+                        borderColor: safeBrandColor,
+                        boxShadow: `0 8px 20px ${withAlpha(safeBrandColor, 0.28)}`,
+                      }
+                    : {
+                        borderColor: isDarkTheme ? "rgba(148,163,184,0.35)" : "rgba(148,163,184,0.36)",
+                      }}
                 >
                   {slot.label}
                 </button>
@@ -421,12 +484,13 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       )}
 
       {/* Message */}
-      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`} style={{ borderColor: withAlpha(safeAccentColor, 0.24) }}>
         <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.messageOptional')}</label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+          style={{ borderColor: withAlpha(safeBrandColor, 0.22) }}
           rows={3}
           placeholder={t('booking.specialRequests')}
         />
@@ -438,7 +502,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
           type="submit"
           disabled={loading || selectedServices.length === 0 || !selectedServices.some(s => s.duration_minutes) || !requestedTime}
           className={`px-6 py-3 rounded-lg text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
-          style={{ background: `linear-gradient(135deg, ${brandColor}, ${accentColor})` }}
+          style={{ background: `linear-gradient(135deg, ${safeBrandColor}, ${safeAccentColor})` }}
         >
           {loading ? t('booking.booking') : t('booking.bookNow')}
         </button>

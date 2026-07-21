@@ -9,6 +9,33 @@ import { locales, type Locale } from "@/lib/i18n/config";
 
 type Props = { params: any };
 
+function normalizeColor(color: string | null | undefined, fallback: string): string {
+  const value = (color || "").trim();
+  if (!value) return fallback;
+
+  const withHash = value.startsWith("#") ? value : `#${value}`;
+  if (/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/.test(withHash)) {
+    if (withHash.length === 4) {
+      const r = withHash[1];
+      const g = withHash[2];
+      const b = withHash[3];
+      return `#${r}${r}${g}${g}${b}${b}`;
+    }
+    return withHash;
+  }
+
+  return fallback;
+}
+
+function withAlpha(hexColor: string, alpha: number): string {
+  const safeAlpha = Math.max(0, Math.min(1, alpha));
+  const hex = normalizeColor(hexColor, "#4f46e5").replace("#", "");
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${safeAlpha})`;
+}
+
 // Main theme configuration
 const themeConfig = {
   luxury_dark: {
@@ -136,8 +163,8 @@ export default async function BusinessPage({ params }: Props) {
     const locale: Locale = locales.includes(biz.language) ? biz.language : 'en';
     const t = (key: string) => getTranslation(locale, key);
     const theme = themeConfig[biz.public_theme as keyof typeof themeConfig] || themeConfig.modern_gradient;
-    const brandColor = biz.brand_color || "#4f46e5";
-    const accentColor = biz.accent_color || "#06b6d4";
+    const brandColor = normalizeColor(biz.brand_color, "#4f46e5");
+    const accentColor = normalizeColor(biz.accent_color, "#06b6d4");
     const brandGradient = `linear-gradient(135deg, ${brandColor}, ${accentColor})`;
 
     // Load active services IN PARALLEL
@@ -176,8 +203,8 @@ export default async function BusinessPage({ params }: Props) {
     return (
       <div className={`min-h-screen ${theme.bg} transition-colors duration-300`}>
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-48 -right-40 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: `${brandColor}22` }}></div>
-          <div className="absolute bottom-0 -left-52 w-[28rem] h-[28rem] rounded-full blur-3xl" style={{ backgroundColor: `${accentColor}22` }}></div>
+          <div className="absolute -top-48 -right-40 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: withAlpha(brandColor, 0.13) }}></div>
+          <div className="absolute bottom-0 -left-52 w-[28rem] h-[28rem] rounded-full blur-3xl" style={{ backgroundColor: withAlpha(accentColor, 0.13) }}></div>
         </div>
 
         <header className={`sticky top-0 z-50 ${theme.header} backdrop-blur border-b transition-colors px-4 sm:px-6 py-4 shadow-sm`}>
@@ -199,7 +226,7 @@ export default async function BusinessPage({ params }: Props) {
         </header>
 
         <main className={`mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12 relative z-10 ${theme.text}`}>
-          <div className={`rounded-[2rem] ${theme.card} backdrop-blur border shadow-2xl overflow-hidden mb-8 sm:mb-10`} style={{ boxShadow: `0 24px 60px ${brandColor}22` }}>
+          <div className={`rounded-[2rem] ${theme.card} backdrop-blur border shadow-2xl overflow-hidden mb-8 sm:mb-10`} style={{ boxShadow: `0 24px 60px ${withAlpha(brandColor, 0.13)}` }}>
             <div
               className="h-60 sm:h-72 md:h-80 bg-cover bg-center relative"
               style={{
@@ -278,12 +305,12 @@ export default async function BusinessPage({ params }: Props) {
           </div>
 
           <nav className="sticky top-[74px] z-40 mb-8 sm:mb-10">
-            <div className={`rounded-2xl border p-2 backdrop-blur-xl ${theme.surface}`} style={{ borderColor: `${brandColor}66`, background: `linear-gradient(90deg, ${brandColor}14, ${accentColor}14)` }}>
+            <div className={`rounded-2xl border p-2 backdrop-blur-xl ${theme.surface}`} style={{ borderColor: withAlpha(brandColor, 0.4), background: `linear-gradient(90deg, ${withAlpha(brandColor, 0.08)}, ${withAlpha(accentColor, 0.08)})` }}>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <a href="#services" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('business.services')}</a>
-                <a href="#book" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('booking.bookNow')}</a>
-                <a href="#reviews" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>{t('business.reviews')}</a>
-                <a href="#contact" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>{t('public.contact')}</a>
+                <a href="#services" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: withAlpha(brandColor, 0.26) }}>{t('business.services')}</a>
+                <a href="#book" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: withAlpha(brandColor, 0.26) }}>{t('booking.bookNow')}</a>
+                <a href="#reviews" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: withAlpha(accentColor, 0.26) }}>{t('business.reviews')}</a>
+                <a href="#contact" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: withAlpha(accentColor, 0.26) }}>{t('public.contact')}</a>
               </div>
             </div>
           </nav>
@@ -296,7 +323,7 @@ export default async function BusinessPage({ params }: Props) {
               </div>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {services.map((s: any) => (
-                  <div key={s.id} className={`relative rounded-[1.75rem] overflow-hidden border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group min-h-80 ${theme.surface}`} style={{ borderColor: s.background_image_url ? undefined : `${accentColor}44`, boxShadow: `0 16px 40px ${accentColor}12` }}>
+                  <div key={s.id} className={`relative rounded-[1.75rem] overflow-hidden border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group min-h-80 ${theme.surface}`} style={{ borderColor: s.background_image_url ? undefined : withAlpha(accentColor, 0.26), boxShadow: `0 16px 40px ${withAlpha(accentColor, 0.07)}` }}>
                     {s.background_image_url ? (
                       <>
                         <div className="absolute inset-0">
@@ -340,16 +367,16 @@ export default async function BusinessPage({ params }: Props) {
           )}
 
           <section id="book" className="mb-10 sm:mb-14 scroll-mt-36">
-            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-xl p-5 sm:p-7`} style={{ borderColor: `${brandColor}55`, boxShadow: `0 18px 48px ${brandColor}18` }}>
-              <div className="mb-6 flex flex-col gap-4 rounded-[1.6rem] border p-5 sm:p-6" style={{ borderColor: `${brandColor}88`, background: `linear-gradient(145deg, ${brandColor}22, ${accentColor}16)` }}>
+            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-xl p-5 sm:p-7`} style={{ borderColor: withAlpha(brandColor, 0.33), boxShadow: `0 18px 48px ${withAlpha(brandColor, 0.11)}` }}>
+              <div className="mb-6 flex flex-col gap-4 rounded-[1.6rem] border p-5 sm:p-6" style={{ borderColor: withAlpha(brandColor, 0.53), background: `linear-gradient(145deg, ${withAlpha(brandColor, 0.13)}, ${withAlpha(accentColor, 0.1)})` }}>
                 <div>
                   <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: brandColor }}>{t('booking.requestBooking')}</h2>
                   <p className={`${theme.subtext} mt-2`}>{t('booking.selectServiceTime')}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}66`, background: `${brandColor}22` }}>{t('booking.selectServices')}</span>
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${accentColor}66`, background: `${accentColor}22` }}>{t('booking.preferredDate')}</span>
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}66`, background: `${brandColor}22` }}>{t('booking.availableTimes')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: withAlpha(brandColor, 0.4), background: withAlpha(brandColor, 0.13) }}>{t('booking.selectServices')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: withAlpha(accentColor, 0.4), background: withAlpha(accentColor, 0.13) }}>{t('booking.preferredDate')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: withAlpha(brandColor, 0.4), background: withAlpha(brandColor, 0.13) }}>{t('booking.availableTimes')}</span>
                 </div>
               </div>
               <BookingSection
@@ -368,13 +395,13 @@ export default async function BusinessPage({ params }: Props) {
             <div className="mb-6 sm:mb-8">
               <h2 className="text-3xl sm:text-4xl font-bold">{t('business.reviews')}</h2>
             </div>
-            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`} style={{ borderColor: `${accentColor}55`, boxShadow: `0 18px 48px ${accentColor}16` }}>
+            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`} style={{ borderColor: withAlpha(accentColor, 0.33), boxShadow: `0 18px 48px ${withAlpha(accentColor, 0.1)}` }}>
               <ReviewBooster businessId={biz.id} googleReviewUrl={biz.google_review_url} preloadedReviews={reviews} themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]} />
             </div>
           </section>
 
           <section className="mb-10 sm:mb-14">
-            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`} style={{ borderColor: `${brandColor}55`, boxShadow: `0 18px 48px ${brandColor}14` }}>
+            <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`} style={{ borderColor: withAlpha(brandColor, 0.33), boxShadow: `0 18px 48px ${withAlpha(brandColor, 0.09)}` }}>
               <LoyaltyLookup businessId={biz.id} themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]} />
             </div>
           </section>
@@ -403,7 +430,7 @@ export default async function BusinessPage({ params }: Props) {
                 </a>
               )}
               {websiteHref && (
-                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${brandColor}88`, background: `linear-gradient(160deg, ${brandColor}22, ${accentColor}12)` }}>
+                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: withAlpha(brandColor, 0.53), background: `linear-gradient(160deg, ${withAlpha(brandColor, 0.13)}, ${withAlpha(accentColor, 0.07)})` }}>
                   <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>{t('business.website')}</div>
                   <p className={`font-bold ${theme.accent} truncate text-sm`}>{websiteDisplay}</p>
                 </a>
