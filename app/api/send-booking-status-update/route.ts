@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '../../../lib/supabase/admin';
 import { createServerSupabase } from '@/lib/supabase/serverClient';
 import { getAuthenticatedUserOrThrow, unauthorizedResponse } from '@/lib/security/auth';
+import nodemailer from 'nodemailer';
 
 export async function POST(request: NextRequest) {
   try {
@@ -105,48 +106,122 @@ export async function POST(request: NextRequest) {
 
     console.log('📧 Business data:', { business_name: businessDetails?.name });
 
-    // Send notification email via the send-booking-notification endpoint
-    const emailPayload = {
-      bookingId,
-      clientEmail: booking.client_email,
-      clientName: booking.client_name,
-      status: newStatus,
-      businessName: businessDetails?.name,
-      serviceName: booking.service,
-      bookingDate: booking.requested_date,
-      bookingTime: booking.requested_time,
-    };
-    
-    console.log('📧 Email payload:', emailPayload);
+    // Send client confirmation/update email directly here so accepted/refused emails are reliable.
+    const from = `${process.env.SMTP_FROM_NAME || 'Bookorvia'} <${process.env.SMTP_FROM_EMAIL || 'no-reply@bookorvia.com'}>`;
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_PORT === '465',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
 
-    const notificationResponse = await fetch(
-      new URL('/api/send-booking-notification', request.url),
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(request.headers.get('authorization')
-            ? { Authorization: request.headers.get('authorization') as string }
-            : {}),
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const trackingLink = `${baseUrl}/booking-status/${bookingId}`;
+
+    const statusMessages = {
+      pending: {
+        subject: 'Booking Request Received - Awaiting Confirmation',
+        heading: 'Your booking request has been received!',
+        message: 'The business will review your request and confirm shortly. We\'ll notify you as soon as there\'s an update.',
+        icon: '⏳',
+        color: '#f59e0b',
+      },
+      accepted: {
+        subject: '✓ Your Booking is Confirmed!',
+        heading: 'Great news! Your booking is confirmed',
+        message: 'Your booking has been accepted and confirmed. Please check the details below.',
+        icon: '✓',
+        color: '#10b981',
+      },
+      refused: {
+        subject: 'Booking Update - Slot Not Available',
+        heading: 'Booking Status Update',
+        message: 'Unfortunately, the requested time slot is no longer available. Please try booking another time.',
+        icon: '✗',
+        color: '#ef4444',
+      },
+      completed: {
+        subject: 'Service Completed - Thank You!',
+        heading: 'Your service is complete',
+        message: 'Thank you for booking with us! We hope you had a great experience.',
+        icon: '✓',
+        color: '#3b82f6',
+      },
+    } as const;
+
+    const emailData = statusMessages[newStatus as keyof typeof statusMessages] || statusMessages.accepted;
+    const clientEmailHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 12px 12px 0 0; text-align: center; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px; }
+            .status-badge { display: inline-block; background: ${emailData.color}; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin: 20px 0; }
+            .details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${emailData.color}; }
+            .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+            .detail-row:last-child { border-bottom: none; }
+            .detail-label { font-weight: 600; color: #666; }
+            .detail-value { color: #333; }
+            .cta-button { display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
+            .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #999; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 style="margin: 0; font-size: 28px;">${emailData.icon}</h1>
+              <h2 style="margin: 10px 0 0 0;">${emailData.heading}</h2>
+            </div>
+            <div class="content">
+              <p>${emailData.message}</p>
+              <div class="status-badge">${emailData.icon} ${newStatus.toUpperCase()}</div>
+              <div class="details">
+                <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${booking.client_name || 'Valued Customer'}</span></div>
+                ${businessDetails?.name ? `<div class="detail-row"><span class="detail-label">Business:</span><span class="detail-value">${businessDetails.name}</span></div>` : ''}
+                ${booking.service ? `<div class="detail-row"><span class="detail-label">Service:</span><span class="detail-value">${booking.service}</span></div>` : ''}
+                ${booking.requested_date ? `<div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${booking.requested_date}</span></div>` : ''}
+                ${booking.requested_time ? `<div class="detail-row"><span class="detail-label">Time:</span><span class="detail-value">${booking.requested_time}</span></div>` : ''}
+              </div>
+              <div style="text-align: center;">
+                <a href="${trackingLink}" class="cta-button">View Your Booking</a>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    try {
+      await transporter.sendMail({
+        from,
+        to: booking.client_email,
+        subject: emailData.subject,
+        html: clientEmailHtml,
+      });
+      console.log('✅ Client status email sent successfully to:', booking.client_email);
+    } catch (smtpError: any) {
+      console.error('❌ Client status email failed:', smtpError?.message || smtpError);
+      return NextResponse.json(
+        {
+          success: false,
+          emailSent: false,
+          error: smtpError?.message || 'Failed to send client status email',
         },
-        body: JSON.stringify(emailPayload),
-      }
-    );
-
-    console.log('📧 Email API response status:', notificationResponse.status);
-
-    if (!notificationResponse.ok) {
-      const errorText = await notificationResponse.text();
-      console.error('❌ Email API error:', errorText);
-      // Still return success since booking was updated
-    } else {
-      const successData = await notificationResponse.json();
-      console.log('✅ Email sent successfully:', successData);
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(
       { 
         success: true,
+        emailSent: true,
         message: `Booking status updated and email sent to ${booking.client_email}`,
       },
       { status: 200 }
