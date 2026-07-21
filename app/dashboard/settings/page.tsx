@@ -9,6 +9,100 @@ const DEFAULT_PUBLIC_THEME = "elegant_light";
 const DEFAULT_BUTTON_TEXT_COLOR = "#ffffff";
 const DEFAULT_BACKGROUND_STYLE = "orbs";
 
+function normalizeColor(color: string | null | undefined, fallback: string): string {
+  const value = (color || "").trim();
+  if (!value) return fallback;
+  const withHash = value.startsWith("#") ? value : `#${value}`;
+  if (/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/.test(withHash)) {
+    if (withHash.length === 4) {
+      const r = withHash[1];
+      const g = withHash[2];
+      const b = withHash[3];
+      return `#${r}${r}${g}${g}${b}${b}`;
+    }
+    return withHash;
+  }
+  return fallback;
+}
+
+function withAlpha(hexColor: string, alpha: number): string {
+  const safeAlpha = Math.max(0, Math.min(1, alpha));
+  const hex = normalizeColor(hexColor, "#4f46e5").replace("#", "");
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${safeAlpha})`;
+}
+
+function getPreviewBackgroundStyle(style: string, isDarkMode: boolean, brandColor: string, accentColor: string) {
+  const b = normalizeColor(brandColor, "#4f46e5");
+  const a = normalizeColor(accentColor, "#06b6d4");
+
+  if (style === "mesh") {
+    return {
+      backgroundColor: isDarkMode ? "#050811" : "#f7faff",
+      backgroundImage: `
+        linear-gradient(140deg, ${withAlpha(b, isDarkMode ? 0.2 : 0.14)} 0%, ${withAlpha(a, isDarkMode ? 0.18 : 0.13)} 100%),
+        repeating-linear-gradient(0deg, ${withAlpha(b, isDarkMode ? 0.12 : 0.08)} 0 1px, transparent 1px 26px),
+        repeating-linear-gradient(90deg, ${withAlpha(a, isDarkMode ? 0.12 : 0.08)} 0 1px, transparent 1px 26px)
+      `,
+    };
+  }
+
+  if (style === "stripes") {
+    return {
+      backgroundColor: isDarkMode ? "#070a13" : "#f9fbff",
+      backgroundImage: `
+        linear-gradient(114deg, transparent 0%, transparent 28%, ${withAlpha(b, isDarkMode ? 0.3 : 0.2)} 28%, transparent 44%),
+        linear-gradient(74deg, transparent 0%, transparent 52%, ${withAlpha(a, isDarkMode ? 0.25 : 0.17)} 52%, transparent 70%),
+        linear-gradient(180deg, ${isDarkMode ? "#060912" : "#fcfdff"}, ${isDarkMode ? "#12192a" : "#eef3ff"})
+      `,
+    };
+  }
+
+  if (style === "grid") {
+    return {
+      backgroundColor: isDarkMode ? "#040713" : "#f6f9ff",
+      backgroundImage: `
+        radial-gradient(360px 200px at 50% -10%, ${withAlpha(b, isDarkMode ? 0.33 : 0.22)} 0%, transparent 70%),
+        repeating-linear-gradient(120deg, ${withAlpha(b, isDarkMode ? 0.18 : 0.12)} 0 1px, transparent 1px 30px),
+        repeating-linear-gradient(60deg, ${withAlpha(a, isDarkMode ? 0.16 : 0.1)} 0 1px, transparent 1px 30px),
+        linear-gradient(180deg, ${isDarkMode ? "#050912" : "#fbfdff"}, ${isDarkMode ? "#0d1424" : "#eef4ff"})
+      `,
+    };
+  }
+
+  if (style === "spotlight") {
+    return {
+      backgroundColor: isDarkMode ? "#070812" : "#f9faff",
+      backgroundImage: `
+        radial-gradient(280px 480px at 14% -8%, ${withAlpha(b, isDarkMode ? 0.38 : 0.22)} 0%, transparent 74%),
+        radial-gradient(280px 500px at 86% -10%, ${withAlpha(a, isDarkMode ? 0.32 : 0.2)} 0%, transparent 76%),
+        linear-gradient(180deg, ${isDarkMode ? "#060611" : "#fdfdff"}, ${isDarkMode ? "#14192c" : "#eef2ff"})
+      `,
+    };
+  }
+
+  if (style === "vortex") {
+    return {
+      backgroundColor: isDarkMode ? "#05070f" : "#f6f9ff",
+      backgroundImage: `
+        conic-gradient(from 210deg at 50% 44%, ${withAlpha(b, isDarkMode ? 0.34 : 0.22)}, ${withAlpha(a, isDarkMode ? 0.28 : 0.18)}, ${withAlpha(b, isDarkMode ? 0.2 : 0.14)}, transparent 76%),
+        linear-gradient(180deg, ${isDarkMode ? "#04070f" : "#fbfdff"}, ${isDarkMode ? "#10172a" : "#edf3ff"})
+      `,
+    };
+  }
+
+  return {
+    backgroundColor: isDarkMode ? "#060a12" : "#f1f6ff",
+    backgroundImage: `
+      radial-gradient(420px 260px at 10% 8%, ${withAlpha(b, isDarkMode ? 0.34 : 0.24)} 0%, transparent 62%),
+      radial-gradient(400px 240px at 88% 10%, ${withAlpha(a, isDarkMode ? 0.3 : 0.22)} 0%, transparent 66%),
+      linear-gradient(164deg, ${isDarkMode ? "#050911" : "#fbfdff"} 0%, ${isDarkMode ? "#0f1626" : "#eaf2ff"} 100%)
+    `,
+  };
+}
+
 function parseLegacyThemePayload(value: string | null | undefined) {
   const raw = (value || "").trim();
   if (!raw.includes("|")) {
@@ -734,7 +828,7 @@ export default function DashboardSettings() {
                     <option value="orbs">Liquid Chrome</option>
                     <option value="mesh">Neural Lattice</option>
                     <option value="stripes">Prism Shards</option>
-                    <option value="grid">Quantum Grid</option>
+                    <option value="grid">Holographic Circuit</option>
                     <option value="spotlight">Velvet Stage</option>
                     <option value="vortex">Orbit Pulse</option>
                   </select>
@@ -773,38 +867,54 @@ export default function DashboardSettings() {
               {/* Preview Card */}
               <div className="bg-gradient-to-br from-slate-50 dark:from-white/5 to-slate-100 dark:to-white/10 rounded-2xl p-6 border border-slate-200 dark:border-white/10">
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2"><EyeIcon className="h-4 w-4" /> {t('dashboard.livePreviewTheme').replace('{theme}', public_theme === "luxury_dark" ? "Dark Mode" : "Light Mode")}</p>
-                <div 
-                  className="rounded-xl overflow-hidden h-48"
-                  style={{
-                    backgroundColor: public_theme === "luxury_dark" ? "#1a1a2e" : "#f5f5f5"
-                  }}
+                <div
+                  className="rounded-2xl overflow-hidden border"
+                  style={{ borderColor: public_theme === "luxury_dark" ? "rgba(148,163,184,0.35)" : "rgba(148,163,184,0.3)" }}
                 >
-                  <div className="h-full flex items-center justify-center flex-col gap-3 p-4">
-                    {cover_image_url ? (
-                      <img src={cover_image_url} alt="Preview" className="w-full h-full object-cover" />
-                    ) : (
-                      <>
-                        <div className="w-16 h-16 rounded-lg" style={{ backgroundColor: brand_color, opacity: 0.8 }}></div>
-                        <div className="text-sm font-bold" style={{ color: public_theme === "luxury_dark" ? "white" : "#1a1a2e" }}>
-                        {name || t('dashboard.yourBusiness')}
-                      </div>
-                      <div className="text-xs" style={{ color: public_theme === "luxury_dark" ? "#cccccc" : "#666666" }}>
-                        {category || t('dashboard.categoryLabel')}
+                  <div
+                    className="h-80 overflow-y-auto p-3"
+                    style={getPreviewBackgroundStyle(background_style, public_theme === "luxury_dark", brand_color, accent_color)}
+                  >
+                    <div className="space-y-3">
+                      <div className="rounded-xl p-3 border" style={{ background: public_theme === "luxury_dark" ? "rgba(15,23,42,0.72)" : "rgba(255,255,255,0.86)", borderColor: public_theme === "luxury_dark" ? "rgba(148,163,184,0.34)" : "rgba(148,163,184,0.28)" }}>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-xs font-bold" style={{ color: brand_color }}>
+                            {(name || "B").slice(0, 2).toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold truncate" style={{ color: public_theme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>{name || t('dashboard.yourBusiness')}</p>
+                            <p className="text-[10px] truncate" style={{ color: public_theme === "luxury_dark" ? "#cbd5e1" : "#475569" }}>{category || t('dashboard.categoryLabel')}</p>
+                          </div>
                         </div>
-                      </>
-                    )}
-                    <button
-                      type="button"
-                      className="mt-1 px-3 py-1.5 rounded-lg text-xs font-bold"
-                      style={{
-                        background: `linear-gradient(135deg, ${brand_color || "#4f46e5"}, ${accent_color || "#06b6d4"})`,
-                        color: button_text_color || "#ffffff",
-                      }}
-                    >
-                      Book Now
-                    </button>
+                        <button
+                          type="button"
+                          className="mt-3 w-full px-3 py-2 rounded-lg text-[11px] font-bold"
+                          style={{ background: `linear-gradient(135deg, ${brand_color || "#4f46e5"}, ${accent_color || "#06b6d4"})`, color: button_text_color || "#ffffff" }}
+                        >
+                          Book Now
+                        </button>
+                      </div>
+
+                      <div className="rounded-xl p-3 border" style={{ background: public_theme === "luxury_dark" ? "rgba(15,23,42,0.68)" : "rgba(255,255,255,0.84)", borderColor: public_theme === "luxury_dark" ? "rgba(148,163,184,0.3)" : "rgba(148,163,184,0.24)" }}>
+                        <p className="text-[11px] font-semibold mb-2" style={{ color: public_theme === "luxury_dark" ? "#e2e8f0" : "#1e293b" }}>Services</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="rounded-lg px-2 py-2 text-[10px] border" style={{ borderColor: withAlpha(brand_color || "#4f46e5", 0.35), background: withAlpha(brand_color || "#4f46e5", 0.14), color: public_theme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>Premium Cut</div>
+                          <div className="rounded-lg px-2 py-2 text-[10px] border" style={{ borderColor: withAlpha(accent_color || "#06b6d4", 0.35), background: withAlpha(accent_color || "#06b6d4", 0.14), color: public_theme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>Glow Care</div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl p-3 border" style={{ background: public_theme === "luxury_dark" ? "rgba(15,23,42,0.68)" : "rgba(255,255,255,0.84)", borderColor: public_theme === "luxury_dark" ? "rgba(148,163,184,0.3)" : "rgba(148,163,184,0.24)" }}>
+                        <p className="text-[11px] font-semibold mb-2" style={{ color: public_theme === "luxury_dark" ? "#e2e8f0" : "#1e293b" }}>Contact</p>
+                        <div className="flex flex-wrap gap-2 text-[10px]">
+                          <span className="rounded-full px-2 py-1" style={{ background: "rgba(34,197,94,0.24)", color: public_theme === "luxury_dark" ? "#bbf7d0" : "#166534" }}>WhatsApp</span>
+                          <span className="rounded-full px-2 py-1" style={{ background: "rgba(96,165,250,0.24)", color: public_theme === "luxury_dark" ? "#bfdbfe" : "#1e3a8a" }}>Call</span>
+                          <span className="rounded-full px-2 py-1" style={{ background: "rgba(244,114,182,0.24)", color: public_theme === "luxury_dark" ? "#fbcfe8" : "#9d174d" }}>Instagram</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Scrollable preview: tweak colors/background and watch this mini page update instantly.</p>
               </div>
             </div>
 

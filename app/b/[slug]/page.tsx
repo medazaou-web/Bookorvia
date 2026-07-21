@@ -120,16 +120,15 @@ function getPageBackgroundStyle(
 
   if (style === "grid") {
     return {
-      backgroundColor: isDarkMode ? "#03060f" : "#f5f9ff",
+      backgroundColor: isDarkMode ? "#040815" : "#f6f9ff",
       backgroundImage: `
-        radial-gradient(940px 500px at 50% -8%, ${withAlpha(brandColor, isDarkMode ? 0.34 : 0.25)} 0%, transparent 70%),
-        linear-gradient(${withAlpha(brandColor, isDarkMode ? 0.16 : 0.1)} 1px, transparent 1px),
-        linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.15 : 0.1)} 1px, transparent 1px),
-        linear-gradient(${withAlpha(brandColor, isDarkMode ? 0.08 : 0.05)} 1px, transparent 1px),
-        linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.08 : 0.05)} 1px, transparent 1px),
-        linear-gradient(180deg, ${isDarkMode ? "#040711" : "#fbfdff"}, ${isDarkMode ? "#0e1424" : "#eef4ff"})
+        radial-gradient(1020px 560px at 50% -10%, ${withAlpha(brandColor, isDarkMode ? 0.34 : 0.24)} 0%, transparent 70%),
+        repeating-linear-gradient(120deg, ${withAlpha(brandColor, isDarkMode ? 0.17 : 0.11)} 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(60deg, ${withAlpha(accentColor, isDarkMode ? 0.15 : 0.1)} 0 1px, transparent 1px 34px),
+        radial-gradient(760px 420px at 50% 96%, ${withAlpha(accentColor, isDarkMode ? 0.14 : 0.09)} 0%, transparent 74%),
+        linear-gradient(180deg, ${isDarkMode ? "#050a14" : "#fbfdff"}, ${isDarkMode ? "#10182c" : "#eef4ff"})
       `,
-      backgroundSize: "auto, 56px 56px, 56px 56px, 14px 14px, 14px 14px, auto",
+      backgroundSize: "auto, auto, auto, auto, auto",
       backgroundAttachment: "fixed",
     };
   }
@@ -567,19 +566,19 @@ export default async function BusinessPage({ params }: Props) {
             </div>
             <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
               {biz.phone && (
-                <a href={`tel:${biz.phone.replace(/[^0-9+]/g, '')}`} className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: '#60a5fa88', background: 'linear-gradient(160deg, rgba(96,165,250,0.22), rgba(59,130,246,0.08))' }}>
+                <a href={`tel:${biz.phone.replace(/[^0-9+]/g, '')}`} className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center backdrop-blur-sm`} style={{ borderColor: '#60a5fa99', background: 'linear-gradient(160deg, rgba(96,165,250,0.42), rgba(59,130,246,0.22))' }}>
                   <div className="text-2xl font-bold mb-3 text-blue-500">{t('public.bookingSourceCall')}</div>
                   <p className={`font-bold ${theme.accent}`}>{biz.phone}</p>
                 </a>
               )}
               {biz.whatsapp && (
-                <a href={`https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: '#22c55e88', background: 'linear-gradient(160deg, rgba(34,197,94,0.2), rgba(21,128,61,0.08))' }}>
+                <a href={`https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center backdrop-blur-sm`} style={{ borderColor: '#22c55e99', background: 'linear-gradient(160deg, rgba(34,197,94,0.4), rgba(21,128,61,0.2))' }}>
                   <div className="text-2xl font-bold mb-3 text-emerald-500">{t('dashboard.whatsappLabel')}</div>
                   <p className={`font-bold ${theme.accent} truncate`}>{biz.whatsapp}</p>
                 </a>
               )}
               {biz.instagram_url && (
-                <a href={biz.instagram_url} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: '#ec489988', background: 'linear-gradient(160deg, rgba(244,114,182,0.2), rgba(249,115,22,0.08))' }}>
+                <a href={biz.instagram_url} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center backdrop-blur-sm`} style={{ borderColor: '#ec489999', background: 'linear-gradient(160deg, rgba(244,114,182,0.38), rgba(249,115,22,0.2))' }}>
                   <div className="text-2xl font-bold mb-3 text-pink-500">Instagram</div>
                   <p className={`font-bold ${theme.accent} truncate`}>@{biz.instagram_url.split('/').pop()}</p>
                 </a>
