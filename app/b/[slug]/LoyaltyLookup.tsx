@@ -91,20 +91,25 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
   }
 
   return (
-    <div>
-      <h3 className={`text-sm font-semibold ${theme.label}`}>{t('booking.checkLoyalty')}</h3>
-      <form onSubmit={check} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="space-y-5">
+      <div className={`rounded-2xl border p-5 ${theme.innerCard}`}>
+        <div className={`text-xs font-bold uppercase tracking-[0.18em] ${theme.mutedText}`}>Loyalty Wallet</div>
+        <h3 className={`mt-2 text-2xl font-bold ${theme.label}`}>{t('booking.checkLoyalty')}</h3>
+        <p className={`mt-2 text-sm ${theme.mutedText}`}>Enter your phone number to see your reward progress instantly.</p>
+      </div>
+
+      <form onSubmit={check} className={`rounded-2xl border p-5 ${theme.innerCard} flex flex-col gap-3 sm:flex-row sm:items-center`}>
         <input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t('booking.phoneNumber')}
-          className={`rounded-lg border p-3 text-sm w-full sm:w-64 focus:border-transparent focus:ring-2 transition-all ${theme.input}`}
+          className={`rounded-xl border p-3 text-sm w-full sm:w-64 focus:border-transparent focus:ring-2 transition-all ${theme.input}`}
         />
         <div className="flex items-center">
           <button
             type="submit"
             disabled={loading}
-            className={`ml-0 sm:ml-3 rounded-lg px-4 py-3 text-sm font-semibold shadow-lg hover:shadow-md active:scale-[0.98] focus:ring-2 disabled:opacity-60 transition-all ${theme.buttonPrimary}`}
+            className={`ml-0 sm:ml-3 rounded-xl px-4 py-3 text-sm font-semibold shadow-lg hover:shadow-md active:scale-[0.98] focus:ring-2 disabled:opacity-60 transition-all ${theme.buttonPrimary}`}
           >
             {loading ? t('booking.checkingLoyalty') : t('booking.checkLoyalty')}
           </button>
@@ -115,7 +120,7 @@ export default function LoyaltyLookup({ businessId, themeStyles }: Props) {
         {error && <div className={`text-sm ${theme.error} border rounded-lg p-3`}>{error}</div>}
 
         {card && (
-          <div className={`mt-2 rounded-lg border p-4 ${theme.innerCard}`}>
+          <div className={`mt-2 rounded-2xl border p-4 ${theme.innerCard}`}>
             <div className="flex items-center justify-between">
               <div>
                 <div className={`text-sm font-semibold ${theme.label}`}>{card.client_name || 'Unnamed'}</div>

@@ -140,10 +140,14 @@ export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles
   }
 
   return (
-    <div className={`rounded-lg p-6 shadow-sm`}>
-      <div className={`text-sm ${theme.mutedText}`}>Thanks for visiting — please consider leaving a quick review.</div>
+    <div className="space-y-5">
+      <div className={`rounded-2xl border p-5 ${theme.innerCard}`}>
+        <div className={`text-xs font-bold uppercase tracking-[0.18em] ${theme.mutedText}`}>Feedback Hub</div>
+        <div className={`mt-2 text-sm ${theme.mutedText}`}>Thanks for visiting — please consider leaving a quick review.</div>
+      </div>
 
-      <div className="mt-4 flex items-center gap-2">
+      <div className={`rounded-2xl border p-5 ${theme.innerCard}`}>
+      <div className="flex flex-wrap items-center gap-2">
         {[1, 2, 3, 4, 5].map((n) => {
           const isSelected = rating === n;
           let btnClass = "inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold focus:outline-none transition-all duration-200 ease-out hover:scale-110 active:scale-95";
@@ -162,11 +166,12 @@ export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles
           );
         })}
       </div>
+      </div>
 
       {loading && <div className={`mt-3 text-sm ${theme.mutedText}`}>{t('booking.processingFeedback')}</div>}
 
       {rating && rating >= 4 && (
-        <div className="mt-3">
+        <div className={`rounded-2xl border p-5 ${theme.innerCard}`}>
           <div className={`text-sm text-emerald-800`}>{t('booking.considerPublicReview')}</div>
           <div className="mt-2 flex gap-2">
             <button onClick={handleGoogleClick} className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold shadow hover:shadow-lg active:scale-[0.98] focus:ring-2 ring-1 transition-all duration-200 ease-out bg-emerald-600 text-white hover:bg-emerald-700 ring-emerald-200`}>{t('booking.leaveGoogleReview')}</button>
@@ -190,8 +195,8 @@ export default function ReviewBooster({ businessId, googleReviewUrl, themeStyles
         </div>
       )}
 
-      {error && <div className={`mt-3 text-sm ${theme.error}`}>{error}</div>}
-      {successMessage && <div className={`mt-3 text-sm ${theme.success}`}>{successMessage}</div>}
+      {error && <div className={`mt-3 rounded-xl border p-3 text-sm ${theme.error}`}>{error}</div>}
+      {successMessage && <div className={`mt-3 rounded-xl border p-3 text-sm ${theme.success}`}>{successMessage}</div>}
     </div>
   );
 }
