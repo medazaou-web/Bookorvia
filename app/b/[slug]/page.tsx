@@ -4,6 +4,8 @@ import BookingSection from "./BookingSection";
 import ReviewBooster from "./ReviewBooster";
 import LoyaltyLookup from "./LoyaltyLookup";
 import { MapPinIcon } from "@/components/icons";
+import { getTranslation } from "@/lib/i18n";
+import { locales, type Locale } from "@/lib/i18n/config";
 
 type Props = { params: any };
 
@@ -131,6 +133,8 @@ export default async function BusinessPage({ params }: Props) {
     }
 
     const biz: any = data;
+    const locale: Locale = locales.includes(biz.language) ? biz.language : 'en';
+    const t = (key: string) => getTranslation(locale, key);
     const theme = themeConfig[biz.public_theme as keyof typeof themeConfig] || themeConfig.modern_gradient;
     const brandColor = biz.brand_color || "#4f46e5";
     const accentColor = biz.accent_color || "#06b6d4";
@@ -207,7 +211,7 @@ export default async function BusinessPage({ params }: Props) {
             </div>
 
             <div className="px-5 sm:px-8 pb-8 -mt-16 sm:-mt-20 relative z-10">
-              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_280px] gap-5 items-end">
+              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-5 items-end">
                 <div
                   className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl shadow-2xl overflow-hidden border-4 flex items-center justify-center text-4xl sm:text-5xl font-bold"
                   style={{
@@ -233,16 +237,6 @@ export default async function BusinessPage({ params }: Props) {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-                  <div className={`rounded-2xl border p-4 ${theme.surface}`} style={{ borderColor: `${brandColor}55`, background: `linear-gradient(145deg, ${brandColor}16, transparent)` }}>
-                    <p className="text-[11px] uppercase tracking-[0.16em] opacity-70">Fast Booking</p>
-                    <p className="mt-2 text-sm font-semibold">Live service selection with time slots.</p>
-                  </div>
-                  <div className={`rounded-2xl border p-4 ${theme.surface}`} style={{ borderColor: `${accentColor}55`, background: `linear-gradient(145deg, ${accentColor}16, transparent)` }}>
-                    <p className="text-[11px] uppercase tracking-[0.16em] opacity-70">Client Journey</p>
-                    <p className="mt-2 text-sm font-semibold">Reviews, loyalty, and contact in one flow.</p>
-                  </div>
-                </div>
               </div>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -251,7 +245,7 @@ export default async function BusinessPage({ params }: Props) {
                   className="inline-flex items-center justify-center rounded-xl px-5 sm:px-7 py-3 text-sm sm:text-base font-bold text-white shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all"
                   style={{ background: brandGradient }}
                 >
-                  Book Now
+                  {t('booking.bookNow')}
                 </a>
                 {biz.whatsapp && (
                   <a
@@ -260,7 +254,7 @@ export default async function BusinessPage({ params }: Props) {
                     rel="noreferrer"
                     className="inline-flex items-center justify-center rounded-xl px-5 sm:px-7 py-3 text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all"
                   >
-                    WhatsApp
+                    {t('dashboard.whatsappLabel')}
                   </a>
                 )}
                 {biz.phone && (
@@ -269,7 +263,7 @@ export default async function BusinessPage({ params }: Props) {
                     className="inline-flex items-center justify-center rounded-xl px-5 sm:px-7 py-3 text-sm sm:text-base font-bold border-2 shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all"
                     style={{ borderColor: accentColor, color: accentColor }}
                   >
-                    Call
+                    {t('public.bookingSourceCall')}
                   </a>
                 )}
                 <a
@@ -277,7 +271,7 @@ export default async function BusinessPage({ params }: Props) {
                   className="inline-flex items-center justify-center rounded-xl px-5 sm:px-7 py-3 text-sm sm:text-base font-bold border-2 shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all"
                   style={{ borderColor: accentColor, color: accentColor }}
                 >
-                  Reviews
+                  {t('business.reviews')}
                 </a>
               </div>
             </div>
@@ -286,10 +280,10 @@ export default async function BusinessPage({ params }: Props) {
           <nav className="sticky top-[74px] z-40 mb-8 sm:mb-10">
             <div className={`rounded-2xl border p-2 backdrop-blur-xl ${theme.surface}`} style={{ borderColor: `${brandColor}66`, background: `linear-gradient(90deg, ${brandColor}14, ${accentColor}14)` }}>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <a href="#services" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>Services</a>
-                <a href="#book" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>Booking</a>
-                <a href="#reviews" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>Reviews</a>
-                <a href="#contact" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>Contact</a>
+                <a href="#services" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('business.services')}</a>
+                <a href="#book" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('booking.bookNow')}</a>
+                <a href="#reviews" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>{t('business.reviews')}</a>
+                <a href="#contact" className={`rounded-xl border px-3 py-2 text-center text-xs sm:text-sm font-semibold transition-colors ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>{t('public.contact')}</a>
               </div>
             </div>
           </nav>
@@ -297,15 +291,12 @@ export default async function BusinessPage({ params }: Props) {
           {services && services.length > 0 && (
             <section id="services" className="mb-10 sm:mb-14 scroll-mt-36">
               <div className="mb-6 sm:mb-8">
-                <h2 className="text-3xl sm:text-4xl font-bold">Services</h2>
-                <p className={`${theme.subtext} mt-2`}>Choose a service and continue to booking.</p>
+                <h2 className="text-3xl sm:text-4xl font-bold">{t('business.services')}</h2>
+                <p className={`${theme.subtext} mt-2`}>{t('business.servicesDescription')}</p>
               </div>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {services.map((s: any) => (
                   <div key={s.id} className={`relative rounded-[1.75rem] overflow-hidden border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group min-h-80 ${theme.surface}`} style={{ borderColor: s.background_image_url ? undefined : `${accentColor}44`, boxShadow: `0 16px 40px ${accentColor}12` }}>
-                    <div className="absolute right-4 top-4 z-10 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white" style={{ background: brandGradient }}>
-                      Signature
-                    </div>
                     {s.background_image_url ? (
                       <>
                         <div className="absolute inset-0">
@@ -326,20 +317,20 @@ export default async function BusinessPage({ params }: Props) {
                       <div className="mt-5 pt-5 border-t" style={{ borderColor: s.background_image_url ? 'rgba(255,255,255,0.28)' : 'rgba(148,163,184,0.32)' }}>
                         <div className="flex items-end justify-between gap-3">
                           <div>
-                            <p className={`text-xs uppercase tracking-wide ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>Price</p>
+                            <p className={`text-xs uppercase tracking-wide ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>{t('business.price')}</p>
                             <p className={`text-2xl font-bold ${s.background_image_url ? 'text-white' : theme.text}`}>{s.price ?? '-'}</p>
                             <p className={`text-xs ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>{s.currency || 'MAD'}</p>
                           </div>
                           <div className="text-right">
-                            <p className={`text-xs uppercase tracking-wide ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>Duration</p>
+                            <p className={`text-xs uppercase tracking-wide ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>{t('business.duration')}</p>
                             <p className={`text-2xl font-bold ${s.background_image_url ? 'text-white' : theme.text}`}>{s.duration_minutes ?? '-'}</p>
-                            <p className={`text-xs ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>min</p>
+                            <p className={`text-xs ${s.background_image_url ? 'text-white/75' : 'opacity-60'}`}>{t('business.min')}</p>
                           </div>
                         </div>
                       </div>
 
                       <a href="#book" className="mt-5 block w-full text-center rounded-xl py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95 text-white" style={{ background: brandGradient }}>
-                        Book This Service
+                        {t('business.bookThisService')}
                       </a>
                     </div>
                   </div>
@@ -350,9 +341,16 @@ export default async function BusinessPage({ params }: Props) {
 
           <section id="book" className="mb-10 sm:mb-14 scroll-mt-36">
             <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-xl p-5 sm:p-7`} style={{ borderColor: `${brandColor}55`, boxShadow: `0 18px 48px ${brandColor}18` }}>
-              <div className="mb-5">
-                <h2 className="text-3xl sm:text-4xl font-bold">Book Your Visit</h2>
-                <p className={`${theme.subtext} mt-2`}>Select services, date, and time in one quick flow.</p>
+              <div className="mb-6 flex flex-col gap-4 rounded-[1.6rem] border p-5 sm:p-6" style={{ borderColor: `${brandColor}55`, background: `linear-gradient(145deg, ${brandColor}12, ${accentColor}10)` }}>
+                <div>
+                  <h2 className="text-3xl sm:text-4xl font-bold">{t('booking.requestBooking')}</h2>
+                  <p className={`${theme.subtext} mt-2`}>{t('booking.selectServiceTime')}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('booking.selectServices')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${accentColor}44` }}>{t('booking.preferredDate')}</span>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${theme.navPill}`} style={{ borderColor: `${brandColor}44` }}>{t('booking.availableTimes')}</span>
+                </div>
               </div>
               <BookingSection
                 businessId={biz.id}
@@ -366,8 +364,7 @@ export default async function BusinessPage({ params }: Props) {
 
           <section id="reviews" className="mb-10 sm:mb-14 scroll-mt-36">
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-3xl sm:text-4xl font-bold">Reviews</h2>
-              <p className={`${theme.subtext} mt-2`}>Help others discover this business.</p>
+              <h2 className="text-3xl sm:text-4xl font-bold">{t('business.reviews')}</h2>
             </div>
             <div className={`rounded-3xl ${theme.card} backdrop-blur border shadow-lg p-6 sm:p-8`} style={{ borderColor: `${accentColor}55`, boxShadow: `0 18px 48px ${accentColor}16` }}>
               <ReviewBooster businessId={biz.id} googleReviewUrl={biz.google_review_url} preloadedReviews={reviews} themeStyles={publicThemeStyles[biz.public_theme as keyof typeof publicThemeStyles]} />
@@ -382,34 +379,30 @@ export default async function BusinessPage({ params }: Props) {
 
           <section id="contact" className="mb-10 sm:mb-14 scroll-mt-36">
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-3xl sm:text-4xl font-bold">Get In Touch</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold">{t('public.contact')}</h2>
             </div>
             <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
               {biz.phone && (
-                <a href={`tel:${biz.phone.replace(/[^0-9+]/g, '')}`} className={`rounded-[1.6rem] ${theme.surface} border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${accentColor}55`, background: `linear-gradient(155deg, ${accentColor}12, transparent)` }}>
-                  <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>Call</div>
-                  <p className={`text-sm ${theme.subtext} mb-2`}>Phone</p>
+                <a href={`tel:${biz.phone.replace(/[^0-9+]/g, '')}`} className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: '#60a5fa88', background: 'linear-gradient(160deg, rgba(96,165,250,0.22), rgba(59,130,246,0.08))' }}>
+                  <div className="text-2xl font-bold mb-3 text-blue-500">{t('public.bookingSourceCall')}</div>
                   <p className={`font-bold ${theme.accent}`}>{biz.phone}</p>
                 </a>
               )}
               {biz.whatsapp && (
-                <a href={`https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`rounded-[1.6rem] ${theme.surface} border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${brandColor}55`, background: `linear-gradient(155deg, ${brandColor}12, transparent)` }}>
-                  <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>WhatsApp</div>
-                  <p className={`text-sm ${theme.subtext} mb-2`}>Message</p>
+                <a href={`https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: '#22c55e88', background: 'linear-gradient(160deg, rgba(34,197,94,0.2), rgba(21,128,61,0.08))' }}>
+                  <div className="text-2xl font-bold mb-3 text-emerald-500">{t('dashboard.whatsappLabel')}</div>
                   <p className={`font-bold ${theme.accent} truncate`}>{biz.whatsapp}</p>
                 </a>
               )}
               {biz.instagram_url && (
-                <a href={biz.instagram_url} target="_blank" rel="noreferrer" className={`rounded-[1.6rem] ${theme.surface} border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${accentColor}55`, background: `linear-gradient(155deg, ${accentColor}12, transparent)` }}>
-                  <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>Instagram</div>
-                  <p className={`text-sm ${theme.subtext} mb-2`}>Follow</p>
+                <a href={biz.instagram_url} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: '#ec489988', background: 'linear-gradient(160deg, rgba(244,114,182,0.2), rgba(249,115,22,0.08))' }}>
+                  <div className="text-2xl font-bold mb-3 text-pink-500">Instagram</div>
                   <p className={`font-bold ${theme.accent} truncate`}>@{biz.instagram_url.split('/').pop()}</p>
                 </a>
               )}
               {websiteHref && (
-                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-[1.6rem] ${theme.surface} border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${brandColor}55`, background: `linear-gradient(155deg, ${brandColor}12, transparent)` }}>
-                  <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>Website</div>
-                  <p className={`text-sm ${theme.subtext} mb-2`}>Visit</p>
+                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: `${brandColor}88`, background: `linear-gradient(160deg, ${brandColor}22, ${accentColor}12)` }}>
+                  <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>{t('business.website')}</div>
                   <p className={`font-bold ${theme.accent} truncate text-sm`}>{websiteDisplay}</p>
                 </a>
               )}

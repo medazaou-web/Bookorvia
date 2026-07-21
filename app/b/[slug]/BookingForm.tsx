@@ -250,45 +250,46 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       {error && <div className={`mb-4 rounded-lg border p-4 text-sm ${theme.error}`}>{error}</div>}
       {success && <div className={`mb-4 rounded-lg border p-4 text-sm ${theme.success}`}>{success}</div>}
 
-      {/* Name */}
-      <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.yourName')}</label>
-        <input
-          value={client_name}
-          onChange={(e) => setClientName(e.target.value)}
-          className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
-          placeholder="John Doe"
-          required
-        />
-      </div>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.yourName')}</label>
+            <input
+              value={client_name}
+              onChange={(e) => setClientName(e.target.value)}
+              className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+              placeholder="John Doe"
+              required
+            />
+          </div>
 
-      {/* Phone */}
-      <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.phoneWhatsapp')}</label>
-        <input
-          value={client_phone}
-          onChange={(e) => setClientPhone(e.target.value)}
-          className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
-          placeholder="+212 6 12 34 56 78"
-          required
-        />
-      </div>
+          <div>
+            <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.phoneWhatsapp')}</label>
+            <input
+              value={client_phone}
+              onChange={(e) => setClientPhone(e.target.value)}
+              className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+              placeholder="+212 6 12 34 56 78"
+              required
+            />
+          </div>
 
-      {/* Email */}
-      <div>
-        <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.emailUpdates')}</label>
-        <input
-          value={client_email}
-          onChange={(e) => setClientEmail(e.target.value)}
-          type="email"
-          className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
-          placeholder="you@example.com"
-          required
-        />
+          <div className="md:col-span-2">
+            <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.emailUpdates')}</label>
+            <input
+              value={client_email}
+              onChange={(e) => setClientEmail(e.target.value)}
+              type="email"
+              className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+        </div>
       </div>
 
       {/* Service Selection - Multi-select Grid */}
-      <div>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
         <label className={`block text-sm font-medium ${theme.label} mb-3`}>{t('booking.selectServices')}</label>
         {services && services.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -297,9 +298,9 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                 key={service.id}
                 type="button"
                 onClick={() => toggleService(service.id)}
-                className={`relative rounded-lg border-2 transition-all text-left overflow-hidden ${
+                className={`relative rounded-2xl border-2 transition-all text-left overflow-hidden ${
                   selectedServiceIds.includes(service.id)
-                    ? `border-indigo-600 dark:border-indigo-400 shadow-lg`
+                    ? `border-indigo-600 dark:border-indigo-400 shadow-lg scale-[1.01]`
                     : `border-slate-300 dark:border-slate-600 hover:shadow-md`
                 }`}
               >
@@ -319,7 +320,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                 )}
 
                 {/* Content */}
-                <div className={`relative p-4 ${service.background_image_url ? 'min-h-32' : ''}`}>
+                <div className={`relative p-4 sm:p-5 ${service.background_image_url ? 'min-h-36' : ''}`}>
                   <div className="flex items-center gap-3">
                     <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0 ${
                       selectedServiceIds.includes(service.id)
@@ -370,7 +371,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       </div>
 
       {/* Date Selection */}
-      <div>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
         <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
           <CalendarIcon className="h-4 w-4" />
           {t('booking.preferredDate')}
@@ -386,7 +387,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
 
       {/* Time Slots */}
       {selectedServices.some(s => s.duration_minutes) && requested_date && (
-        <div>
+        <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
           <label className={`block text-sm font-medium ${theme.label} mb-3 flex items-center gap-2`}>
             <ClockIcon className="h-4 w-4" />
             {t('booking.availableTimes')}
@@ -400,7 +401,7 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
                   key={slot.starts_at}
                   type="button"
                   onClick={() => setRequestedTime(slot.label)}
-                  className={`px-3 py-2.5 rounded-lg text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 ${
+                  className={`px-3 py-3 rounded-xl text-sm font-semibold transition-all border-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 ${
                     requestedTime === slot.label
                       ? `${theme.timeSlotSelected} shadow-lg border-indigo-600 dark:border-indigo-400 scale-105`
                       : `${theme.timeSlot} border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500`
@@ -419,12 +420,12 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
       )}
 
       {/* Message */}
-      <div>
+      <div className={`rounded-2xl border p-4 sm:p-5 ${theme.innerCard}`}>
         <label className={`block text-sm font-medium ${theme.label} mb-2`}>{t('booking.messageOptional')}</label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className={`w-full px-4 py-2 rounded-lg border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
+          className={`w-full px-4 py-3 rounded-xl border ${theme.input} focus:border-transparent focus:ring-2 transition-all`}
           rows={3}
           placeholder={t('booking.specialRequests')}
         />
