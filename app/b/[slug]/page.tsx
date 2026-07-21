@@ -41,6 +41,32 @@ function isLikelyPng(url: string | null | undefined): boolean {
   return /\.png(\?|$)/i.test(url);
 }
 
+function parseLegacyThemePayload(value: string | null | undefined) {
+  const raw = (value || "").trim();
+  if (!raw.includes("|")) {
+    return { theme: raw || "modern_gradient", backgroundStyle: null as string | null, buttonTextColor: null as string | null };
+  }
+
+  const [themePart, ...parts] = raw.split("|");
+  let backgroundStyle: string | null = null;
+  let buttonTextColor: string | null = null;
+
+  for (const part of parts) {
+    if (part.startsWith("bg=")) {
+      backgroundStyle = decodeURIComponent(part.slice(3));
+    }
+    if (part.startsWith("btc=")) {
+      buttonTextColor = decodeURIComponent(part.slice(4));
+    }
+  }
+
+  return {
+    theme: themePart || "modern_gradient",
+    backgroundStyle,
+    buttonTextColor,
+  };
+}
+
 // Main theme configuration
 const themeConfig = {
   luxury_dark: {
@@ -167,14 +193,16 @@ export default async function BusinessPage({ params }: Props) {
     const biz: any = data;
     const locale: Locale = locales.includes(biz.language) ? biz.language : 'en';
     const t = (key: string) => getTranslation(locale, key);
-    const theme = themeConfig[biz.public_theme as keyof typeof themeConfig] || themeConfig.modern_gradient;
+    const parsedTheme = parseLegacyThemePayload(biz.public_theme);
+    const selectedThemeKey = parsedTheme.theme as keyof typeof themeConfig;
+    const theme = themeConfig[selectedThemeKey] || themeConfig.modern_gradient;
     const brandColor = normalizeColor(biz.brand_color, "#4f46e5");
     const accentColor = normalizeColor(biz.accent_color, "#06b6d4");
     const buttonTextColor = normalizeColor(
-      biz.button_text_color,
-      biz.public_theme === "luxury_dark" ? "#0f172a" : "#ffffff"
+      biz.button_text_color || parsedTheme.buttonTextColor,
+      selectedThemeKey === "luxury_dark" ? "#0f172a" : "#ffffff"
     );
-    const backgroundStyle = (biz.background_style || "orbs") as string;
+    const backgroundStyle = (biz.background_style || parsedTheme.backgroundStyle || "orbs") as string;
     const brandGradient = `linear-gradient(135deg, ${brandColor}, ${accentColor})`;
 
     // Load active services IN PARALLEL
@@ -291,7 +319,7 @@ export default async function BusinessPage({ params }: Props) {
                   style={{
                     backgroundColor: logo ? '#ffffff' : brandColor,
                     borderColor: accentColor,
-                    color: biz.public_theme === 'luxury_dark' ? 'white' : '#0f172a',
+                    color: selectedThemeKey === 'luxury_dark' ? 'white' : '#0f172a',
                   }}
                 >
                   {logo ? (

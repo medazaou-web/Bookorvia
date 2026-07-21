@@ -5,6 +5,40 @@ import { useLanguage } from '@/lib/context/LanguageContext';
 import { useTranslations } from '@/lib/i18n';
 import { AlertIcon, ClockIcon, UploadCloudIcon, DeleteIcon, SparkIcon, ThemeMoonIcon, ThemeSunIcon, EyeIcon, BusinessIcon, PhoneIcon, WebsiteIcon, SaveIcon, CalendarIcon, ReviewsIcon, RefreshIcon, BellIcon } from "@/components/icons";
 
+const DEFAULT_PUBLIC_THEME = "modern_gradient";
+const DEFAULT_BUTTON_TEXT_COLOR = "#ffffff";
+const DEFAULT_BACKGROUND_STYLE = "orbs";
+
+function parseLegacyThemePayload(value: string | null | undefined) {
+  const raw = (value || "").trim();
+  if (!raw.includes("|")) {
+    return { theme: raw || DEFAULT_PUBLIC_THEME, backgroundStyle: null as string | null, buttonTextColor: null as string | null };
+  }
+
+  const [themePart, ...parts] = raw.split("|");
+  let backgroundStyle: string | null = null;
+  let buttonTextColor: string | null = null;
+
+  for (const part of parts) {
+    if (part.startsWith("bg=")) {
+      backgroundStyle = decodeURIComponent(part.slice(3));
+    }
+    if (part.startsWith("btc=")) {
+      buttonTextColor = decodeURIComponent(part.slice(4));
+    }
+  }
+
+  return {
+    theme: themePart || DEFAULT_PUBLIC_THEME,
+    backgroundStyle,
+    buttonTextColor,
+  };
+}
+
+function buildLegacyThemePayload(theme: string, backgroundStyle: string, buttonTextColor: string) {
+  return `${theme}|bg=${encodeURIComponent(backgroundStyle)}|btc=${encodeURIComponent(buttonTextColor)}`;
+}
+
 export default function DashboardSettings() {
   const { language } = useLanguage();
   const t = useTranslations(language);
@@ -28,11 +62,11 @@ export default function DashboardSettings() {
   const [website_url, setWebsiteUrl] = useState("");
   const [google_review_url, setGoogleReviewUrl] = useState("");
   const [logo_url, setLogoUrl] = useState("");
-  const [public_theme, setPublicTheme] = useState("modern_gradient");
+  const [public_theme, setPublicTheme] = useState(DEFAULT_PUBLIC_THEME);
   const [brand_color, setBrandColor] = useState("#4f46e5");
   const [accent_color, setAccentColor] = useState("#06b6d4");
-  const [button_text_color, setButtonTextColor] = useState("#ffffff");
-  const [background_style, setBackgroundStyle] = useState("orbs");
+  const [button_text_color, setButtonTextColor] = useState(DEFAULT_BUTTON_TEXT_COLOR);
+  const [background_style, setBackgroundStyle] = useState(DEFAULT_BACKGROUND_STYLE);
   const [cover_image_url, setCoverImageUrl] = useState("");
   
   // Notification preferences
@@ -89,11 +123,12 @@ export default function DashboardSettings() {
           setWebsiteUrl((data as any).website_url ?? "");
           setGoogleReviewUrl((data as any).google_review_url ?? "");
           setLogoUrl((data as any).logo_url ?? "");
-          setPublicTheme((data as any).public_theme ?? "modern_gradient");
+          const parsedTheme = parseLegacyThemePayload((data as any).public_theme ?? DEFAULT_PUBLIC_THEME);
+          setPublicTheme(parsedTheme.theme);
           setBrandColor((data as any).brand_color ?? "#4f46e5");
           setAccentColor((data as any).accent_color ?? "#06b6d4");
-          setButtonTextColor((data as any).button_text_color ?? ((data as any).public_theme === "luxury_dark" ? "#0f172a" : "#ffffff"));
-          setBackgroundStyle((data as any).background_style ?? "orbs");
+          setButtonTextColor((data as any).button_text_color ?? parsedTheme.buttonTextColor ?? (parsedTheme.theme === "luxury_dark" ? "#0f172a" : DEFAULT_BUTTON_TEXT_COLOR));
+          setBackgroundStyle((data as any).background_style ?? parsedTheme.backgroundStyle ?? DEFAULT_BACKGROUND_STYLE);
           setCoverImageUrl((data as any).cover_image_url ?? "");
         }
 
@@ -171,7 +206,7 @@ export default function DashboardSettings() {
         website_url,
         google_review_url,
         logo_url,
-        public_theme,
+        public_theme: buildLegacyThemePayload(public_theme, background_style, button_text_color),
         brand_color,
         accent_color,
         cover_image_url,
