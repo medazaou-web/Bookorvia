@@ -221,10 +221,6 @@ export default async function BusinessPage({ params }: Props) {
                     </p>
                   )}
                   <div className="mt-4 w-full max-w-sm h-1.5 rounded-full" style={{ background: brandGradient }}></div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold border" style={{ borderColor: `${brandColor}66`, color: brandColor, backgroundColor: `${brandColor}15` }}>Brand Accent</span>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold border" style={{ borderColor: `${accentColor}66`, color: accentColor, backgroundColor: `${accentColor}15` }}>Signature Color</span>
-                  </div>
                 </div>
               </div>
 
