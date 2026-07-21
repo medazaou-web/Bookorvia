@@ -5,7 +5,7 @@ import { useLanguage } from '@/lib/context/LanguageContext';
 import { useTranslations } from '@/lib/i18n';
 import { AlertIcon, ClockIcon, UploadCloudIcon, DeleteIcon, SparkIcon, ThemeMoonIcon, ThemeSunIcon, EyeIcon, BusinessIcon, PhoneIcon, WebsiteIcon, SaveIcon, CalendarIcon, ReviewsIcon, RefreshIcon, BellIcon } from "@/components/icons";
 
-const DEFAULT_PUBLIC_THEME = "modern_gradient";
+const DEFAULT_PUBLIC_THEME = "elegant_light";
 const DEFAULT_BUTTON_TEXT_COLOR = "#ffffff";
 const DEFAULT_BACKGROUND_STYLE = "orbs";
 
@@ -134,10 +134,11 @@ export default function DashboardSettings() {
           setGoogleReviewUrl((data as any).google_review_url ?? "");
           setLogoUrl((data as any).logo_url ?? "");
           const parsedTheme = parseLegacyThemePayload((data as any).public_theme ?? DEFAULT_PUBLIC_THEME);
-          setPublicTheme(parsedTheme.theme);
+          const normalizedTheme = parsedTheme.theme === "luxury_dark" ? "luxury_dark" : "elegant_light";
+          setPublicTheme(normalizedTheme);
           setBrandColor((data as any).brand_color ?? "#4f46e5");
           setAccentColor((data as any).accent_color ?? "#06b6d4");
-          setButtonTextColor((data as any).button_text_color ?? parsedTheme.buttonTextColor ?? (parsedTheme.theme === "luxury_dark" ? "#0f172a" : DEFAULT_BUTTON_TEXT_COLOR));
+          setButtonTextColor((data as any).button_text_color ?? parsedTheme.buttonTextColor ?? (normalizedTheme === "luxury_dark" ? "#0f172a" : DEFAULT_BUTTON_TEXT_COLOR));
           setBackgroundStyle((data as any).background_style ?? parsedTheme.backgroundStyle ?? DEFAULT_BACKGROUND_STYLE);
           setCoverImageUrl((data as any).cover_image_url ?? "");
         }
@@ -632,11 +633,10 @@ export default function DashboardSettings() {
               {/* Theme Selector */}
               <div className="mb-6 sm:mb-8">
                 <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-3 sm:mb-4">{t('dashboard.pageTheme')}</label>
-                <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+                <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                   {[
-                    { value: "luxury_dark", label: t('dashboard.luxuryDark'), icon: "🌙" },
-                    { value: "elegant_light", label: t('dashboard.elegantLight'), icon: "☀️" },
-                    { value: "modern_gradient", label: t('dashboard.modernGradient'), icon: "" }
+                    { value: "luxury_dark", label: "Dark Mode", icon: "🌙", desc: "Luxury noir atmosphere" },
+                    { value: "elegant_light", label: "Light Mode", icon: "☀️", desc: "Bright premium clarity" }
                   ].map((theme) => (
                     <button
                       key={theme.value}
@@ -650,11 +650,7 @@ export default function DashboardSettings() {
                     >
                       <div className="text-2xl mb-2">{theme.icon}</div>
                       <div className="font-semibold text-slate-900 dark:text-white">{theme.label}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        {theme.value === "luxury_dark" && t('dashboard.darkAndGold')}
-                        {theme.value === "elegant_light" && t('dashboard.cleanAndSimple')}
-                        {theme.value === "modern_gradient" && t('dashboard.blueAndGradient')}
-                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{theme.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -775,11 +771,11 @@ export default function DashboardSettings() {
 
               {/* Preview Card */}
               <div className="bg-gradient-to-br from-slate-50 dark:from-white/5 to-slate-100 dark:to-white/10 rounded-2xl p-6 border border-slate-200 dark:border-white/10">
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2"><EyeIcon className="h-4 w-4" /> {t('dashboard.livePreviewTheme').replace('{theme}', public_theme === "luxury_dark" ? t('dashboard.luxuryDark') : public_theme === "elegant_light" ? t('dashboard.elegantLight') : t('dashboard.modernGradient'))}</p>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2"><EyeIcon className="h-4 w-4" /> {t('dashboard.livePreviewTheme').replace('{theme}', public_theme === "luxury_dark" ? "Dark Mode" : "Light Mode")}</p>
                 <div 
                   className="rounded-xl overflow-hidden h-48"
                   style={{
-                    backgroundColor: public_theme === "luxury_dark" ? "#1a1a2e" : public_theme === "elegant_light" ? "#f5f5f5" : "#f0f4ff"
+                    backgroundColor: public_theme === "luxury_dark" ? "#1a1a2e" : "#f5f5f5"
                   }}
                 >
                   <div className="h-full flex items-center justify-center flex-col gap-3 p-4">
