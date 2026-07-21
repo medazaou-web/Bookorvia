@@ -59,12 +59,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-content min-h-screen flex flex-col md:flex-row overflow-hidden relative transition-colors duration-200">
       {/* Mobile Header */}
-      <div className="glass-panel neon-outline flex md:hidden items-center justify-between border-b border-slate-200/70 dark:border-white/10 px-4 py-4 relative z-50">
+      <div className="futuristic-header neon-outline mx-3 mt-3 flex md:hidden items-center justify-between rounded-2xl px-4 py-4 relative z-50">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold">C</div>
           <div>
-            <div className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Bookorvia</div>
-            <div className="text-xs text-slate-600 dark:text-slate-400">Admin</div>
+            <div className="text-lg font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">Bookorvia</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-200">Admin Grid</div>
           </div>
         </div>
         <button
@@ -76,13 +76,13 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="glass-panel neon-outline hidden md:flex md:w-72 flex-col border-r border-slate-200/70 dark:border-white/10 sticky top-0 h-screen overflow-y-auto relative z-40 transition-colors duration-200">
+      <aside className="sidebar-shell neon-outline hidden md:flex md:w-72 flex-col border-r border-slate-200/70 dark:border-white/10 sticky top-0 h-screen overflow-y-auto relative z-40 transition-colors duration-200 m-3 mr-0 rounded-3xl">
         <div className="p-6 border-b border-slate-200/70 dark:border-white/10">
           <div className="flex items-center gap-3 mb-8">
             <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold">C</div>
             <div>
-              <div className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Bookorvia</div>
-              <div className="text-xs text-slate-600 dark:text-slate-400">Admin</div>
+              <div className="text-lg font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">Bookorvia</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-200">Admin Grid</div>
             </div>
           </div>
         </div>
@@ -92,16 +92,17 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
+              className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
                 isActive(item.href)
-                  ? "bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-400/30"
+                  ? "neon-outline bg-slate-900 text-white dark:bg-white dark:text-slate-900 border border-transparent shadow-lg shadow-cyan-500/20"
                   : "text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50 border border-transparent"
               }`}
             >
               <item.Icon className={`h-5 w-5 flex-shrink-0 ${
-                isActive(item.href) ? "text-indigo-600 dark:text-indigo-300" : "text-slate-600 dark:text-slate-400"
+                isActive(item.href) ? "text-white dark:text-slate-900" : "text-slate-600 dark:text-slate-400"
               }`} />
               <span>{item.label}</span>
+              {!isActive(item.href) && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-slate-300 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-slate-600" />}
             </Link>
           ))}
         </nav>
@@ -126,16 +127,17 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
+                className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
                   isActive(item.href)
-                    ? "bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-400/30"
+                    ? "neon-outline bg-slate-900 text-white dark:bg-white dark:text-slate-900 border border-transparent shadow-lg shadow-cyan-500/20"
                     : "text-slate-700 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50 border border-transparent"
                 }`}
               >
                 <item.Icon className={`h-5 w-5 flex-shrink-0 ${
-                  isActive(item.href) ? "text-indigo-600 dark:text-indigo-300" : "text-slate-600 dark:text-slate-400"
+                  isActive(item.href) ? "text-white dark:text-slate-900" : "text-slate-600 dark:text-slate-400"
                 }`} />
                 <span>{item.label}</span>
+                {!isActive(item.href) && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-slate-300 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-slate-600" />}
               </Link>
             ))}
           </nav>
@@ -155,13 +157,15 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <main className="app-content flex-1 flex flex-col overflow-hidden relative z-10">
         {/* Top Bar for Desktop */}
-        <div className="glass-panel hidden md:flex items-center justify-between border-b border-slate-200/70 dark:border-white/10 px-6 lg:px-8 py-4 sticky top-0 z-30 transition-colors duration-200">
-          <div className="text-sm font-semibold text-slate-600 dark:text-slate-400">Admin Area</div>
+        <div className="hidden md:block px-4 lg:px-6 pt-4 sticky top-0 z-30">
+          <div className="futuristic-header neon-outline rounded-2xl flex items-center justify-between px-6 lg:px-8 py-4 transition-colors duration-200">
+          <div className="text-sm font-semibold text-slate-600 dark:text-slate-300">Admin Area</div>
           <div className="flex items-center gap-4">
             <span className="text-xs bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-200 px-3 py-1 rounded-full font-semibold border border-amber-300 dark:border-amber-400/30">
               {profile?.role?.toUpperCase() || 'ADMIN'}
             </span>
             <ThemeToggle />
+          </div>
           </div>
         </div>
 

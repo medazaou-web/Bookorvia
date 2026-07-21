@@ -23,7 +23,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       <DashboardRoutePreloader />
       <DashboardDataSync />
       {/* Mobile top bar */}
-      <div className="glass-panel neon-outline flex md:hidden items-center justify-between border-b px-4 sm:px-6 py-4 relative z-50 transition-all duration-300">
+      <div className="futuristic-header neon-outline mx-3 mt-3 flex md:hidden items-center justify-between rounded-2xl px-4 sm:px-6 py-4 relative z-50 transition-all duration-300">
         <div className="flex items-center gap-3">
           <Image 
             src="/bookorvia-logo.png" 
@@ -32,7 +32,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             height={40} 
             className="h-10 w-10 rounded-lg"
           />
-          <div className="text-lg font-bold text-slate-900 dark:text-white">Bookorvia</div>
+          <div>
+            <div className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Bookorvia</div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-200">Command Center</div>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
@@ -47,7 +50,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </div>
 
       {/* Desktop sidebar */}
-      <aside className="glass-panel neon-outline hidden md:flex md:w-72 flex-col border-r sticky top-0 h-screen overflow-y-auto relative z-40">
+      <aside className="sidebar-shell neon-outline hidden md:flex md:w-72 flex-col border-r sticky top-0 h-screen overflow-y-auto relative z-40 m-3 mr-0 rounded-3xl">
         <div className="p-6 border-b border-slate-200/70 dark:border-white/10">
           <div className="flex items-center gap-3 mb-8">
             <Image 
@@ -58,8 +61,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               className="h-10 w-10 rounded-lg"
             />
             <div>
-              <div className="text-lg font-bold text-slate-900 dark:text-white">Bookorvia</div>
-              <div className="text-xs text-slate-600 dark:text-slate-400">Business</div>
+              <div className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Bookorvia</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-200">Business OS</div>
             </div>
           </div>
         </div>
@@ -71,7 +74,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       {/* Main content */}
       <main className="app-content flex-1 flex flex-col overflow-hidden relative z-10">
         {/* Top bar for desktop */}
-        <div className="glass-panel hidden md:flex items-center justify-between border-b border-slate-200/70 dark:border-white/10 px-6 lg:px-8 py-4 sticky top-0 z-30 transition-all duration-300">
+        <div className="hidden md:block px-4 lg:px-6 pt-4 sticky top-0 z-30">
+          <div className="futuristic-header neon-outline rounded-2xl flex items-center justify-between px-6 lg:px-8 py-4 transition-all duration-300">
           <div className="text-sm font-semibold text-slate-600 dark:text-slate-400">{t('dashboard.welcomeBackText')}</div>
           <div className="flex items-center gap-4">
             <NotificationBell />
@@ -82,11 +86,12 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             </Link>
             <ProfileDropdown />
           </div>
+          </div>
         </div>
 
         {/* Mobile menu drawer */}
         {open && (
-          <div className="glass-panel md:hidden border-b border-slate-200/70 dark:border-white/10 p-4 animate-slide-in-left z-40">
+          <div className="futuristic-header md:hidden mx-3 mt-2 rounded-2xl p-4 animate-slide-in-left z-40">
             <Sidebar />
           </div>
         )}

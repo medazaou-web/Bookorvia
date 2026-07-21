@@ -44,15 +44,15 @@ export default function Sidebar() {
     <Link
       href={href}
       prefetch={true}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 ${
+      className={`group flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
         active 
-          ? "neon-outline bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg" 
+          ? "neon-outline bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg shadow-cyan-500/20" 
           : "text-slate-600 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800/70 hover:text-slate-800 dark:hover:text-slate-100 border border-transparent"
       }`}
     >
       <Icon className={`h-5 w-5 flex-shrink-0 ${active ? "text-white dark:text-slate-900" : "text-slate-500 dark:text-slate-400"}`} />
       <span>{label}</span>
-      {active && <span className="ml-auto text-xs">→</span>}
+      {active ? <span className="ml-auto text-xs">→</span> : <span className="ml-auto h-1.5 w-1.5 rounded-full bg-slate-300 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-slate-600" />}
     </Link>
   );
 
@@ -71,7 +71,7 @@ export default function Sidebar() {
 
       {/* Secondary Navigation */}
       <div className="space-y-2">
-        <div className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider">{t('dashboard.features')}</div>
+        <div className="px-4 py-2 text-[11px] font-bold text-cyan-700 dark:text-cyan-200 uppercase tracking-[0.18em]">{t('dashboard.features')}</div>
         {secondaryLinks.map((l) => {
           const active = pathname === l.href || pathname.startsWith(l.href + "/");
           return <LinkItem key={l.href} {...l} active={active} />;
@@ -80,7 +80,7 @@ export default function Sidebar() {
 
       {/* Settings */}
       <div className="space-y-2">
-        <div className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider">{t('dashboard.system')}</div>
+        <div className="px-4 py-2 text-[11px] font-bold text-cyan-700 dark:text-cyan-200 uppercase tracking-[0.18em]">{t('dashboard.system')}</div>
         {settingsLinks.map((l) => {
           const active = pathname === l.href || pathname.startsWith(l.href + "/");
           return <LinkItem key={l.href} {...l} active={active} />;
