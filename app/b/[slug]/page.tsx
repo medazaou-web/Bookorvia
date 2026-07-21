@@ -319,6 +319,18 @@ export default async function BusinessPage({ params }: Props) {
         return biz.website_url;
       }
     })();
+    const isDarkTheme = selectedThemeKey === "luxury_dark";
+    const websiteCardStyle = isDarkTheme
+      ? {
+          borderColor: "rgba(148, 163, 184, 0.45)",
+          background: "linear-gradient(160deg, rgba(30,41,59,0.88), rgba(15,23,42,0.72))",
+        }
+      : {
+          borderColor: "rgba(71, 85, 105, 0.26)",
+          background: "linear-gradient(160deg, rgba(248,250,252,0.95), rgba(226,232,240,0.78))",
+        };
+    const websiteTitleColor = isDarkTheme ? "#93c5fd" : "#1e3a8a";
+    const websiteTextColor = isDarkTheme ? "#e2e8f0" : "#1e293b";
 
     return (
       <div className="min-h-screen transition-colors duration-300" style={pageBackgroundStyle}>
@@ -614,9 +626,9 @@ export default async function BusinessPage({ params }: Props) {
                 </a>
               )}
               {websiteHref && (
-                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={{ borderColor: withAlpha(brandColor, 0.53), background: `linear-gradient(160deg, ${withAlpha(brandColor, 0.13)}, ${withAlpha(accentColor, 0.07)})` }}>
-                  <div className="text-2xl font-bold mb-3" style={{ color: accentColor }}>{t('business.website')}</div>
-                  <p className={`font-bold ${theme.accent} truncate text-sm`}>{websiteDisplay}</p>
+                <a href={websiteHref} target="_blank" rel="noreferrer" className={`rounded-[1.8rem] border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all p-6 text-center`} style={websiteCardStyle}>
+                  <div className="text-2xl font-bold mb-3" style={{ color: websiteTitleColor }}>{t('business.website')}</div>
+                  <p className="font-bold truncate text-sm" style={{ color: websiteTextColor }}>{websiteDisplay}</p>
                 </a>
               )}
             </div>
