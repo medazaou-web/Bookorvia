@@ -104,25 +104,41 @@ export default function DashboardBusinessPage() {
   }
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12">
-        <div>
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">{t('dashboard.businessPageTitle')}</h1>
-          <p className="text-lg text-slate-600 dark:text-slate-300">{t('dashboard.businessPageDescription')}</p>
+    <div className="space-y-8 sm:space-y-10">
+      {/* Hero Header */}
+      <div className="futuristic-header neon-outline rounded-3xl p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
+          <div>
+            <div className="inline-flex items-center gap-2 mb-3 rounded-full border border-cyan-300/60 dark:border-cyan-400/30 bg-cyan-50/70 dark:bg-cyan-500/10 px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] font-bold text-cyan-700 dark:text-cyan-200">
+              <SparkIcon className="h-3.5 w-3.5" />
+              Public Presence
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">{t('dashboard.businessPageTitle')}</h1>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl">{t('dashboard.businessPageDescription')}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm min-w-[200px]">
+            <div className="rounded-xl border border-slate-300/70 dark:border-white/10 bg-white/75 dark:bg-slate-900/70 px-3 py-2">
+              <p className="text-slate-500 dark:text-slate-400">Page Status</p>
+              <p className="font-bold text-emerald-600 dark:text-emerald-300">Live</p>
+            </div>
+            <div className="rounded-xl border border-slate-300/70 dark:border-white/10 bg-white/75 dark:bg-slate-900/70 px-3 py-2">
+              <p className="text-slate-500 dark:text-slate-400">Traffic Tool</p>
+              <p className="font-bold text-cyan-700 dark:text-cyan-200">QR Ready</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="rounded-3xl bg-white/80 dark:bg-slate-900 backdrop-blur border border-white/60 dark:border-white/10 shadow-lg p-12 text-center text-slate-600 dark:text-slate-300">
+        <div className="glass-panel neon-outline rounded-3xl p-12 text-center text-slate-600 dark:text-slate-300">
           {t('dashboard.loadingBusiness')}
         </div>
       ) : !business ? (
-        <div className="rounded-3xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-400/20 shadow-lg p-12 text-center">
+        <div className="glass-panel neon-outline rounded-3xl p-12 text-center">
           <div className="text-5xl mb-4">🏢</div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('dashboard.noBusinessProfile')}</h3>
           <p className="text-slate-600 dark:text-slate-300 mb-6">{t('dashboard.createBusinessFirst')}</p>
-          <a href="/dashboard/settings" className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold hover:shadow-lg hover:-translate-y-1 transition-all">
+          <a href="/dashboard/settings" className="inline-block px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg hover:-translate-y-1 transition-all">
             {t('dashboard.goToSettings')}
           </a>
         </div>
@@ -132,18 +148,19 @@ export default function DashboardBusinessPage() {
           {error}
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           {/* Public Link Section */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2"><ExternalLinkIcon className="h-6 w-6" /> {t('dashboard.publicLink')}</h2>
+          <div className="glass-panel neon-outline rounded-3xl p-6 sm:p-8">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"><ExternalLinkIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.publicLink')}</h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-6">{t('dashboard.shareWithCustomers')}</p>
             
-            <div className="mb-6 p-6 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10">
+            <div className="mb-6 p-5 sm:p-6 rounded-2xl bg-slate-50/90 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10">
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">{t('dashboard.publicPageUrl')}</p>
-              <div className="font-mono text-lg text-slate-900 dark:text-slate-100 break-all mb-4">{publicLink}</div>
+              <div className="font-mono text-sm sm:text-base lg:text-lg text-slate-900 dark:text-slate-100 break-all mb-4">{publicLink}</div>
               <div className="flex gap-3 flex-wrap">
                 <button
                   onClick={handleCopy}
-                  className="px-6 py-2 rounded-xl bg-indigo-600 text-white font-bold hover:shadow-lg active:scale-95 transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center gap-2"
                 >
                   {copied ? `✓ ${t('dashboard.linkCopied')}` : <><CopyIcon className="h-4 w-4" /> {t('dashboard.copyLink')}</>}
                 </button>
@@ -151,26 +168,33 @@ export default function DashboardBusinessPage() {
                   href={business ? `/b/${business.slug}` : '/b/demo'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-2 rounded-xl bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 font-bold hover:bg-slate-50 dark:hover:bg-white/15 transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 font-bold hover:bg-slate-50 dark:hover:bg-white/15 transition-all inline-flex items-center gap-2"
                 >
                   <EyeIcon className="h-4 w-4" /> {t('dashboard.viewPage')}
                 </a>
               </div>
             </div>
 
-            <p className="text-slate-600 dark:text-slate-400">
-              {t('dashboard.shareWithCustomers')}
-            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Reach</p>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Use this link in bio, stories, and posts.</p>
+              </div>
+              <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Speed</p>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">One tap from ad to booking form.</p>
+              </div>
+            </div>
           </div>
 
           {/* QR Code Section */}
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2"><QRIcon className="h-6 w-6" /> {t('dashboard.qrCode')}</h2>
+          <div className="glass-panel neon-outline rounded-3xl p-6 sm:p-8">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2"><QRIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.qrCode')}</h2>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
               {/* QR Code Display */}
               <div className="flex flex-col items-center">
-                <div className="w-64 h-64 rounded-2xl bg-white dark:bg-slate-950/60 p-4 shadow-xl border border-slate-200 dark:border-white/10 flex items-center justify-center mb-6">
+                <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-2xl bg-white dark:bg-slate-950/60 p-4 shadow-xl border border-slate-200 dark:border-white/10 flex items-center justify-center mb-6">
                   {qrLoading ? (
                     <div className="text-slate-500 dark:text-slate-400">{t('dashboard.generatingQrCode')}</div>
                   ) : qrDataUrl ? (
@@ -190,7 +214,7 @@ export default function DashboardBusinessPage() {
                       a.click();
                       document.body.removeChild(a);
                     }}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-bold hover:shadow-lg active:scale-95 transition-all"
+                    className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center gap-2"
                   >
                     <DownloadIcon className="h-4 w-4" /> {t('dashboard.downloadQr')}
                   </button>
@@ -201,7 +225,7 @@ export default function DashboardBusinessPage() {
               <div>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2"><SparkIcon className="h-5 w-5" /> {t('dashboard.qrWhatIsIt')}</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2"><SparkIcon className="h-5 w-5 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.qrWhatIsIt')}</h3>
                     <p className="text-slate-600 dark:text-slate-400">
                       {t('dashboard.qrDescription')}
                     </p>
@@ -227,6 +251,24 @@ export default function DashboardBusinessPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="xl:col-span-2">
+            <div className="futuristic-header neon-outline rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-1">Conversion Tip</p>
+                <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200">Place the QR near checkout, front desk, and social posts to increase repeat bookings.</p>
+              </div>
+              <a
+                href={business ? `/b/${business.slug}` : '/b/demo'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg transition-all inline-flex items-center justify-center gap-2"
+              >
+                <ExternalLinkIcon className="h-4 w-4" />
+                Open Live Page
+              </a>
             </div>
           </div>
         </div>
