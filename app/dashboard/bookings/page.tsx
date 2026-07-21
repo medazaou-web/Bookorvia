@@ -339,33 +339,45 @@ export default function DashboardBookings() {
                       <StatusBadge status={r.status} t={t} />
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        {r.status !== 'accepted' && (
-                          <button 
-                            disabled={refreshing} 
-                            onClick={() => updateStatus(r.id, 'accepted')} 
-                            className="px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
-                          >
-                            ✓ {t('common.accept')}
-                          </button>
-                        )}
-                        {r.status !== 'refused' && (
+                      <div className={`flex justify-end ${r.status === 'completed' ? '' : 'gap-2'}`}>
+                        {r.status === 'completed' ? (
                           <button 
                             disabled={refreshing} 
                             onClick={() => updateStatus(r.id, 'refused')} 
-                            className="px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                            className="px-4 py-2 rounded-lg bg-red-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
                           >
                             ✕ {t('common.refuse')}
                           </button>
-                        )}
-                        {r.status !== 'completed' && (
-                          <button 
-                            disabled={refreshing} 
-                            onClick={() => updateStatus(r.id, 'completed')} 
-                            className="px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
-                          >
-                            ✓✓ {t('common.complete')}
-                          </button>
+                        ) : (
+                          <>
+                            {r.status !== 'accepted' && (
+                              <button 
+                                disabled={refreshing} 
+                                onClick={() => updateStatus(r.id, 'accepted')} 
+                                className="px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                              >
+                                ✓ {t('common.accept')}
+                              </button>
+                            )}
+                            {r.status !== 'refused' && (
+                              <button 
+                                disabled={refreshing} 
+                                onClick={() => updateStatus(r.id, 'refused')} 
+                                className="px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                              >
+                                ✕ {t('common.refuse')}
+                              </button>
+                            )}
+                            {r.status !== 'completed' && (
+                              <button 
+                                disabled={refreshing} 
+                                onClick={() => updateStatus(r.id, 'completed')} 
+                                className="px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                              >
+                                ✓✓ {t('common.complete')}
+                              </button>
+                            )}
+                          </>
                         )}
                       </div>
                     </td>
@@ -416,33 +428,45 @@ export default function DashboardBookings() {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  {r.status !== 'accepted' && (
-                    <button 
-                      disabled={refreshing} 
-                      onClick={() => updateStatus(r.id, 'accepted')} 
-                      className="flex-1 px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
-                    >
-                      {t('common.accept')}
-                    </button>
-                  )}
-                  {r.status !== 'refused' && (
+                <div className={r.status === 'completed' ? 'flex' : 'flex gap-2'}>
+                  {r.status === 'completed' ? (
                     <button 
                       disabled={refreshing} 
                       onClick={() => updateStatus(r.id, 'refused')} 
-                      className="flex-1 px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                      className="w-full px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
                     >
                       {t('common.refuse')}
                     </button>
-                  )}
-                  {r.status !== 'completed' && (
-                    <button 
-                      disabled={refreshing} 
-                      onClick={() => updateStatus(r.id, 'completed')} 
-                      className="flex-1 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
-                    >
-                      {t('common.complete')}
-                    </button>
+                  ) : (
+                    <>
+                      {r.status !== 'accepted' && (
+                        <button 
+                          disabled={refreshing} 
+                          onClick={() => updateStatus(r.id, 'accepted')} 
+                          className="flex-1 px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                        >
+                          {t('common.accept')}
+                        </button>
+                      )}
+                      {r.status !== 'refused' && (
+                        <button 
+                          disabled={refreshing} 
+                          onClick={() => updateStatus(r.id, 'refused')} 
+                          className="flex-1 px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                        >
+                          {t('common.refuse')}
+                        </button>
+                      )}
+                      {r.status !== 'completed' && (
+                        <button 
+                          disabled={refreshing} 
+                          onClick={() => updateStatus(r.id, 'completed')} 
+                          className="flex-1 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
+                        >
+                          {t('common.complete')}
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
