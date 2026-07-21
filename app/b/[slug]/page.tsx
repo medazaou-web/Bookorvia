@@ -79,12 +79,12 @@ function getPageBackgroundStyle(
 ) {
   if (style === "orbs") {
     return {
-      backgroundColor: isDarkMode ? "#070b14" : "#eef3ff",
+      backgroundColor: isDarkMode ? "#060a12" : "#f1f6ff",
       backgroundImage: `
-        radial-gradient(1200px 620px at 14% 10%, ${withAlpha(brandColor, isDarkMode ? 0.34 : 0.26)} 0%, transparent 64%),
-        radial-gradient(980px 560px at 86% 8%, ${withAlpha(accentColor, isDarkMode ? 0.29 : 0.23)} 0%, transparent 66%),
-        radial-gradient(760px 420px at 48% 92%, ${withAlpha(brandColor, isDarkMode ? 0.22 : 0.16)} 0%, transparent 72%),
-        linear-gradient(165deg, ${isDarkMode ? "#060a13" : "#f8fbff"}, ${isDarkMode ? "#0f1524" : "#ecf2ff"})
+        radial-gradient(1200px 700px at 8% 8%, ${withAlpha(brandColor, isDarkMode ? 0.36 : 0.26)} 0%, transparent 62%),
+        radial-gradient(1000px 640px at 88% 12%, ${withAlpha(accentColor, isDarkMode ? 0.31 : 0.23)} 0%, transparent 66%),
+        radial-gradient(780px 500px at 50% 95%, ${withAlpha(brandColor, isDarkMode ? 0.22 : 0.16)} 0%, transparent 72%),
+        linear-gradient(164deg, ${isDarkMode ? "#050911" : "#fbfdff"} 0%, ${isDarkMode ? "#0f1626" : "#eaf2ff"} 100%)
       `,
       backgroundAttachment: "fixed",
     };
@@ -92,13 +92,13 @@ function getPageBackgroundStyle(
 
   if (style === "mesh") {
     return {
-      backgroundColor: isDarkMode ? "#050811" : "#f5f8ff",
+      backgroundColor: isDarkMode ? "#050811" : "#f7faff",
       backgroundImage: `
-        linear-gradient(130deg, ${withAlpha(brandColor, isDarkMode ? 0.18 : 0.14)} 0%, ${withAlpha(accentColor, isDarkMode ? 0.16 : 0.13)} 100%),
-        repeating-linear-gradient(0deg, ${withAlpha(brandColor, isDarkMode ? 0.12 : 0.08)} 0 1px, transparent 1px 54px),
-        repeating-linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.12 : 0.08)} 0 1px, transparent 1px 54px),
-        radial-gradient(circle at 50% 28%, ${withAlpha(brandColor, isDarkMode ? 0.3 : 0.22)} 0%, transparent 52%),
-        linear-gradient(180deg, ${isDarkMode ? "#04070f" : "#f8faff"}, ${isDarkMode ? "#0d1322" : "#eef3ff"})
+        linear-gradient(140deg, ${withAlpha(brandColor, isDarkMode ? 0.18 : 0.14)} 0%, ${withAlpha(accentColor, isDarkMode ? 0.16 : 0.13)} 100%),
+        repeating-linear-gradient(0deg, ${withAlpha(brandColor, isDarkMode ? 0.13 : 0.09)} 0 1px, transparent 1px 52px),
+        repeating-linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.12 : 0.08)} 0 1px, transparent 1px 52px),
+        radial-gradient(circle at 52% 24%, ${withAlpha(brandColor, isDarkMode ? 0.3 : 0.22)} 0%, transparent 50%),
+        linear-gradient(180deg, ${isDarkMode ? "#04070f" : "#fcfdff"}, ${isDarkMode ? "#0d1323" : "#edf4ff"})
       `,
       backgroundAttachment: "fixed",
     };
@@ -106,13 +106,13 @@ function getPageBackgroundStyle(
 
   if (style === "stripes") {
     return {
-      backgroundColor: isDarkMode ? "#070a12" : "#f8f9ff",
+      backgroundColor: isDarkMode ? "#070a13" : "#f9fbff",
       backgroundImage: `
-        linear-gradient(155deg, ${withAlpha(brandColor, isDarkMode ? 0.14 : 0.12)}, ${withAlpha(accentColor, isDarkMode ? 0.12 : 0.1)}),
-        linear-gradient(112deg, transparent 0%, transparent 28%, ${withAlpha(brandColor, isDarkMode ? 0.28 : 0.2)} 28%, transparent 44%),
-        linear-gradient(72deg, transparent 0%, transparent 52%, ${withAlpha(accentColor, isDarkMode ? 0.24 : 0.18)} 52%, transparent 72%),
-        linear-gradient(28deg, transparent 0%, transparent 66%, ${withAlpha(brandColor, isDarkMode ? 0.22 : 0.16)} 66%, transparent 84%),
-        linear-gradient(180deg, ${isDarkMode ? "#060913" : "#fdfdff"}, ${isDarkMode ? "#121a2b" : "#eff4ff"})
+        linear-gradient(155deg, ${withAlpha(brandColor, isDarkMode ? 0.12 : 0.1)}, ${withAlpha(accentColor, isDarkMode ? 0.1 : 0.08)}),
+        linear-gradient(114deg, transparent 0%, transparent 24%, ${withAlpha(brandColor, isDarkMode ? 0.3 : 0.21)} 24%, transparent 41%),
+        linear-gradient(74deg, transparent 0%, transparent 49%, ${withAlpha(accentColor, isDarkMode ? 0.25 : 0.18)} 49%, transparent 68%),
+        linear-gradient(30deg, transparent 0%, transparent 63%, ${withAlpha(brandColor, isDarkMode ? 0.22 : 0.15)} 63%, transparent 84%),
+        linear-gradient(180deg, ${isDarkMode ? "#060912" : "#fcfdff"}, ${isDarkMode ? "#12192a" : "#eef3ff"})
       `,
       backgroundAttachment: "fixed",
     };
@@ -120,30 +120,47 @@ function getPageBackgroundStyle(
 
   if (style === "grid") {
     return {
-      backgroundColor: isDarkMode ? "#03060f" : "#f4f8ff",
+      backgroundColor: isDarkMode ? "#03060f" : "#f5f9ff",
       backgroundImage: `
-        radial-gradient(900px 450px at 50% -6%, ${withAlpha(brandColor, isDarkMode ? 0.35 : 0.26)} 0%, transparent 72%),
-        linear-gradient(${withAlpha(brandColor, isDarkMode ? 0.15 : 0.1)} 1px, transparent 1px),
+        radial-gradient(940px 500px at 50% -8%, ${withAlpha(brandColor, isDarkMode ? 0.34 : 0.25)} 0%, transparent 70%),
+        linear-gradient(${withAlpha(brandColor, isDarkMode ? 0.16 : 0.1)} 1px, transparent 1px),
         linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.15 : 0.1)} 1px, transparent 1px),
-        linear-gradient(${withAlpha(brandColor, isDarkMode ? 0.08 : 0.06)} 1px, transparent 1px),
-        linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.08 : 0.06)} 1px, transparent 1px),
-        linear-gradient(180deg, ${isDarkMode ? "#040712" : "#fbfcff"}, ${isDarkMode ? "#0d1323" : "#edf3ff"})
+        linear-gradient(${withAlpha(brandColor, isDarkMode ? 0.08 : 0.05)} 1px, transparent 1px),
+        linear-gradient(90deg, ${withAlpha(accentColor, isDarkMode ? 0.08 : 0.05)} 1px, transparent 1px),
+        linear-gradient(180deg, ${isDarkMode ? "#040711" : "#fbfdff"}, ${isDarkMode ? "#0e1424" : "#eef4ff"})
       `,
       backgroundSize: "auto, 56px 56px, 56px 56px, 14px 14px, 14px 14px, auto",
       backgroundAttachment: "fixed",
     };
   }
 
-  return {
-    backgroundColor: isDarkMode ? "#080812" : "#f8f8ff",
-    backgroundImage: `
-      radial-gradient(600px 760px at 18% -12%, ${withAlpha(brandColor, isDarkMode ? 0.4 : 0.26)} 0%, transparent 72%),
-      radial-gradient(620px 840px at 84% -14%, ${withAlpha(accentColor, isDarkMode ? 0.34 : 0.22)} 0%, transparent 74%),
-      radial-gradient(900px 420px at 50% 100%, ${withAlpha(brandColor, isDarkMode ? 0.24 : 0.15)} 0%, transparent 72%),
-      linear-gradient(180deg, ${isDarkMode ? "#060611" : "#fdfdff"}, ${isDarkMode ? "#14182a" : "#eef2ff"})
-    `,
-    backgroundAttachment: "fixed",
-  };
+  if (style === "spotlight") {
+    return {
+      backgroundColor: isDarkMode ? "#070812" : "#f9faff",
+      backgroundImage: `
+        radial-gradient(620px 880px at 14% -10%, ${withAlpha(brandColor, isDarkMode ? 0.42 : 0.26)} 0%, transparent 72%),
+        radial-gradient(640px 900px at 86% -12%, ${withAlpha(accentColor, isDarkMode ? 0.36 : 0.22)} 0%, transparent 74%),
+        radial-gradient(920px 460px at 50% 100%, ${withAlpha(brandColor, isDarkMode ? 0.26 : 0.15)} 0%, transparent 74%),
+        linear-gradient(180deg, ${isDarkMode ? "#060611" : "#fdfdff"}, ${isDarkMode ? "#14192c" : "#eef2ff"})
+      `,
+      backgroundAttachment: "fixed",
+    };
+  }
+
+  if (style === "vortex") {
+    return {
+      backgroundColor: isDarkMode ? "#05070f" : "#f6f9ff",
+      backgroundImage: `
+        conic-gradient(from 210deg at 50% 46%, ${withAlpha(brandColor, isDarkMode ? 0.34 : 0.22)}, ${withAlpha(accentColor, isDarkMode ? 0.28 : 0.18)}, ${withAlpha(brandColor, isDarkMode ? 0.2 : 0.14)}, transparent 74%),
+        radial-gradient(560px 560px at 50% 46%, transparent 52%, ${withAlpha(accentColor, isDarkMode ? 0.2 : 0.12)} 72%, transparent 86%),
+        radial-gradient(720px 440px at 50% 100%, ${withAlpha(brandColor, isDarkMode ? 0.18 : 0.12)} 0%, transparent 74%),
+        linear-gradient(180deg, ${isDarkMode ? "#04070f" : "#fbfdff"}, ${isDarkMode ? "#10172a" : "#edf3ff"})
+      `,
+      backgroundAttachment: "fixed",
+    };
+  }
+
+  return getPageBackgroundStyle("orbs", isDarkMode, brandColor, accentColor);
 }
 
 // Main theme configuration
@@ -334,73 +351,15 @@ export default async function BusinessPage({ params }: Props) {
 
     return (
       <div className="min-h-screen transition-colors duration-300" style={pageBackgroundStyle}>
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          {backgroundStyle === "orbs" && (
-            <>
-              <div className="absolute inset-0" style={{ background: selectedThemeKey === "luxury_dark" ? `radial-gradient(1500px 680px at 16% -8%, ${withAlpha(brandColor, 0.32)} 0%, transparent 62%), radial-gradient(1300px 620px at 90% 12%, ${withAlpha(accentColor, 0.28)} 0%, transparent 68%), linear-gradient(160deg, #040711 0%, #0b1120 58%, #050914 100%)` : `radial-gradient(1400px 640px at 10% -8%, ${withAlpha(brandColor, 0.22)} 0%, transparent 62%), radial-gradient(1200px 560px at 88% 12%, ${withAlpha(accentColor, 0.2)} 0%, transparent 68%), linear-gradient(160deg, #f8fbff 0%, #eaf2ff 58%, #f8fbff 100%)` }}></div>
-              <div className="absolute -top-56 right-[-5rem] w-[38rem] h-[38rem] rounded-full blur-[120px]" style={{ backgroundColor: withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.24 : 0.16) }}></div>
-              <div className="absolute bottom-[-10rem] left-[-8rem] w-[40rem] h-[40rem] rounded-full blur-[130px]" style={{ backgroundColor: withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.22 : 0.14) }}></div>
-            </>
-          )}
-          {backgroundStyle === "mesh" && (
-            <>
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: selectedThemeKey === "luxury_dark"
-                    ? `linear-gradient(148deg, #030611, #09101f 52%, #040816), radial-gradient(circle at 14% 18%, ${withAlpha(brandColor, 0.24)} 0, transparent 42%), radial-gradient(circle at 84% 18%, ${withAlpha(accentColor, 0.24)} 0, transparent 42%)`
-                    : `linear-gradient(148deg, #fbfdff, #edf3ff 52%, #f6f9ff), radial-gradient(circle at 14% 18%, ${withAlpha(brandColor, 0.17)} 0, transparent 42%), radial-gradient(circle at 84% 18%, ${withAlpha(accentColor, 0.17)} 0, transparent 42%)`,
-                }}
-              ></div>
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `linear-gradient(${withAlpha(brandColor, 0.16)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, 0.14)} 1px, transparent 1px)`,
-                  backgroundSize: "58px 58px",
-                  maskImage: "radial-gradient(circle at center, black 38%, transparent 90%)",
-                }}
-              ></div>
-              <div className="absolute inset-x-0 top-[12%] h-52 blur-3xl" style={{ backgroundColor: withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.14 : 0.1) }}></div>
-            </>
-          )}
-          {backgroundStyle === "stripes" && (
-            <>
-              <div className="absolute inset-0" style={{ background: selectedThemeKey === "luxury_dark" ? "linear-gradient(155deg, #050812 0%, #090f1d 50%, #060a15 100%)" : "linear-gradient(155deg, #fcfdff 0%, #eff4ff 50%, #f8fbff 100%)" }}></div>
-              <div className="absolute top-[-8%] left-[-6%] h-[22rem] w-[44rem] rotate-[-14deg] rounded-[4rem] blur-xl" style={{ background: `linear-gradient(120deg, ${withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.5 : 0.28)}, transparent 72%)` }}></div>
-              <div className="absolute top-[26%] right-[-12%] h-[24rem] w-[48rem] rotate-[17deg] rounded-[4rem] blur-xl" style={{ background: `linear-gradient(120deg, ${withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.46 : 0.26)}, transparent 72%)` }}></div>
-              <div className="absolute bottom-[-10%] left-[18%] h-[20rem] w-[38rem] rotate-[-8deg] rounded-[4rem] blur-xl" style={{ background: `linear-gradient(120deg, ${withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.36 : 0.2)}, ${withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.24 : 0.14)})` }}></div>
-            </>
-          )}
-          {backgroundStyle === "grid" && (
-            <>
-              <div className="absolute inset-0" style={{ background: selectedThemeKey === "luxury_dark" ? `radial-gradient(1120px 520px at 50% -6%, ${withAlpha(brandColor, 0.32)}, transparent 66%), linear-gradient(180deg, #04070f 0%, #0b1120 65%, #050914 100%)` : `radial-gradient(1120px 520px at 50% -6%, ${withAlpha(brandColor, 0.18)}, transparent 66%), linear-gradient(180deg, #fafcff 0%, #eef4ff 65%, #f8fbff 100%)` }}></div>
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `linear-gradient(${withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.26 : 0.16)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.24 : 0.16)} 1px, transparent 1px)`,
-                  backgroundSize: "48px 48px",
-                }}
-              ></div>
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `linear-gradient(${withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.12 : 0.08)} 1px, transparent 1px), linear-gradient(90deg, ${withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.1 : 0.07)} 1px, transparent 1px)`,
-                  backgroundSize: "12px 12px",
-                  opacity: selectedThemeKey === "luxury_dark" ? 0.64 : 0.52,
-                }}
-              ></div>
-            </>
-          )}
-          {backgroundStyle === "spotlight" && (
-            <>
-              <div className="absolute inset-0" style={{ background: selectedThemeKey === "luxury_dark" ? "linear-gradient(180deg, #04070f 0%, #070b16 56%, #02040a 100%)" : "linear-gradient(180deg, #fcfdff 0%, #f0f5ff 56%, #f8faff 100%)" }}></div>
-              <div className="absolute -top-28 left-[5%] h-[36rem] w-[18rem] rotate-[14deg] blur-3xl" style={{ background: `linear-gradient(180deg, ${withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.42 : 0.24)}, transparent)` }}></div>
-              <div className="absolute -top-36 left-[43%] h-[38rem] w-[20rem] rotate-[-2deg] blur-3xl" style={{ background: `linear-gradient(180deg, ${withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.36 : 0.22)}, transparent)` }}></div>
-              <div className="absolute -top-24 right-[6%] h-[36rem] w-[18rem] rotate-[-14deg] blur-3xl" style={{ background: `linear-gradient(180deg, ${withAlpha(brandColor, selectedThemeKey === "luxury_dark" ? 0.34 : 0.2)}, transparent)` }}></div>
-              <div className="absolute bottom-[-6rem] left-1/2 -translate-x-1/2 w-[38rem] h-[18rem] rounded-full blur-[120px]" style={{ backgroundColor: withAlpha(accentColor, selectedThemeKey === "luxury_dark" ? 0.2 : 0.13) }}></div>
-            </>
-          )}
-        </div>
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, ${withAlpha(selectedThemeKey === "luxury_dark" ? "#ffffff" : "#0f172a", 0.05)} 1px, transparent 1px)`,
+            backgroundSize: "4px 4px",
+            mixBlendMode: selectedThemeKey === "luxury_dark" ? "screen" : "multiply",
+            opacity: 0.25,
+          }}
+        ></div>
 
         <header className={`sticky top-0 z-50 ${theme.header} backdrop-blur border-b transition-colors px-4 sm:px-6 py-4 shadow-sm`}>
           <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">

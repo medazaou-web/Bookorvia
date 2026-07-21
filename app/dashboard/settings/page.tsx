@@ -736,6 +736,7 @@ export default function DashboardSettings() {
                     <option value="stripes">Prism Shards</option>
                     <option value="grid">Quantum Grid</option>
                     <option value="spotlight">Velvet Stage</option>
+                    <option value="vortex">Orbit Pulse</option>
                   </select>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Sets the decorative atmosphere behind your public page.</p>
                 </div>
