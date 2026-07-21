@@ -46,11 +46,11 @@ export default function Sidebar() {
       prefetch={true}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 ${
         active 
-          ? "bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg" 
-          : "text-slate-500 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-800/50 hover:text-slate-700 dark:hover:text-slate-200"
+          ? "neon-outline bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-lg" 
+          : "text-slate-600 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800/70 hover:text-slate-800 dark:hover:text-slate-100 border border-transparent"
       }`}
     >
-      <Icon className={`h-5 w-5 flex-shrink-0 ${active ? "text-white" : "text-slate-500 dark:text-slate-400"}`} />
+      <Icon className={`h-5 w-5 flex-shrink-0 ${active ? "text-white dark:text-slate-900" : "text-slate-500 dark:text-slate-400"}`} />
       <span>{label}</span>
       {active && <span className="ml-auto text-xs">→</span>}
     </Link>
@@ -67,7 +67,7 @@ export default function Sidebar() {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-white/40 dark:border-white/10" />
+      <div className="border-t border-slate-200/70 dark:border-white/10" />
 
       {/* Secondary Navigation */}
       <div className="space-y-2">

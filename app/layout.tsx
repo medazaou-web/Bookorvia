@@ -30,7 +30,7 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
-      <body className="min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      <body className="app-canvas min-h-full flex flex-col transition-colors duration-200">
         <Providers>{children}</Providers>
       </body>
     </html>
