@@ -242,13 +242,13 @@ export default async function BusinessPage({ params }: Props) {
                 <div
                   className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl shadow-2xl overflow-hidden border-4 flex items-center justify-center text-4xl sm:text-5xl font-bold"
                   style={{
-                    backgroundColor: logo ? 'transparent' : brandColor,
+                    backgroundColor: logo ? '#ffffff' : brandColor,
                     borderColor: accentColor,
                     color: biz.public_theme === 'luxury_dark' ? 'white' : '#0f172a',
                   }}
                 >
                   {logo ? (
-                    <img src={logo} alt={`${biz.name} logo`} className="w-full h-full object-cover" />
+                    <img src={logo} alt={`${biz.name} logo`} className="w-full h-full object-contain p-2" />
                   ) : (
                     initials
                   )}
