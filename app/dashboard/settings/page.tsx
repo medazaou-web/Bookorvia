@@ -39,6 +39,16 @@ function buildLegacyThemePayload(theme: string, backgroundStyle: string, buttonT
   return `${theme}|bg=${encodeURIComponent(backgroundStyle)}|btc=${encodeURIComponent(buttonTextColor)}`;
 }
 
+function shouldUseLegacyStyleFallback(err: any): boolean {
+  const combined = [err?.message, err?.details, err?.hint, err?.code].filter(Boolean).join(" ").toLowerCase();
+  return (
+    combined.includes("button_text_color") ||
+    combined.includes("background_style") ||
+    combined.includes("schema cache") ||
+    combined.includes("pgrst204")
+  );
+}
+
 export default function DashboardSettings() {
   const { language } = useLanguage();
   const t = useTranslations(language);
@@ -235,7 +245,7 @@ export default function DashboardSettings() {
           .select()
           .single();
 
-        if (updateErr && /button_text_color|background_style/i.test(updateErr.message || "")) {
+        if (updateErr && shouldUseLegacyStyleFallback(updateErr)) {
           const { error: fallbackErr } = await supabase
             .from("businesses")
             .update(legacyPayload)
@@ -251,6 +261,7 @@ export default function DashboardSettings() {
         }
 
         if (updateErr) {
+          console.error("Business settings update failed", updateErr);
           throw updateErr;
         }
         setSuccess(t('dashboard.businessProfileUpdated'));
@@ -261,7 +272,7 @@ export default function DashboardSettings() {
           .select()
           .single();
 
-        if (insertErr && /button_text_color|background_style/i.test(insertErr.message || "")) {
+        if (insertErr && shouldUseLegacyStyleFallback(insertErr)) {
           const fallbackResult = await supabase
             .from("businesses")
             .insert(legacyPayload)
@@ -278,13 +289,15 @@ export default function DashboardSettings() {
         }
 
         if (insertErr) {
+          console.error("Business settings insert failed", insertErr);
           throw insertErr;
         }
         setBusinessId((data as any).id ?? null);
         setSuccess(t('dashboard.businessProfileCreated'));
       }
     } catch (e: any) {
-      setError(e?.message || String(e));
+      const detailParts = [e?.message, e?.details, e?.hint, e?.code].filter(Boolean);
+      setError(detailParts.join(" | ") || String(e));
     } finally {
       setSaving(false);
     }
