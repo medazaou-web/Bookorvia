@@ -211,7 +211,12 @@ export default function BookingForm({ businessId, services, businessSlug, themeS
         const emailPayload = await emailResponse.json().catch(() => ({}));
         if (!emailResponse.ok) {
           console.error('Booking created but email delivery failed:', emailPayload);
-          setError('Booking created successfully, but email delivery failed. Please contact the business directly.');
+          const detailedErrors = Array.isArray(emailPayload?.errors) ? emailPayload.errors.join(' | ') : '';
+          const apiError = emailPayload?.error || 'email delivery failed';
+          setError(`Booking created successfully, but ${apiError}${detailedErrors ? ` (${detailedErrors})` : ''}.`);
+        } else if (emailPayload?.success === true && Array.isArray(emailPayload?.errors) && emailPayload.errors.length > 0) {
+          console.warn('Partial email delivery:', emailPayload);
+          setError(`Booking created. Partial email delivery: ${emailPayload.errors.join(' | ')}`);
         }
       }
 

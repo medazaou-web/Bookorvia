@@ -172,9 +172,21 @@ export async function POST(request: NextRequest) {
       ownerEmailSent,
       clientEmailSent,
       errors,
+      message:
+        ownerEmailSent && clientEmailSent
+          ? 'Owner and client emails sent successfully'
+          : ownerEmailSent
+          ? 'Owner email sent, client email failed'
+          : 'Client email sent, owner email failed',
     });
   } catch (error: any) {
     console.error('Error sending booking emails:', error);
-    return NextResponse.json({ error: error?.message || 'Failed to send booking emails' }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: error?.message || 'Failed to send booking emails',
+        details: error?.response || error?.code || null,
+      },
+      { status: 500 }
+    );
   }
 }
