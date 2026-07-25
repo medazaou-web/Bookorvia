@@ -1,8 +1,20 @@
 "use client";
-
-import { useEffect, useMemo, useState } from "react";
-import { useLanguage } from "@/lib/context/LanguageContext";
-import { useTranslations } from "@/lib/i18n";
+                    >
+                      <p className="font-bold text-slate-900 dark:text-slate-100">
+                        {plan.tier === "starter"
+                          ? t("dashboard.billingTierStarterName")
+                          : plan.tier === "growth"
+                            ? t("dashboard.billingTierGrowthName")
+                            : t("dashboard.billingTierProName")}
+                      </p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                        {plan.tier === "starter"
+                          ? t("dashboard.billingTierStarterDescription")
+                          : plan.tier === "growth"
+                            ? t("dashboard.billingTierGrowthDescription")
+                            : t("dashboard.billingTierProDescription")}
+                      </p>
+                      <p className="mt-3 text-lg font-semibold text-slate-900 dark:text-slate-100">
 import { AlertIcon, CheckIcon, ExternalLinkIcon, SparkIcon } from "@/components/icons";
 import supabase from "@/lib/supabase/browserClient";
 
@@ -156,7 +168,7 @@ export default function BillingPage() {
     if (!selectedPlan) {
       return t("dashboard.billingPlanFree");
     }
-    return `${selectedPlan.name} ${billingCycle === "yearly" ? t("dashboard.billingYearly") : t("dashboard.billingMonthly")}`;
+     return `${selectedPlan.tier === "starter" ? t("dashboard.billingTierStarterName") : selectedPlan.tier === "growth" ? t("dashboard.billingTierGrowthName") : t("dashboard.billingTierProName")} ${billingCycle === "yearly" ? t("dashboard.billingYearly") : t("dashboard.billingMonthly")}`;
   }, [selectedPlan, billingCycle, t]);
 
   const priceFormatter = useMemo(
@@ -171,6 +183,14 @@ export default function BillingPage() {
 
   function pickPlanPrice(plan: StripePlanState, cycle: BillingCycle) {
     return cycle === "yearly" ? plan.yearly : plan.monthly;
+  }
+
+  function getPlanTitle(plan: StripePlanState) {
+    return t(`dashboard.billingPlan${plan.tier.charAt(0).toUpperCase()}${plan.tier.slice(1)}`);
+  }
+
+  function getPlanDescription(plan: StripePlanState) {
+    return t(`dashboard.billingPlan${plan.tier.charAt(0).toUpperCase()}${plan.tier.slice(1)}Description`);
   }
 
   function selectTier(plan: StripePlanState) {
@@ -322,8 +342,8 @@ export default function BillingPage() {
                           : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700"
                       }`}
                     >
-                      <p className="font-bold text-slate-900 dark:text-slate-100">{plan.name}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{plan.description}</p>
+                      <p className="font-bold text-slate-900 dark:text-slate-100">{getPlanTitle(plan)}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{getPlanDescription(plan)}</p>
                       <p className="mt-3 text-lg font-semibold text-slate-900 dark:text-slate-100">
                         {priceFormatter.format(chosen.amountEur)}
                         <span className="text-xs font-medium text-slate-600 dark:text-slate-400 ml-1">
