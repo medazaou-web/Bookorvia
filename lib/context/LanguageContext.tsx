@@ -15,11 +15,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Locale>('en');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load language from user account, localStorage, or browser language on mount
+  // Load language from localStorage, user account, or browser language on mount
   useEffect(() => {
     const loadLanguage = async () => {
       try {
-        // First try to get from user account if authenticated
+        // First check localStorage (user's explicit preference on this device)
+        const savedLanguage = localStorage.getItem('bookorvia-language');
+        if (savedLanguage && ['en', 'es', 'fr'].includes(savedLanguage)) {
+          setLanguageState(savedLanguage as Locale);
+          setIsLoading(false);
+          return;
+        }
+
+        // Then try to get from user account if authenticated
         try {
           const response = await fetch('/api/user/language', {
             method: 'GET',
@@ -36,14 +44,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           // User not authenticated, continue to next option
-        }
-
-        // Check localStorage (user's manual preference on this device)
-        const savedLanguage = localStorage.getItem('bookorvia-language');
-        if (savedLanguage && ['en', 'es', 'fr'].includes(savedLanguage)) {
-          setLanguageState(savedLanguage as Locale);
-          setIsLoading(false);
-          return;
         }
 
         // Try to get from browser language

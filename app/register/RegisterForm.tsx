@@ -39,7 +39,7 @@ export default function RegisterForm() {
     try {
       const { data, error: err } = await supabase.auth.signUp({ email, password });
       if (err) {
-        setError(err.message || "Registration failed.");
+        setError(err.message || t('auth.signUpFailed'));
       } else {
         if (data?.user) {
           try {
@@ -60,10 +60,10 @@ export default function RegisterForm() {
   }
 
   const benefits = [
-    { Icon: CalendarIcon, label: "Smart Scheduling" },
-    { Icon: ClientsIcon, label: "Client Management" },
-    { Icon: LoyaltyIcon, label: "Loyalty Rewards" },
-    { Icon: MessageIcon, label: "SMS & WhatsApp" },
+    { Icon: CalendarIcon, label: t('auth.registerBenefitSmartScheduling') },
+    { Icon: ClientsIcon, label: t('auth.registerBenefitClientManagement') },
+    { Icon: LoyaltyIcon, label: t('auth.registerBenefitLoyaltyRewards') },
+    { Icon: MessageIcon, label: t('auth.registerBenefitSmsWhatsapp') },
   ];
 
   return (
@@ -108,7 +108,7 @@ export default function RegisterForm() {
           {/* Social Proof */}
           <div className="mt-8 p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 dark:from-blue-600/20 to-indigo-500/10 dark:to-indigo-600/20 border border-blue-200/50 dark:border-blue-700/30">
             <p className="text-sm text-slate-700 dark:text-slate-300">
-              <span className="font-bold text-slate-900 dark:text-white">500+ businesses</span> are already using Bookorvia
+              <span className="font-bold text-slate-900 dark:text-white">500+</span> {t('auth.registerSocialProof')}
             </p>
           </div>
         </div>

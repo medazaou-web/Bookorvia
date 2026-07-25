@@ -137,15 +137,15 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10 max-w-lg mx-auto">
               <div className="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-white/80 dark:border-slate-700/60 hover:shadow-lg transition-all">
                 <CalendarIcon className="h-8 w-8 mx-auto mb-2 text-indigo-600 dark:text-indigo-400" />
-                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">Smart Scheduling</p>
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">{t('auth.registerBenefitSmartScheduling')}</p>
               </div>
               <div className="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-white/80 dark:border-slate-700/60 hover:shadow-lg transition-all">
                 <ClientsIcon className="h-8 w-8 mx-auto mb-2 text-indigo-600 dark:text-indigo-400" />
-                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">Client Management</p>
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">{t('auth.registerBenefitClientManagement')}</p>
               </div>
               <div className="p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-white/80 dark:border-slate-700/60 hover:shadow-lg transition-all">
                 <LoyaltyIcon className="h-8 w-8 mx-auto mb-2 text-indigo-600 dark:text-indigo-400" />
-                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">Loyalty Rewards</p>
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">{t('auth.registerBenefitLoyaltyRewards')}</p>
               </div>
             </div>
             

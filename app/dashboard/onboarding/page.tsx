@@ -202,7 +202,7 @@ export default function OnboardingPage() {
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-white flex items-center justify-center p-4">
         <div className="text-center">
           <div className="w-12 h-12 rounded-full border-4 border-indigo-200 border-t-indigo-600 animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600 font-medium">Loading onboarding...</p>
+          <p className="text-slate-600 font-medium">{t('onboarding.loadingOnboarding')}</p>
         </div>
       </div>
     );
@@ -219,8 +219,8 @@ export default function OnboardingPage() {
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-2">Welcome to Bookorvia</h1>
-          <p className="text-lg text-slate-600 dark:text-slate-300">Let's set up your business in 5 minutes</p>
+          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-2">{t('onboarding.welcomeTitle')}</h1>
+          <p className="text-lg text-slate-600 dark:text-slate-300">{t('onboarding.welcomeSubtitle')}</p>
         </div>
 
         {/* Progress Indicator */}
@@ -238,7 +238,7 @@ export default function OnboardingPage() {
                   {s < step ? "✓" : s}
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 text-center hidden sm:block font-medium">
-                  {["Business", "Services", "Preview", "QR Code", "Done"][s - 1]}
+                  {[t('onboarding.progressBusiness'), t('onboarding.progressServices'), t('onboarding.progressPreview'), t('onboarding.progressQrCode'), t('onboarding.progressDone')][s - 1]}
                 </p>
               </div>
             ))}
@@ -271,13 +271,13 @@ export default function OnboardingPage() {
         {step === 1 && (
           <div className="rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-md border border-white/80 dark:border-slate-700/60 p-8 sm:p-10 shadow-2xl">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Business Profile</h2>
-              <p className="text-slate-600 dark:text-slate-300">Create your business presence on Bookorvia</p>
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{t('onboarding.businessProfileTitle')}</h2>
+              <p className="text-slate-600 dark:text-slate-300">{t('onboarding.businessProfileSubtitle')}</p>
             </div>
 
             <form onSubmit={saveBusiness} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">Business Name *</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.businessName')} *</label>
                 <input
                   type="text"
                   value={businessName}
@@ -285,44 +285,44 @@ export default function OnboardingPage() {
                     setBusinessName(e.target.value);
                     setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"));
                   }}
-                  placeholder="e.g., Casa Barber"
+                  placeholder={t('onboarding.businessNamePlaceholder')}
                   className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent focus:bg-white dark:focus:bg-slate-800 transition-all"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">URL Slug *</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.urlSlugLabel')} *</label>
                 <input
                   type="text"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  placeholder="e.g., casa-barber"
+                  placeholder={t('onboarding.urlSlugPlaceholder')}
                   className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent focus:bg-white dark:focus:bg-slate-800 transition-all"
                   required
                 />
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-medium">Your public page: {window?.location?.origin}/b/{slug}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-medium">{t('onboarding.publicPageLabel')} {window?.location?.origin}/b/{slug}</p>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">Category</label>
+                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.businessCategory')}</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent focus:bg-white dark:focus:bg-slate-800 transition-all"
                   >
-                    <option value="salon">Salon</option>
-                    <option value="barber">Barber</option>
-                    <option value="spa">Spa</option>
-                    <option value="clinic">Clinic</option>
-                    <option value="fitness">Fitness</option>
-                    <option value="other">Other</option>
+                    <option value="salon">{t('onboarding.categorySalon')}</option>
+                    <option value="barber">{t('onboarding.categoryBarber')}</option>
+                    <option value="spa">{t('onboarding.categorySpa')}</option>
+                    <option value="clinic">{t('onboarding.categoryClinic')}</option>
+                    <option value="fitness">{t('onboarding.categoryFitness')}</option>
+                    <option value="other">{t('onboarding.categoryOther')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">Currency *</label>
+                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.currencyLabel')} *</label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
@@ -345,11 +345,11 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">Description</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.businessDescription')}</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Tell your customers about your business..."
+                  placeholder={t('onboarding.descriptionPlaceholder')}
                   rows={3}
                   className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent focus:bg-white dark:focus:bg-slate-800 transition-all resize-none"
                 />
@@ -357,7 +357,7 @@ export default function OnboardingPage() {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">Phone</label>
+                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.businessPhone')}</label>
                   <input
                     type="tel"
                     value={phone}
@@ -368,7 +368,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">WhatsApp Number</label>
+                  <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.businessWhatsapp')}</label>
                   <input
                     type="tel"
                     value={whatsapp}
@@ -380,7 +380,7 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">Address</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-2.5">{t('onboarding.businessAddress')}</label>
                 <input
                   type="text"
                   value={address}
@@ -391,7 +391,7 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-3">Booking Countries</label>
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('onboarding.bookingCountries')}</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {["US", "CA", "GB", "ES", "FR", "DE", "IT", "MA", "AE", "SA", "BR", "MX", "AR", "IN", "AU", "JP"].map((country) => (
                     <label key={country} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors">
@@ -411,7 +411,7 @@ export default function OnboardingPage() {
                     </label>
                   ))}
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-3 font-medium">Select countries where your customers can book from</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-3 font-medium">{t('onboarding.bookingCountriesHint')}</p>
               </div>
 
               <button
@@ -419,7 +419,7 @@ export default function OnboardingPage() {
                 type="submit"
                 className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:from-indigo-700 hover:to-blue-700 hover:shadow-xl dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 shadow-lg mt-8"
               >
-                {savingBusiness ? "Creating..." : "Continue"}
+                {savingBusiness ? t('onboarding.creating') : t('onboarding.continue')}
               </button>
             </form>
           </div>
@@ -429,29 +429,29 @@ export default function OnboardingPage() {
         {step === 2 && (
           <div className="rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-md border border-white/80 dark:border-slate-700/60 p-8 sm:p-10 shadow-2xl">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Add Services</h2>
-              <p className="text-slate-600 dark:text-slate-300">Add 1-3 services to get started</p>
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{t('onboarding.addServices')}</h2>
+              <p className="text-slate-600 dark:text-slate-300">{t('onboarding.addServicesSubtitle')}</p>
             </div>
 
             <form onSubmit={saveServices} className="space-y-6">
               {services.map((service, idx) => (
                 <div key={idx} className="p-6 rounded-2xl bg-gradient-to-br from-indigo-50 dark:from-indigo-950/40 to-blue-50 dark:to-blue-900/40 border border-indigo-200 dark:border-indigo-700/40">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-slate-900 dark:text-white">Service {idx + 1}</h3>
+                    <h3 className="font-bold text-slate-900 dark:text-white">{t('onboarding.serviceLabel')} {idx + 1}</h3>
                     {services.length > 1 && (
                       <button
                         type="button"
                         onClick={() => setServices(services.filter((_, i) => i !== idx))}
                         className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold text-sm transition-colors"
                       >
-                        Remove
+                        {t('onboarding.remove')}
                       </button>
                     )}
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">Service Name *</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">{t('onboarding.serviceNameLabel')} *</label>
                       <input
                         type="text"
                         value={service.name}
@@ -460,13 +460,13 @@ export default function OnboardingPage() {
                           newServices[idx].name = e.target.value;
                           setServices(newServices);
                         }}
-                        placeholder="e.g., Haircut"
+                        placeholder={t('onboarding.serviceNamePlaceholder')}
                         className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent focus:bg-white dark:focus:bg-slate-800 transition-all text-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">Price *</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">{t('onboarding.priceLabel')} *</label>
                       <input
                         type="number"
                         value={service.price}
@@ -481,7 +481,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">Currency</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">{t('onboarding.currencyLabel')}</label>
                       <select
                         value={service.currency}
                         onChange={(e) => {
@@ -498,7 +498,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">Duration (minutes)</label>
+                      <label className="block text-xs font-semibold text-slate-900 dark:text-white mb-2">{t('onboarding.durationMinutesLabel')}</label>
                       <input
                         type="number"
                         value={service.duration_minutes}
@@ -521,7 +521,7 @@ export default function OnboardingPage() {
                   onClick={() => setServices([...services, { name: "", price: "", currency: "MAD", duration_minutes: 30 }])}
                   className="w-full px-6 py-3 rounded-xl border-2 border-dashed border-indigo-300 dark:border-indigo-600/50 text-indigo-700 dark:text-indigo-300 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-all"
                 >
-                  + Add Another Service
+                  + {t('onboarding.addAnotherService')}
                 </button>
               )}
 
@@ -530,7 +530,7 @@ export default function OnboardingPage() {
                 type="submit"
                 className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:from-indigo-700 hover:to-blue-700 hover:shadow-xl dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 shadow-lg mt-8"
               >
-                {savingServices ? "Saving..." : "Continue"}
+                {savingServices ? t('onboarding.saving') : t('onboarding.continue')}
               </button>
             </form>
           </div>
@@ -539,8 +539,8 @@ export default function OnboardingPage() {
         {step === 3 && businessData && (
           <div className="rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-md border border-white/80 dark:border-slate-700/60 p-8 sm:p-10 shadow-2xl">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Preview Your Public Page</h2>
-              <p className="text-slate-600 dark:text-slate-300">This is how your customers will see your business</p>
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{t('onboarding.previewTitle')}</h2>
+              <p className="text-slate-600 dark:text-slate-300">{t('onboarding.previewSubtitle')}</p>
             </div>
 
             {/* Preview Card */}
@@ -548,7 +548,7 @@ export default function OnboardingPage() {
               <div className="mb-4">
                 <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{businessData.name}</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  {businessData.category ? businessData.category.charAt(0).toUpperCase() + businessData.category.slice(1) : "Business"}
+                  {businessData.category ? businessData.category.charAt(0).toUpperCase() + businessData.category.slice(1) : t('onboarding.progressBusiness')}
                 </p>
               </div>
 
@@ -561,7 +561,7 @@ export default function OnboardingPage() {
               )}
 
               <div className="space-y-3">
-                <p className="font-semibold text-slate-900 dark:text-white">Featured Services:</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{t('onboarding.featuredServices')}</p>
                 <div className="space-y-2">
                   {services.slice(0, 3).map((s, idx) => (
                     <div key={idx} className="flex items-center justify-between p-3 bg-white dark:bg-slate-800/50 rounded-lg">
@@ -579,7 +579,7 @@ export default function OnboardingPage() {
               onClick={nextFromPreview}
               className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:from-indigo-700 hover:to-blue-700 hover:shadow-xl dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 transition-all duration-200 shadow-lg"
             >
-              Continue to QR Code
+              {t('onboarding.continueToQrCode')}
             </button>
           </div>
         )}
@@ -588,8 +588,8 @@ export default function OnboardingPage() {
         {step === 4 && businessData && publicPageUrl && (
           <div className="rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-md border border-white/80 dark:border-slate-700/60 p-8 sm:p-10 shadow-2xl">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Your QR Code</h2>
-              <p className="text-slate-600 dark:text-slate-300">Share this with your customers to access your booking page</p>
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{t('onboarding.yourQrCodeTitle')}</h2>
+              <p className="text-slate-600 dark:text-slate-300">{t('onboarding.yourQrCodeSubtitle')}</p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-8 mb-8">
@@ -598,17 +598,17 @@ export default function OnboardingPage() {
                 {qrCodeUrl ? (
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={qrCodeUrl} alt="QR Code" className="w-64 h-64 rounded-xl shadow-lg" />
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-4 font-medium">Scan to view your public page</p>
+                    <img src={qrCodeUrl} alt={t('onboarding.qrCodeAlt')} className="w-64 h-64 rounded-xl shadow-lg" />
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-4 font-medium">{t('onboarding.scanPublicPage')}</p>
                   </>
                 ) : (
-                  <div className="text-slate-600 dark:text-slate-400">Generating QR code...</div>
+                  <div className="text-slate-600 dark:text-slate-400">{t('onboarding.generatingQrCode')}</div>
                 )}
               </div>
 
               {/* Public Link */}
               <div className="flex flex-col justify-center">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Public Page Link</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{t('onboarding.publicPageLink')}</h3>
 
                 <div className="p-4 rounded-xl bg-white/60 dark:bg-slate-800/60 border border-indigo-200 dark:border-indigo-700/40 mb-4">
                   <p className="text-sm text-slate-600 dark:text-slate-300 break-all font-mono">{publicPageUrl}</p>
@@ -619,19 +619,19 @@ export default function OnboardingPage() {
                     onClick={copyLink}
                     className="w-full px-6 py-3 rounded-xl border-2 border-indigo-300 dark:border-indigo-600/50 bg-white dark:bg-slate-800/60 text-indigo-700 dark:text-indigo-300 font-bold hover:bg-indigo-50 dark:hover:bg-slate-700/80 active:scale-95 transition-all"
                   >
-                    📋 Copy Link
+                    📋 {t('onboarding.copyLinkButton')}
                   </button>
 
                   <button
                     onClick={downloadQR}
                     className="w-full px-6 py-3 rounded-xl border-2 border-indigo-300 dark:border-indigo-600/50 bg-white dark:bg-slate-800/60 text-indigo-700 dark:text-indigo-300 font-bold hover:bg-indigo-50 dark:hover:bg-slate-700/80 active:scale-95 transition-all"
                   >
-                    ⬇️ Download QR
+                    ⬇️ {t('onboarding.downloadQrButton')}
                   </button>
                 </div>
 
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-6 font-medium">
-                  Share your public page link and QR code with your customers. You can also edit this later in Settings.
+                  {t('onboarding.qrHelpText')}
                 </p>
               </div>
             </div>
@@ -640,7 +640,7 @@ export default function OnboardingPage() {
               onClick={() => setStep(5)}
               className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-center hover:from-indigo-700 hover:to-blue-700 hover:shadow-xl dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 transition-all duration-200 shadow-lg"
             >
-              Finish Setup
+              {t('onboarding.finishSetup')}
             </button>
           </div>
         )}
@@ -649,15 +649,15 @@ export default function OnboardingPage() {
         {step === 5 && (
           <div className="text-center rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-md border border-white/80 dark:border-slate-700/60 shadow-2xl p-8 sm:p-12">
             <div className="text-7xl mb-6 animate-bounce">🎉</div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-4">All Set!</h2>
-            <p className="text-lg text-slate-600 dark:text-slate-300 mb-2 font-medium">Your business is ready to go.</p>
-            <p className="text-slate-600 dark:text-slate-400 mb-10">You can edit your profile, add more services, and manage your business from the dashboard.</p>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-4">{t('onboarding.allSetTitle')}</h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 mb-2 font-medium">{t('onboarding.readyMessage')}</p>
+            <p className="text-slate-600 dark:text-slate-400 mb-10">{t('onboarding.readySubMessage')}</p>
 
             <button
               onClick={finishOnboarding}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-lg hover:from-indigo-700 hover:to-blue-700 hover:shadow-xl dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-500 dark:hover:to-blue-500 active:scale-95 transition-all inline-block shadow-lg"
             >
-              Go to Dashboard →
+              {t('onboarding.goToDashboardButton')} →
             </button>
           </div>
         )}
