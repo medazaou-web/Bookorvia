@@ -1,20 +1,8 @@
 "use client";
-                    >
-                      <p className="font-bold text-slate-900 dark:text-slate-100">
-                        {plan.tier === "starter"
-                          ? t("dashboard.billingTierStarterName")
-                          : plan.tier === "growth"
-                            ? t("dashboard.billingTierGrowthName")
-                            : t("dashboard.billingTierProName")}
-                      </p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                        {plan.tier === "starter"
-                          ? t("dashboard.billingTierStarterDescription")
-                          : plan.tier === "growth"
-                            ? t("dashboard.billingTierGrowthDescription")
-                            : t("dashboard.billingTierProDescription")}
-                      </p>
-                      <p className="mt-3 text-lg font-semibold text-slate-900 dark:text-slate-100">
+
+import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "@/lib/context/LanguageContext";
+import { useTranslations } from "@/lib/i18n";
 import { AlertIcon, CheckIcon, ExternalLinkIcon, SparkIcon } from "@/components/icons";
 import supabase from "@/lib/supabase/browserClient";
 
@@ -85,6 +73,26 @@ export default function BillingPage() {
     }
 
     return headers;
+  }
+
+  function getPlanTitle(plan: StripePlanState) {
+    if (plan.tier === "starter") {
+      return t("dashboard.billingTierStarterName");
+    }
+    if (plan.tier === "growth") {
+      return t("dashboard.billingTierGrowthName");
+    }
+    return t("dashboard.billingTierProName");
+  }
+
+  function getPlanDescription(plan: StripePlanState) {
+    if (plan.tier === "starter") {
+      return t("dashboard.billingTierStarterDescription");
+    }
+    if (plan.tier === "growth") {
+      return t("dashboard.billingTierGrowthDescription");
+    }
+    return t("dashboard.billingTierProDescription");
   }
 
   async function loadSubscription() {
@@ -168,7 +176,9 @@ export default function BillingPage() {
     if (!selectedPlan) {
       return t("dashboard.billingPlanFree");
     }
-     return `${selectedPlan.tier === "starter" ? t("dashboard.billingTierStarterName") : selectedPlan.tier === "growth" ? t("dashboard.billingTierGrowthName") : t("dashboard.billingTierProName")} ${billingCycle === "yearly" ? t("dashboard.billingYearly") : t("dashboard.billingMonthly")}`;
+    return `${getPlanTitle(selectedPlan)} ${
+      billingCycle === "yearly" ? t("dashboard.billingYearly") : t("dashboard.billingMonthly")
+    }`;
   }, [selectedPlan, billingCycle, t]);
 
   const priceFormatter = useMemo(
@@ -183,14 +193,6 @@ export default function BillingPage() {
 
   function pickPlanPrice(plan: StripePlanState, cycle: BillingCycle) {
     return cycle === "yearly" ? plan.yearly : plan.monthly;
-  }
-
-  function getPlanTitle(plan: StripePlanState) {
-    return t(`dashboard.billingPlan${plan.tier.charAt(0).toUpperCase()}${plan.tier.slice(1)}`);
-  }
-
-  function getPlanDescription(plan: StripePlanState) {
-    return t(`dashboard.billingPlan${plan.tier.charAt(0).toUpperCase()}${plan.tier.slice(1)}Description`);
   }
 
   function selectTier(plan: StripePlanState) {
