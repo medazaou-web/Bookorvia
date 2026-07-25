@@ -588,7 +588,7 @@ export default function DashboardSettings() {
       </div>
 
       <div className="futuristic-header neon-outline mb-6 sm:mb-8 rounded-2xl p-3 sm:p-4">
-        <div className="text-xs uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">Quick Navigation</div>
+        <div className="text-xs uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">{t('dashboard.quickNavigation')}</div>
         <div className="flex flex-wrap gap-2">
           {sectionLinks.map((item) => (
             <a
@@ -631,7 +631,7 @@ export default function DashboardSettings() {
                 <UploadCloudIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" />
                 <span>{t('dashboard.logoSettings')}</span>
               </h2>
-              <p className={sectionSubtitleClass}>Keep your brand visuals clean and recognizable across every booking touchpoint.</p>
+              <p className={sectionSubtitleClass}>{t('dashboard.logoSettingsSubtitle')}</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 {/* Logo Preview */}
                 <div>
@@ -722,12 +722,12 @@ export default function DashboardSettings() {
               <h2 className={sectionTitleClass}>
                 <SparkIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.publicPageDesign')}
               </h2>
-              <p className={sectionSubtitleClass}>Public page design controls are now in Business Page for faster access.</p>
+              <p className={sectionSubtitleClass}>{t('dashboard.publicPageDesignMovedSubtitle')}</p>
               <a
                 href="/dashboard/business-page#public-design"
                 className="mt-4 inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500 transition-colors"
               >
-                <SparkIcon className="h-4 w-4" /> Open Public Page Design
+                <SparkIcon className="h-4 w-4" /> {t('dashboard.openPublicPageDesign')}
               </a>
             </div>
 
@@ -736,7 +736,7 @@ export default function DashboardSettings() {
               <h2 className={sectionTitleClass}>
                 <BusinessIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.businessBasics')}
               </h2>
-              <p className={sectionSubtitleClass}>Define your business identity, category, and messaging in one place.</p>
+              <p className={sectionSubtitleClass}>{t('dashboard.businessBasicsSubtitle')}</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2">{t('dashboard.businessNameLabel')}</label>
@@ -785,7 +785,7 @@ export default function DashboardSettings() {
               <h2 className={sectionTitleClass}>
                 <PhoneIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.contactInformation')}
               </h2>
-              <p className={sectionSubtitleClass}>Make it easy for clients to call, chat, or find your location quickly.</p>
+              <p className={sectionSubtitleClass}>{t('dashboard.contactInformationSubtitle')}</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2">{t('dashboard.phoneLabel')}</label>
@@ -822,7 +822,7 @@ export default function DashboardSettings() {
               <h2 className={sectionTitleClass}>
                 <WebsiteIcon className="h-5 sm:h-6 w-5 sm:w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.onlinePresence')}
               </h2>
-              <p className={sectionSubtitleClass}>Connect your website, social profile, and review link for better discoverability.</p>
+              <p className={sectionSubtitleClass}>{t('dashboard.onlinePresenceSubtitle')}</p>
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-300 mb-2">{t('dashboard.websiteLabel')}</label>
@@ -859,7 +859,7 @@ export default function DashboardSettings() {
               <h2 className={sectionTitleClass}>
                 <BellIcon className="h-6 sm:h-7 w-6 sm:w-7 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.emailNotifications')}
               </h2>
-              <p className={sectionSubtitleClass}>Choose exactly which events trigger emails, so users get useful updates without noise.</p>
+              <p className={sectionSubtitleClass}>{t('dashboard.emailNotificationsSubtitle')}</p>
 
               {/* Master Toggle - Separated */}
               <div className="mb-8 p-4 sm:p-5 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border border-indigo-200 dark:border-indigo-500/30">
@@ -983,7 +983,7 @@ export default function DashboardSettings() {
               >
                 {saving ? <><SaveIcon className="h-3 sm:h-4 w-3 sm:w-4 inline mr-2" /> {t('common.saving')}</> : <><SaveIcon className="h-3 sm:h-4 w-3 sm:w-4 inline mr-2" /> {t('common.save')}</>}
               </button>
-              <span className="hidden sm:inline text-xs text-slate-600 dark:text-slate-300 font-semibold">Changes are saved to your live business profile.</span>
+              <span className="hidden sm:inline text-xs text-slate-600 dark:text-slate-300 font-semibold">{t('dashboard.liveProfileSavedHint')}</span>
               </div>
             </div>
           </form>

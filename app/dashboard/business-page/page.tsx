@@ -160,6 +160,14 @@ export default function DashboardBusinessPage() {
   const [accentColor, setAccentColor] = useState("#06b6d4");
   const [buttonTextColor, setButtonTextColor] = useState(DEFAULT_BUTTON_TEXT_COLOR);
   const [backgroundStyle, setBackgroundStyle] = useState(DEFAULT_BACKGROUND_STYLE);
+  const backgroundStyleOptions = [
+    { value: "orbs", label: t('dashboard.styleLiquidChrome') },
+    { value: "mesh", label: t('dashboard.styleNeuralLattice') },
+    { value: "stripes", label: t('dashboard.stylePrismShards') },
+    { value: "grid", label: t('dashboard.styleHolographicCircuit') },
+    { value: "spotlight", label: t('dashboard.styleVelvetStage') },
+    { value: "vortex", label: t('dashboard.styleOrbitPulse') },
+  ];
 
   useEffect(() => {
     let mounted = true;
@@ -311,7 +319,7 @@ export default function DashboardBusinessPage() {
         background_style: backgroundStyle,
       };
       setBusiness(nextBusiness);
-      setDesignSuccess("Public page design saved successfully.");
+      setDesignSuccess(t('dashboard.designSavedSuccess'));
     } catch (e: any) {
       const detailParts = [e?.message, e?.details, e?.hint, e?.code].filter(Boolean);
       setDesignError(detailParts.join(" | ") || String(e));
@@ -328,19 +336,19 @@ export default function DashboardBusinessPage() {
           <div>
             <div className="inline-flex items-center gap-2 mb-3 rounded-full border border-cyan-300/60 dark:border-cyan-400/30 bg-cyan-50/70 dark:bg-cyan-500/10 px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] font-bold text-cyan-700 dark:text-cyan-200">
               <SparkIcon className="h-3.5 w-3.5" />
-              Public Presence
+              {t('dashboard.publicPresence')}
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">{t('dashboard.businessPageTitle')}</h1>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl">{t('dashboard.businessPageDescription')}</p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm min-w-[200px]">
             <div className="rounded-xl border border-slate-300/70 dark:border-white/10 bg-white/75 dark:bg-slate-900/70 px-3 py-2">
-              <p className="text-slate-500 dark:text-slate-400">Page Status</p>
-              <p className="font-bold text-emerald-600 dark:text-emerald-300">Live</p>
+              <p className="text-slate-500 dark:text-slate-400">{t('dashboard.pageStatus')}</p>
+              <p className="font-bold text-emerald-600 dark:text-emerald-300">{t('dashboard.statusLive')}</p>
             </div>
             <div className="rounded-xl border border-slate-300/70 dark:border-white/10 bg-white/75 dark:bg-slate-900/70 px-3 py-2">
-              <p className="text-slate-500 dark:text-slate-400">Traffic Tool</p>
-              <p className="font-bold text-cyan-700 dark:text-cyan-200">QR Ready</p>
+              <p className="text-slate-500 dark:text-slate-400">{t('dashboard.trafficTool')}</p>
+              <p className="font-bold text-cyan-700 dark:text-cyan-200">{t('dashboard.qrReady')}</p>
             </div>
           </div>
         </div>
@@ -378,16 +386,16 @@ export default function DashboardBusinessPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
-                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Reach</p>
-                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Social + bio + direct messages</p>
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">{t('dashboard.reach')}</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('dashboard.reachDesc')}</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
-                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Speed</p>
-                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">One tap from ad to booking</p>
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">{t('dashboard.speed')}</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('dashboard.speedDesc')}</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-900/65 p-3">
-                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Control</p>
-                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Track, update, and share instantly</p>
+                  <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">{t('dashboard.control')}</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('dashboard.controlDesc')}</p>
                 </div>
               </div>
             </div>
@@ -406,7 +414,7 @@ export default function DashboardBusinessPage() {
                       <div className="text-slate-500 dark:text-slate-400">{t('dashboard.qrUnavailable')}</div>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center">Scan test before printing batches.</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center">{t('dashboard.scanTestBeforePrint')}</p>
                 </div>
 
                 <div className="space-y-6">
@@ -440,8 +448,8 @@ export default function DashboardBusinessPage() {
             </div>
 
             <div id="public-design" className="order-2 glass-panel neon-outline rounded-3xl p-6 sm:p-8">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"><SparkIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> Public Page Design</h2>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-6">Manage the look of your public page here without leaving Business Page.</p>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2"><SparkIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" /> {t('dashboard.publicPageDesign')}</h2>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-6">{t('dashboard.publicPageDesignSubtitle')}</p>
 
               {designError && (
                 <div className="rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-400/20 p-4 text-sm text-red-700 dark:text-red-200 font-medium mb-4">
@@ -458,9 +466,9 @@ export default function DashboardBusinessPage() {
                 <div className="space-y-4 sm:space-y-6">
                   <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">Theme</label>
+                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.pageTheme')}</label>
                       <div className="grid grid-cols-2 gap-2">
-                        {[{ value: "luxury_dark", label: "Dark" }, { value: "elegant_light", label: "Light" }].map((option) => (
+                        {[{ value: "luxury_dark", label: t('dashboard.dark') }, { value: "elegant_light", label: t('dashboard.light') }].map((option) => (
                           <button
                             key={option.value}
                             type="button"
@@ -474,23 +482,20 @@ export default function DashboardBusinessPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">Background Style</label>
+                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.backgroundStyle')}</label>
                       <select
                         value={backgroundStyle}
                         onChange={(e) => setBackgroundStyle(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-slate-900/70 text-slate-900 dark:text-white"
                       >
-                        <option value="orbs">Liquid Chrome</option>
-                        <option value="mesh">Neural Lattice</option>
-                        <option value="stripes">Prism Shards</option>
-                        <option value="grid">Holographic Circuit</option>
-                        <option value="spotlight">Velvet Stage</option>
-                        <option value="vortex">Orbit Pulse</option>
+                        {backgroundStyleOptions.map((styleOption) => (
+                          <option key={styleOption.value} value={styleOption.value}>{styleOption.label}</option>
+                        ))}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">Brand Color</label>
+                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.brandColor')}</label>
                       <div className="flex items-center gap-2">
                         <input type="color" value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="w-12 h-10 rounded-lg border border-slate-300 dark:border-white/20" />
                         <input value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-slate-900/70 text-slate-900 dark:text-white font-mono" />
@@ -498,7 +503,7 @@ export default function DashboardBusinessPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">Accent Color</label>
+                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.accentColor')}</label>
                       <div className="flex items-center gap-2">
                         <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="w-12 h-10 rounded-lg border border-slate-300 dark:border-white/20" />
                         <input value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-slate-900/70 text-slate-900 dark:text-white font-mono" />
@@ -506,7 +511,7 @@ export default function DashboardBusinessPage() {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">Button Text Color</label>
+                      <label className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-white mb-2">{t('dashboard.buttonTextColor')}</label>
                       <div className="flex items-center gap-2">
                         <input type="color" value={buttonTextColor} onChange={(e) => setButtonTextColor(e.target.value)} className="w-12 h-10 rounded-lg border border-slate-300 dark:border-white/20" />
                         <input value={buttonTextColor} onChange={(e) => setButtonTextColor(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-slate-900/70 text-slate-900 dark:text-white font-mono" />
@@ -520,12 +525,12 @@ export default function DashboardBusinessPage() {
                     disabled={designSaving || !business?.id}
                     className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg active:scale-95 disabled:opacity-60 transition-all"
                   >
-                    {designSaving ? "Saving..." : "Save Public Page Design"}
+                    {designSaving ? t('common.saving') : t('dashboard.savePublicPageDesign')}
                   </button>
                 </div>
 
                 <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-gradient-to-br from-slate-50/90 to-slate-100/70 dark:from-white/5 dark:to-white/10 p-4 sm:p-5">
-                  <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2"><EyeIcon className="h-4 w-4" /> Live Preview: {publicTheme === "luxury_dark" ? "Dark" : "Light"}</p>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2"><EyeIcon className="h-4 w-4" /> {t('dashboard.livePreviewTheme').replace('{theme}', publicTheme === "luxury_dark" ? t('dashboard.dark') : t('dashboard.light'))}</p>
                   <div className="rounded-2xl overflow-hidden border" style={{ borderColor: publicTheme === "luxury_dark" ? "rgba(148,163,184,0.35)" : "rgba(148,163,184,0.3)" }}>
                     <div
                       className="h-[430px] overflow-y-auto p-3"
@@ -538,8 +543,8 @@ export default function DashboardBusinessPage() {
                               {(business?.name || "B").slice(0, 2).toUpperCase()}
                             </div>
                             <div className="min-w-0">
-                              <p className="text-xs font-semibold truncate" style={{ color: publicTheme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>{business?.name || "Your Business"}</p>
-                              <p className="text-[10px] truncate" style={{ color: publicTheme === "luxury_dark" ? "#cbd5e1" : "#475569" }}>{business?.category || "Category"}</p>
+                              <p className="text-xs font-semibold truncate" style={{ color: publicTheme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>{business?.name || t('dashboard.yourBusiness')}</p>
+                              <p className="text-[10px] truncate" style={{ color: publicTheme === "luxury_dark" ? "#cbd5e1" : "#475569" }}>{business?.category || t('dashboard.categoryLabel')}</p>
                             </div>
                           </div>
                           <button
@@ -547,37 +552,37 @@ export default function DashboardBusinessPage() {
                             className="mt-3 w-full px-3 py-2 rounded-lg text-[11px] font-bold"
                             style={{ background: `linear-gradient(135deg, ${brandColor || "#4f46e5"}, ${accentColor || "#06b6d4"})`, color: buttonTextColor || "#ffffff" }}
                           >
-                            Book Now
+                            {t('booking.bookNow')}
                           </button>
                         </div>
 
                         <div className="rounded-xl p-3 border" style={{ background: publicTheme === "luxury_dark" ? "rgba(15,23,42,0.68)" : "rgba(255,255,255,0.84)", borderColor: publicTheme === "luxury_dark" ? "rgba(148,163,184,0.3)" : "rgba(148,163,184,0.24)" }}>
-                          <p className="text-[11px] font-semibold mb-2" style={{ color: publicTheme === "luxury_dark" ? "#e2e8f0" : "#1e293b" }}>Services</p>
+                          <p className="text-[11px] font-semibold mb-2" style={{ color: publicTheme === "luxury_dark" ? "#e2e8f0" : "#1e293b" }}>{t('business.services')}</p>
                           <div className="grid grid-cols-2 gap-2">
-                            <div className="rounded-lg px-2 py-2 text-[10px] border" style={{ borderColor: withAlpha(brandColor || "#4f46e5", 0.35), background: withAlpha(brandColor || "#4f46e5", 0.14), color: publicTheme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>Premium Cut</div>
-                            <div className="rounded-lg px-2 py-2 text-[10px] border" style={{ borderColor: withAlpha(accentColor || "#06b6d4", 0.35), background: withAlpha(accentColor || "#06b6d4", 0.14), color: publicTheme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>Glow Care</div>
+                            <div className="rounded-lg px-2 py-2 text-[10px] border" style={{ borderColor: withAlpha(brandColor || "#4f46e5", 0.35), background: withAlpha(brandColor || "#4f46e5", 0.14), color: publicTheme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>{t('dashboard.previewServiceOne')}</div>
+                            <div className="rounded-lg px-2 py-2 text-[10px] border" style={{ borderColor: withAlpha(accentColor || "#06b6d4", 0.35), background: withAlpha(accentColor || "#06b6d4", 0.14), color: publicTheme === "luxury_dark" ? "#f8fafc" : "#0f172a" }}>{t('dashboard.previewServiceTwo')}</div>
                           </div>
                         </div>
 
                         <div className="rounded-xl p-3 border" style={{ background: publicTheme === "luxury_dark" ? "rgba(15,23,42,0.68)" : "rgba(255,255,255,0.84)", borderColor: publicTheme === "luxury_dark" ? "rgba(148,163,184,0.3)" : "rgba(148,163,184,0.24)" }}>
-                          <p className="text-[11px] font-semibold mb-2" style={{ color: publicTheme === "luxury_dark" ? "#e2e8f0" : "#1e293b" }}>Contact</p>
+                          <p className="text-[11px] font-semibold mb-2" style={{ color: publicTheme === "luxury_dark" ? "#e2e8f0" : "#1e293b" }}>{t('dashboard.contactInformation')}</p>
                           <div className="flex flex-wrap gap-2 text-[10px]">
-                            <span className="rounded-full px-2 py-1" style={{ background: "rgba(34,197,94,0.24)", color: publicTheme === "luxury_dark" ? "#bbf7d0" : "#166534" }}>WhatsApp</span>
-                            <span className="rounded-full px-2 py-1" style={{ background: "rgba(96,165,250,0.24)", color: publicTheme === "luxury_dark" ? "#bfdbfe" : "#1e3a8a" }}>Call</span>
-                            <span className="rounded-full px-2 py-1" style={{ background: "rgba(244,114,182,0.24)", color: publicTheme === "luxury_dark" ? "#fbcfe8" : "#9d174d" }}>Instagram</span>
+                            <span className="rounded-full px-2 py-1" style={{ background: "rgba(34,197,94,0.24)", color: publicTheme === "luxury_dark" ? "#bbf7d0" : "#166534" }}>{t('dashboard.whatsappLabel')}</span>
+                            <span className="rounded-full px-2 py-1" style={{ background: "rgba(96,165,250,0.24)", color: publicTheme === "luxury_dark" ? "#bfdbfe" : "#1e3a8a" }}>{t('dashboard.call')}</span>
+                            <span className="rounded-full px-2 py-1" style={{ background: "rgba(244,114,182,0.24)", color: publicTheme === "luxury_dark" ? "#fbcfe8" : "#9d174d" }}>{t('dashboard.instagramLabel')}</span>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Preview updates instantly as you tweak colors and background style.</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">{t('dashboard.previewUpdatesHint')}</p>
                 </div>
               </div>
             </div>
 
             <div className="order-1 grid grid-cols-1 gap-6 xl:grid-cols-2">
               <div className="glass-panel neon-outline rounded-3xl p-6">
-                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">Launch Actions</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">{t('dashboard.launchActions')}</p>
                 <div className="space-y-3">
                   <button
                     onClick={handleCopy}
@@ -597,7 +602,7 @@ export default function DashboardBusinessPage() {
                     href="#public-design"
                     className="w-full px-5 py-3 rounded-xl bg-cyan-600 text-white font-bold hover:shadow-lg active:scale-95 transition-all inline-flex items-center justify-center gap-2"
                   >
-                    <SparkIcon className="h-4 w-4" /> Public Page Design
+                    <SparkIcon className="h-4 w-4" /> {t('dashboard.publicPageDesign')}
                   </a>
                   {qrDataUrl && (
                     <button
@@ -618,20 +623,20 @@ export default function DashboardBusinessPage() {
               </div>
 
               <div className="glass-panel neon-outline rounded-3xl p-6">
-                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">Distribution Checklist</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-3">{t('dashboard.distributionChecklist')}</p>
                 <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Add link to Instagram bio</li>
-                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Print QR near front desk</li>
-                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Attach QR to invoices</li>
-                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• Test booking flow weekly</li>
+                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• {t('dashboard.checklistInstagramBio')}</li>
+                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• {t('dashboard.checklistPrintQr')}</li>
+                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• {t('dashboard.checklistAttachQrInvoices')}</li>
+                  <li className="rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 px-3 py-2">• {t('dashboard.checklistTestFlow')}</li>
                 </ul>
               </div>
             </div>
 
             <div className="order-5 futuristic-header neon-outline rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-1">Conversion Tip</p>
-                <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200">Place the QR near checkout, front desk, and social posts to increase repeat bookings.</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-cyan-700 dark:text-cyan-200 font-bold mb-1">{t('dashboard.conversionTip')}</p>
+                <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200">{t('dashboard.conversionTipDesc')}</p>
               </div>
               <a
                 href={livePageHref}
@@ -640,7 +645,7 @@ export default function DashboardBusinessPage() {
                 className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg transition-all inline-flex items-center justify-center gap-2"
               >
                 <ExternalLinkIcon className="h-4 w-4" />
-                Open Live Page
+                {t('dashboard.openLivePage')}
               </a>
             </div>
           </div>

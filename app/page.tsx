@@ -107,6 +107,12 @@ export default function Home() {
     { icon: StarIcon, label: t('public.problemReviewsLabel'), tone: 'bg-pink-500', stat: '+64%' },
   ];
 
+  const trustBadges = [
+    { icon: SparkIcon, text: t('public.fourteenDaysFreeNoCard') },
+    { icon: CalendarIcon, text: t('public.setupInFiveMinutes') },
+    { icon: StarIcon, text: t('public.trustedByFiveHundredBusinesses') },
+  ];
+
   return (
     <div className={`relative min-h-screen overflow-x-clip bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 ${headingFont.className}`}>
       <div className="pointer-events-none absolute inset-0">
@@ -195,10 +201,15 @@ export default function Home() {
                 </a>
               </div>
 
-              <div className="mt-8 grid gap-2 sm:grid-cols-3">
-                {[t('public.fourteenDaysFreeNoCard'), t('public.setupInFiveMinutes'), t('public.trustedByFiveHundredBusinesses')].map((point) => (
-                  <div key={point} className="rounded-lg border border-slate-200 bg-white/70 px-3 py-2 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-slate-900/50 dark:text-slate-200">
-                    ✓ {point}
+              <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {trustBadges.map((badge) => (
+                  <div key={badge.text} className="group rounded-xl border border-slate-200/90 bg-white/80 px-4 py-3 shadow-sm backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-slate-900/55">
+                    <div className="flex items-start gap-2.5">
+                      <span className="mt-0.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200">
+                        <badge.icon className="h-3.5 w-3.5" />
+                      </span>
+                      <p className="text-[13px] font-semibold leading-snug text-slate-700 dark:text-slate-200">{badge.text}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -209,7 +220,9 @@ export default function Home() {
               <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white/85 p-5 shadow-2xl backdrop-blur dark:border-white/10 dark:bg-slate-900/80 sm:p-6">
                 <div className="mb-4 flex items-center justify-between border-b border-slate-200/80 pb-4 dark:border-slate-700/70">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900" />
+                    <div className="h-10 w-10 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+                      <Image src="/bookorvia-logo.png" alt="Bookorvia" width={40} height={40} className="h-full w-full object-cover" />
+                    </div>
                     <div>
                       <p className="text-sm font-bold text-slate-900 dark:text-white">{t('public.mockupClinicName')}</p>
                       <p className={`text-[11px] text-slate-500 dark:text-slate-400 ${monoFont.className}`}>LIVE SYSTEM</p>
@@ -233,19 +246,32 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="mt-4 space-y-3">
-                  <div className="rounded-xl border border-cyan-200 bg-cyan-50 p-3 dark:border-cyan-500/30 dark:bg-cyan-500/10">
-                    <p className="mb-1 flex items-center gap-2 text-xs font-bold text-cyan-800 dark:text-cyan-200"><CalendarIcon className="h-4 w-4" /> {t('public.mockupBookingRequest')}</p>
-                    <p className="text-xs text-slate-700 dark:text-slate-200">{t('public.mockupClientConsultation')}</p>
+                <div className="mt-4 grid gap-3">
+                  <div className="rounded-xl border border-cyan-200/80 bg-gradient-to-r from-cyan-50 to-sky-50 p-3.5 dark:border-cyan-500/30 dark:from-cyan-500/10 dark:to-sky-500/10">
+                    <p className="mb-2 flex items-center gap-2 text-xs font-bold text-cyan-900 dark:text-cyan-100"><CalendarIcon className="h-4 w-4" /> {t('public.mockupTodayLabel')}</p>
+                    <div className="flex flex-wrap gap-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-200">
+                      <span className="rounded-md bg-white/80 px-2 py-1 dark:bg-slate-900/60">9:00 AM - Haircut</span>
+                      <span className="rounded-md bg-white/80 px-2 py-1 dark:bg-slate-900/60">10:30 AM - Beard</span>
+                      <span className="rounded-md bg-white/80 px-2 py-1 dark:bg-slate-900/60">2:00 PM - (Open)</span>
+                      <span className="rounded-md bg-white/80 px-2 py-1 dark:bg-slate-900/60">4:00 PM - Color</span>
+                    </div>
                   </div>
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-500/30 dark:bg-emerald-500/10">
-                    <p className="mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-200"><MessageIcon className="h-4 w-4" /> {t('public.mockupHealthReminder')}</p>
-                    <p className="text-xs text-slate-700 dark:text-slate-200">{t('public.mockupReminderStatus')}</p>
+
+                  <div className="rounded-xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50 to-teal-50 p-3.5 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
+                    <p className="mb-1 flex items-center gap-2 text-xs font-bold text-emerald-900 dark:text-emerald-100"><MessageIcon className="h-4 w-4" /> {t('public.mockupRequestSent')}</p>
+                    <div className="flex items-center justify-between gap-2 text-[11px]">
+                      <span className="font-semibold text-slate-700 dark:text-slate-200">{t('public.mockupViaEmailSms')}</span>
+                      <span className="rounded-full bg-emerald-600 px-2.5 py-1 font-bold text-white">87% {t('public.mockupResponseRate')}</span>
+                    </div>
+                    <p className="mt-2 text-[11px] font-semibold text-emerald-800 dark:text-emerald-200">{t('public.mockupRatingUp')}</p>
                   </div>
-                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-500/30 dark:bg-amber-500/10">
-                    <p className="mb-1 flex items-center gap-2 text-xs font-bold text-amber-800 dark:text-amber-200"><GiftIcon className="h-4 w-4" /> {t('public.mockupCarePlanProgress')}</p>
-                    <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700">
-                      <div className="h-1.5 w-3/4 rounded-full bg-gradient-to-r from-amber-500 to-emerald-500" />
+
+                  <div className="rounded-xl border border-amber-200/80 bg-gradient-to-r from-amber-50 to-orange-50 p-3.5 dark:border-amber-500/30 dark:from-amber-500/10 dark:to-orange-500/10">
+                    <p className="mb-1 flex items-center gap-2 text-xs font-bold text-amber-900 dark:text-amber-100"><GiftIcon className="h-4 w-4" /> {t('public.mockupReadyToSend')}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-700 dark:text-slate-200">
+                      <span className="rounded-full bg-white/85 px-2 py-1 dark:bg-slate-900/60">2 {t('public.mockupClients')}</span>
+                      <span className="rounded-full bg-white/85 px-2 py-1 dark:bg-slate-900/60">{t('public.mockupScheduled')}</span>
+                      <span className="rounded-full bg-white/85 px-2 py-1 dark:bg-slate-900/60">{t('public.mockupAutoReschedule')}</span>
                     </div>
                   </div>
                 </div>
@@ -430,7 +456,9 @@ export default function Home() {
           <div className="grid gap-10 md:grid-cols-2">
             <div>
               <div className="mb-4 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900" />
+                <div className="h-10 w-10 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+                  <Image src="/bookorvia-logo.png" alt="Bookorvia" width={40} height={40} className="h-full w-full object-cover" />
+                </div>
                 <span className="text-xl font-bold text-slate-900 dark:text-white">Bookorvia</span>
               </div>
               <p className="max-w-sm text-sm leading-relaxed text-slate-700 dark:text-slate-300">{t('public.footerAbout')}</p>
