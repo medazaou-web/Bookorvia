@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/lib/context/LanguageContext";
 import { useTranslations } from "@/lib/i18n";
 import { AlertIcon, CheckIcon, ExternalLinkIcon, SparkIcon } from "@/components/icons";
+import supabase from "@/lib/supabase/browserClient";
 
 type BillingStatus =
   | "free"
@@ -60,14 +61,30 @@ export default function BillingPage() {
     void loadSubscription();
   }, []);
 
+  async function getAuthHeaders(): Promise<Record<string, string>> {
+    const { data } = await supabase.auth.getSession();
+    const token = data?.session?.access_token;
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    return headers;
+  }
+
   async function loadSubscription() {
     setLoading(true);
     setError(null);
 
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch("/api/stripe/subscription", {
         method: "GET",
         credentials: "include",
+        headers,
       });
 
       const payload = await res.json();
@@ -185,10 +202,11 @@ export default function BillingPage() {
     setBusyAction("checkout");
     setError(null);
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ priceId: selectedPriceId }),
       });
 
@@ -210,10 +228,11 @@ export default function BillingPage() {
     setBusyAction("portal");
     setError(null);
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch("/api/stripe/portal", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({}),
       });
 
@@ -238,7 +257,7 @@ export default function BillingPage() {
         <p className="text-slate-600 dark:text-slate-400">{t("dashboard.billingSubtitle")}</p>
       </div>
 
-      {!hasConfiguredPrice && (
+      {!loading && !error && !hasConfiguredPrice && (
         <div className="rounded-2xl border border-amber-300/70 bg-amber-50 dark:bg-amber-950/40 dark:border-amber-700/70 p-4 text-sm text-amber-900 dark:text-amber-200 flex items-start gap-3">
           <AlertIcon className="h-5 w-5 flex-shrink-0 mt-0.5" />
           <div>{t("dashboard.billingMissingPriceConfig")}</div>
