@@ -114,6 +114,17 @@ export function SettingsIcon({ className = "h-5 w-5" }: { className?: string }) 
   );
 }
 
+export function BillingIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+      <line x1="2.5" y1="9" x2="21.5" y2="9" />
+      <line x1="7" y1="15" x2="12" y2="15" />
+      <line x1="15" y1="15" x2="18" y2="15" />
+    </svg>
+  );
+}
+
 export function SupportIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

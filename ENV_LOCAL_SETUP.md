@@ -64,12 +64,33 @@ NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+
+# Stripe billing
+STRIPE_SECRET_KEY=sk_test_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+NEXT_PUBLIC_STRIPE_PRICE_STARTER_MONTHLY=price_xxx
+NEXT_PUBLIC_STRIPE_PRICE_STARTER_YEARLY=price_xxx
+NEXT_PUBLIC_STRIPE_PRICE_GROWTH_MONTHLY=price_xxx
+NEXT_PUBLIC_STRIPE_PRICE_GROWTH_YEARLY=price_xxx
+NEXT_PUBLIC_STRIPE_PRICE_PRO_MONTHLY=price_xxx
+NEXT_PUBLIC_STRIPE_PRICE_PRO_YEARLY=price_xxx
+
+NEXT_PUBLIC_STRIPE_PRODUCT_STARTER=prod_xxx
+NEXT_PUBLIC_STRIPE_PRODUCT_GROWTH=prod_xxx
+NEXT_PUBLIC_STRIPE_PRODUCT_PRO=prod_xxx
+
+# Optional
+STRIPE_TRIAL_DAYS=14
+NEXT_PUBLIC_BILLING_ENFORCED=false
 ```
 
 Replace:
 - `YOUR_PROJECT_ID` with your Supabase project ID
 - `YOUR_ANON_KEY` with your public/anon key
 - `YOUR_SERVICE_ROLE_KEY` with your service role secret
+- `sk_test_xxx` with your Stripe secret key
+- `whsec_xxx` with your Stripe webhook signing secret
+- `price_xxx` with your Stripe recurring plan price id
 
 ### Step 4: Restart Dev Server
 ```bash

@@ -13,6 +13,7 @@ import {
   FollowUpsIcon,
   LoyaltyIcon,
   BusinessPageIcon,
+  BillingIcon,
   SettingsIcon,
 } from "@/components/icons";
 
@@ -37,6 +38,7 @@ export default function Sidebar() {
 
   const settingsLinks = [
     { href: "/dashboard/business-page", label: t('dashboard.businessPage'), Icon: BusinessPageIcon },
+    { href: "/dashboard/billing", label: t('dashboard.billing'), Icon: BillingIcon },
     { href: "/dashboard/settings", label: t('dashboard.settings'), Icon: SettingsIcon },
   ];
 
